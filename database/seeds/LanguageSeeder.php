@@ -17,26 +17,31 @@ class LanguageSeeder extends Seeder
         DB::table('languages')->insert([
             [
                 'name' => 'English',
+                'code' => 'en',
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
             [
                 'name' => 'Estonian',
+                'code' => 'et',
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
             [
                 'name' => 'Finnish',
+                'code' => 'fi',
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
             [
                 'name' => 'Greek',
+                'code' => 'el',
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
             [
                 'name' => 'Italian',
+                'code' => 'it',
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
