@@ -72,7 +72,7 @@
                                     {{ $question->created_at->format('d.m.Y') }}
                                 </td>
                                 <td>
-                                    {{ $question->status }}
+                                    {{ $question->status->status() }}
                                 </td>
                             </tr>
                             @empty

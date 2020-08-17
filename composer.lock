@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f0dcbdc80776ca79d6311b8f92c5a4b5",
+    "content-hash": "58f61bca95d5e453d778569aab13dc53",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -421,6 +421,55 @@
                 "validator"
             ],
             "time": "2020-08-08T21:28:19+00:00"
+        },
+        {
+            "name": "facade/ignition-contracts",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/facade/ignition-contracts.git",
+                "reference": "aeab1ce8b68b188a43e81758e750151ad7da796b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/facade/ignition-contracts/zipball/aeab1ce8b68b188a43e81758e750151ad7da796b",
+                "reference": "aeab1ce8b68b188a43e81758e750151ad7da796b",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.14",
+                "phpunit/phpunit": "^7.5|^8.0",
+                "vimeo/psalm": "^3.12"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Facade\\IgnitionContracts\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://flareapp.io",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Solution contracts for Ignition",
+            "homepage": "https://github.com/facade/ignition-contracts",
+            "keywords": [
+                "contracts",
+                "flare",
+                "ignition"
+            ],
+            "time": "2020-07-14T10:10:28+00:00"
         },
         {
             "name": "fideloper/proxy",
@@ -2162,6 +2211,62 @@
                 }
             ],
             "time": "2020-07-28T16:51:01+00:00"
+        },
+        {
+            "name": "spatie/laravel-model-states",
+            "version": "1.6.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-model-states.git",
+                "reference": "1e2626bd5d492f8e1bc7533f64f4e55f4b781182"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-model-states/zipball/1e2626bd5d492f8e1bc7533f64f4e55f4b781182",
+                "reference": "1e2626bd5d492f8e1bc7533f64f4e55f4b781182",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "facade/ignition-contracts": "^1.0",
+                "laravel/framework": "~5.8|^6.0|^7.0",
+                "php": "^7.2"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^3.8|^4.0|^5.0",
+                "phpunit/phpunit": "^8.2|^9.0",
+                "symfony/var-dumper": "^4.4|^5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\ModelStates\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Brent Roose",
+                    "email": "brent@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "homepage": "https://github.com/spatie/laravel-model-states",
+            "keywords": [
+                "spatie",
+                "state"
+            ],
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                }
+            ],
+            "time": "2020-06-23T08:53:44+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -4762,55 +4867,6 @@
                 "page"
             ],
             "time": "2020-08-10T13:50:38+00:00"
-        },
-        {
-            "name": "facade/ignition-contracts",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/facade/ignition-contracts.git",
-                "reference": "aeab1ce8b68b188a43e81758e750151ad7da796b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/facade/ignition-contracts/zipball/aeab1ce8b68b188a43e81758e750151ad7da796b",
-                "reference": "aeab1ce8b68b188a43e81758e750151ad7da796b",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.14",
-                "phpunit/phpunit": "^7.5|^8.0",
-                "vimeo/psalm": "^3.12"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Facade\\IgnitionContracts\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Freek Van der Herten",
-                    "email": "freek@spatie.be",
-                    "homepage": "https://flareapp.io",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Solution contracts for Ignition",
-            "homepage": "https://github.com/facade/ignition-contracts",
-            "keywords": [
-                "contracts",
-                "flare",
-                "ignition"
-            ],
-            "time": "2020-07-14T10:10:28+00:00"
         },
         {
             "name": "filp/whoops",
