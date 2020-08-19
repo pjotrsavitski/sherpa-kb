@@ -10,7 +10,9 @@
             primary-key="id"
             thead-class="text-center"
             :per-page="perPage"
-            :current-page="currentPage"        >
+            :current-page="currentPage"
+            stacked="lg"
+        >
             <template v-slot:cell(id)="data">
                 {{ data.value }}
                 <pending-question-edit :pending-question="data.item"></pending-question-edit>

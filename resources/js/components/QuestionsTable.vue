@@ -9,21 +9,22 @@
             :items="items"
             primary-key="id"
             thead-class="text-center"
+            stacked="lg"
         >
             <template v-slot:cell(id)="data">
                 {{ data.value }}
             </template>
 
             <template v-slot:cell(description)="data">
-                <b-button v-b-modal="editModalId(data.item.id)" variant="link">{{ data.value }}</b-button>
+                <b-button v-b-modal="editModalId(data.item.id)" variant="link">{{ data.item.descriptions }}</b-button>
             </template>
 
             <template v-slot:cell(english_translation)="data">
-                <b-button v-b-modal="editModalId(data.item.id)" variant="link">{{ data.value }}</b-button>
+                <b-button v-b-modal="editModalId(data.item.id)" variant="link">{{ data.item.descriptions.en }}</b-button>
             </template>
 
             <template v-slot:cell(category)="data">
-                {{ data.item.category.value }}
+                {{ data.item.category ? data.item.category.value : null }}
             </template>
 
             <template v-slot:cell(date)="data">
@@ -99,6 +100,9 @@
         methods: {
             editModalId(id) {
                 return 'question-edit-' + id;
+            },
+            getEnglishTranslation(item) {
+                return this.item
             }
         }
     }

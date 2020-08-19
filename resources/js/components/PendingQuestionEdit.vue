@@ -8,7 +8,7 @@
             @hidden="resetModal"
             @ok="handleSave"
             :ok-disabled="!canSave()"
-            :busy="!canEdit() || isBusy"
+            :busy="isBusy"
         >
             <form
                 ref="form"

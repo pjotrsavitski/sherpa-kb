@@ -6,6 +6,17 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class QuestionResource extends JsonResource
 {
+    private function getTopicData(): ?array
+    {
+        if ($this->topic) {
+            return [
+                'id' => $this->topic->id,
+                'value' => $this->topic->description,
+            ];
+        }
+
+        return NULL;
+    }
     /**
      * Transform the resource into an array.
      *
@@ -17,12 +28,10 @@ class QuestionResource extends JsonResource
         // TODO Need to expose additional fields
         return [
             'id' => $this->id,
-            'description' => $this->getDescription(),
-            'english_translation' => $this->getEnglishDescription(),
-            'category' => [
-                'id' => $this->topic->id,
-                'value' => $this->topic->description,
-            ],
+            'descriptions' => $this->languages->keyBy('code')->map(function($language) {
+                return $language->pivot->description;
+            }),
+            'category' => $this->getTopicData(),
             'status' => [
                 'value' => $this->status->getValue(),
                 'status' => $this->status->status(),
