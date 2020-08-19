@@ -24,16 +24,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/question', function (Request $request) {
     $validatedData = $request->validate([
         'question' => 'required',
-        'language' => 'required|exists:App\Language,name',
+        'language' => 'required|exists:App\Language,code',
     ]);
-
+    
     $question = new PendingQuestion;
-    $question->status = 'Pending';
     $question->save();
-    $question->languages()->attach(Language::where('name', $validatedData['language'])->first()->id, [
+    $question->languages()->attach(Language::where('code', $validatedData['language'])->first()->id, [
         'description' => $validatedData['question'],
-        'created_at' => $question->created_at,
-        'updated_at' => $question->updated_at,
     ]);
 
     return [

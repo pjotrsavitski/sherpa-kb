@@ -26,6 +26,54 @@ class Question extends Model
     public function languages()
     {
         return $this->belongsToMany('App\Language')
-            ->withPivot('description');
+            ->withPivot('description')
+            ->withTimestamps();
+    }
+
+    public function topic()
+    {
+        return $this->belongsTo('App\Topic');
+    }
+
+    public function answer()
+    {
+        return $this->belongsTo('App\Answer');
+    }
+
+    public function pendingQuestion()
+    {
+        return $this->belongsTo('App\PendingQuestion');
+    }
+
+    public function getDescription() : string
+    {
+        $languages = $this->languages()->get();
+        
+        if ($languages->count() > 1)
+        {
+            $language = $languages->first(function ($value) {
+                return $value->code !== 'en';
+            });
+
+            return $language->pivot->description;
+        }
+
+        return $languages->first()->pivot->description;
+    }
+
+    public function getEnglishDescription() : ?string
+    {
+        $languages = $this->languages()->get();
+
+        if ($languages->count() > 0)
+        {
+            $language = $languages->first(function ($value) {
+                return $value->code === 'en';
+            });
+
+            return $language->pivot->description ?? NULL;
+        }
+
+        return NULL;
     }
 }

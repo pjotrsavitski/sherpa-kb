@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\PendingQuestion;
+use App\Question;
+use App\Answer;
+use App\Http\Resources\PendingQuestionResource;
+use App\Http\Resources\QuestionResource;
+
 
 class HomeController extends Controller
 {
@@ -24,8 +29,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home')->with([
-            'pendingQuestions' => PendingQuestion::with('languages')->get(),
-        ]);
+        return view('home');
     }
 }

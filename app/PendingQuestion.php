@@ -20,6 +20,7 @@ class PendingQuestion extends Model
             ->addState('status', PendingQuestionState::class)
             ->default(Pending::class)
             ->allowTransition(Pending::class, Propagated::class)
+            ->allowTransition(Propagated::class, Pending::class)
             ->allowTransition(Propagated::class, Completed::class)
             ->allowTransition(Propagated::class, Canceled::class);
     }
@@ -27,38 +28,7 @@ class PendingQuestion extends Model
     public function languages()
     {
         return $this->belongsToMany('App\Language')
-            ->withPivot('description');
-    }
-
-    public function getDescription() : string
-    {
-        $languages = $this->languages()->get();
-        
-        if ($languages->count() > 1)
-        {
-            $language = $languages->first(function ($value) {
-                return $value->code !== 'en';
-            });
-
-            return $language->pivot->description;
-        }
-
-        return $languages->first()->pivot->description;
-    }
-
-    public function getEnglishDescription() : ?string
-    {
-        $languages = $this->languages()->get();
-
-        if ($languages->count() > 0)
-        {
-            $language = $languages->first(function ($value) {
-                return $value->code === 'en';
-            });
-
-            return $language->pivot->description ?? NULL;
-        }
-
-        return NULL;
+            ->withPivot('description')
+            ->withTimestamps();
     }
 }
