@@ -1,5 +1,7 @@
 <template>
     <div>
+        <h3>Questions</h3>
+        
         <b-table
             striped
             hover

@@ -1,5 +1,7 @@
 <template>
     <div>
+        <h3>Pending questions</h3>
+        
         <b-table
             striped
             hover
@@ -19,7 +21,7 @@
             </template>
 
             <template v-slot:cell(english_translation)="data">
-                <b-button v-b-modal="editModalId(data.item.id)" variant="link">{{ englishTranslationOrPlaceholderText(getEnglishDescription(data.item)) }}</b-button>
+                <b-button v-b-modal="editModalId(data.item.id)" variant="link" :class="{ 'text-secondary': !hasEnglishDescription(data.item) }">{{ englishTranslationOrPlaceholderText(getEnglishDescription(data.item)) }}</b-button>
             </template>
 
             <template v-slot:cell(group)="data">
@@ -126,8 +128,11 @@
 
                 return (languages[0] !== 'en') ? item.descriptions[languages[0]] : item.descriptions[languages[1]];
             },
+            hasEnglishDescription(item) {
+                return item.descriptions.hasOwnProperty('en');
+            },
             getEnglishDescription(item) {
-                return item.descriptions.hasOwnProperty('en') ? item.descriptions.en : null;
+                return this.hasEnglishDescription(item) ? item.descriptions.en : null;
             },
             englishTranslationOrPlaceholderText(value) {
                 return (value && value.trim()) ? value : 'Add English translation';

@@ -1,6 +1,9 @@
 <template>
-    <div>
-        <b-tabs fill>
+    <div class="mt-4">
+        <b-tabs
+            content-class="mt-4"
+            fill
+        >
             <b-tab active lazy>
                 <template v-slot:title>
                     Questions

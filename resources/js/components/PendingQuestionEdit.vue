@@ -37,6 +37,7 @@
                     label-for="input-translation"
                     invalid-feedback="English translation is required"
                     :state="translationState"
+                    description="Translation is not needed if suggestion was submitted in English."
                 >
                     <b-form-input
                         id="input-translation"
@@ -48,7 +49,9 @@
                         :disabled="!canEdit() || isEnglishOnly()"
                     ></b-form-input>
                 </b-form-group>
-                <b-form-group>
+                <b-form-group
+                    description="Changing status to Propagated will send the question for review by SELFIE master. This would also prevent you from making any changes to the question itself or English translation."
+                >
                     <b-form-checkbox v-model="form.propagate" name="propagate" switch :disabled="!canBePropagated()">
                         <b>Change status to propagated</b>
                     </b-form-checkbox>
@@ -122,8 +125,6 @@
                 this.handleSubmit();
             },
             handleSubmit() {
-                console.log('Handling submit', this.form);
-
                 if (!this.$refs.form.checkValidity()) {
                     return;
                 }
