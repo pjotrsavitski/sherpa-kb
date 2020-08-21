@@ -31,32 +31,34 @@
 </template>
 
 <script>
+    import { mapState, mapActions } from 'vuex'
+    
     export default {
-        mounted() {
-            axios.get('/pending_questions', {
-                params: {
-                    expert: true
-                }
-            })
-            .then(response => {
-                this.pendingQuestions = response.data.data;
-             })
-            .catch(error => {
-                console.error('Pending questions loading:', error);
-            });
-        },
         data() {
             return {
                 tabIndex: 0,
-                questions: [],
-                pendingQuestions: [],
-                answers: []
             };
+        },
+        computed: {
+            ...mapState({
+                answers: state => state.answers.items,
+            }),
+            questions() {
+                return this.$store.getters['questions/forReview']
+
+            },
+            pendingQuestions() {
+                return this.$store.getters['pendingQuestions/forReview']
+            }
         },
         methods: {
             tabTitleBadgeVariant(index) {
                 return this.tabIndex === index ? 'light' : 'secondary';
             }
+        },
+        created() {
+            this.$store.dispatch('questions/getAllQuestions')
+            this.$store.dispatch('pendingQuestions/getAllPendingQuestions')
         }
     }
 </script>

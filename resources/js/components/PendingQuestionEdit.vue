@@ -137,8 +137,7 @@
                 })
                 .then(response => {
                     this.isBusy = false;
-                    // TODO Consider using Vuex instead
-                    this.$root.$emit('update::pending_question', response.data);
+                    this.$store.dispatch('pendingQuestions/updatePendingQuestion', response.data)
 
                     this.$nextTick(() => {
                         this.$bvModal.hide(this.modalId);

@@ -146,10 +146,12 @@
                     status: this.form.status
                 })
                 .then(response => {
-                    // TODO Questions would need to be re-fetched when 'status' is set to 'completed'
                     this.isBusy = false;
-                    // TODO Consider using Vuex instead
-                    this.$root.$emit('update::pending_question', response.data);
+                    this.$store.dispatch('pendingQuestions/updatePendingQuestion', response.data)
+                    if (response.data.status.value === 'completed') {
+                        this.$store.dispatch('questions/getAllQuestions')
+                    }
+
 
                     this.$nextTick(() => {
                         this.$bvModal.hide(this.modalId);

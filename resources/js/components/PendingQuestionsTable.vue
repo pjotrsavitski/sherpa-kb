@@ -53,13 +53,6 @@
 <script>
     export default {
         props: ['items', 'language'],
-        mounted(){
-            // TODO Consider using Vuex instead
-            this.$root.$on('update::pending_question', this.updatePendingQuestion);
-        },
-        destroyed() {
-            this.$root.$off('update::pending_question', this.updatePendingQuestion);
-        },
         computed: {
             totalRows() {
                 return this.items.length;
@@ -143,15 +136,6 @@
             editModalId(id) {
                 const type = this.language ? 'edit' : 'review';
                 return 'pending-question-' + type + '-' + id;
-            },
-            updatePendingQuestion(data) {
-                const index = this.items.findIndex((item, index) => {
-                    return item.id === data.id;
-                });
-
-                if (index !== -1) {
-                    this.$set(this.items, index, data);
-                }
             }
         }
     }
