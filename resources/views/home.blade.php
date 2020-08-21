@@ -8,7 +8,11 @@
                 <div class="card-header">Dashboard</div>
 
                 <div class="card-body">
-                    <language-expert-view></language-expert-view>
+                    <h1>Hello, {{ Auth::user()->name }}</h1>
+                    <!--h2>Country SELFIE Expert (Estonia - Estonian)</h2-->
+                    <!--h2>SELFIE master</h2-->
+                    <language-expert-view language="et"></language-expert-view>
+                    <master-expert-view></master-expert-view>
                 </div>
             </div>
         </div>

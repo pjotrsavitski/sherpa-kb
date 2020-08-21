@@ -29,6 +29,13 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        return view('home')->with([
+            'pendingQuestionStates' => PendingQuestion::getStatesFor('status')->map(function($state) {
+                return [
+                    'value' => $state::getMorphClass(),
+                    'text' => ucfirst($state::getMorphClass()),
+                ];
+            }),
+        ]);
     }
 }

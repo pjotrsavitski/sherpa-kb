@@ -16,7 +16,7 @@
             </template>
 
             <template v-slot:cell(description)="data">
-                <b-button v-b-modal="editModalId(data.item.id)" variant="link">{{ data.item.descriptions }}</b-button>
+                <b-button v-b-modal="editModalId(data.item.id)" variant="link">{{ data.item.descriptions[language] }}</b-button>
             </template>
 
             <template v-slot:cell(english_translation)="data">
@@ -40,9 +40,7 @@
 
 <script>
     export default {
-        props: ['items'],
-        mounted() {
-        },
+        props: ['items', 'language'],
         data() {
             const vm = this;
 
@@ -100,9 +98,6 @@
         methods: {
             editModalId(id) {
                 return 'question-edit-' + id;
-            },
-            getEnglishTranslation(item) {
-                return this.item
             }
         }
     }

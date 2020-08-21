@@ -15,7 +15,8 @@
         >
             <template v-slot:cell(id)="data">
                 {{ data.value }}
-                <pending-question-edit :pending-question="data.item"></pending-question-edit>
+                <pending-question-edit :pending-question="data.item" v-if="language"></pending-question-edit>
+                <pending-question-review :pending-question="data.item" v-if="!language"></pending-question-review>
             </template>
 
             <template v-slot:cell(description)="data">
@@ -51,7 +52,7 @@
 
 <script>
     export default {
-        props: ['items'],
+        props: ['items', 'language'],
         mounted(){
             // TODO Consider using Vuex instead
             this.$root.$on('update::pending_question', this.updatePendingQuestion);
@@ -140,7 +141,8 @@
                 return (value && value.trim()) ? value : 'Add English translation';
             },
             editModalId(id) {
-                return 'pending-question-edit-' + id;
+                const type = this.language ? 'edit' : 'review';
+                return 'pending-question-' + type + '-' + id;
             },
             updatePendingQuestion(data) {
                 const index = this.items.findIndex((item, index) => {

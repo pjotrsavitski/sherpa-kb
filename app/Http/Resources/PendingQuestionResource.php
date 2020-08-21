@@ -24,6 +24,7 @@ class PendingQuestionResource extends JsonResource
             'status' => [
                 'value' => $this->status->getValue(),
                 'status' => $this->status->status(),
+                'transitionable' => $this->status->transitionableStates(),
             ],
         ];
     }

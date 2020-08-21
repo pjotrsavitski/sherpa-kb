@@ -12,7 +12,7 @@
                     <b-badge :variant="tabTitleBadgeVariant(0)" pill>{{ questions.length }}</b-badge>
                 </template>
 
-                <questions-table :items="questions"></questions-table>
+                <questions-table :items="questions" :language="language"></questions-table>
             </b-tab>
             <b-tab lazy>
                 <template v-slot:title>
@@ -20,7 +20,7 @@
                     <b-badge :variant="tabTitleBadgeVariant(1)" pill>{{ pendingQuestions.length }}</b-badge>
                 </template>
 
-                <pending-questions-table :items="pendingQuestions"></pending-questions-table>
+                <pending-questions-table :items="pendingQuestions" :language="language"></pending-questions-table>
             </b-tab>
             <b-tab lazy>
                 <template v-slot:title>
@@ -34,8 +34,14 @@
 
 <script>
     export default {
+        props: ['language'],
         mounted() {
-            axios.get('/pending_questions')
+            axios.get('/pending_questions', {
+                params: {
+                    language: this.language
+
+                }
+            })
                 .then(response => {
                     this.pendingQuestions = response.data.data;
                 })
@@ -43,7 +49,11 @@
                     console.error('Pending questions loading:', error);
                 });
 
-            axios.get('/questions')
+            axios.get('/questions', {
+                params: {
+                    language: this.language
+                }
+            })
                 .then(response => {
                     this.questions = response.data.data;
                 })

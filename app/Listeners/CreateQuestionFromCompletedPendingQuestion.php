@@ -31,7 +31,7 @@ class CreateQuestionFromCompletedPendingQuestion
             // TODO This could be moved to a standalone method defined on top of PendingQuestion model
             $question = new Question;
             $question->save();
-            $question->pendingQuestion()->associate($event->model);
+            $question->pendingQuestion()->associate($event->model)->save();
             $question->languages()->attach($event->model->languages->keyBy('id')->map(function($item) {
                 return [
                     'description' => $item->pivot->description,

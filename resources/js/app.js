@@ -21,11 +21,12 @@ Vue.use(require('bootstrap-vue'));
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('pending-question-edit', require('./components/PendingQuestionEdit.vue').default);
+Vue.component('pending-question-review', require('./components/PendingQuestionReview.vue').default);
 Vue.component('pending-questions-table', require('./components/PendingQuestionsTable.vue').default);
 Vue.component('questions-table', require('./components/QuestionsTable.vue').default);
 Vue.component('language-expert-view', require('./components/LanguageExpertView.vue').default);
+Vue.component('master-expert-view', require('./components/MasterExpertView.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
