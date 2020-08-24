@@ -29,7 +29,7 @@
             </template>
 
             <template v-slot:cell(languages)="data">
-                {{ descriptionsCount(data.item) }}
+                {{ descriptionsCount(data.item) }} / {{ totalLanguages }}
             </template>
 
             <template v-slot:cell(date)="data">
@@ -44,8 +44,15 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
+
     export default {
         props: ['items', 'language'],
+        computed: {
+            ...mapGetters({
+                totalLanguages: 'app/totalLanguages'
+            })
+        },
         data() {
             const vm = this
 

@@ -39,5 +39,13 @@ Vue.component('question-edit', require('./components/QuestionEdit.vue').default)
 
 const app = new Vue({
     el: '#app',
-    store
+    store,
+    mounted() {
+        if (document.querySelector('meta[name="current-user"]')) {
+            this.$store.dispatch('app/setUser', JSON.parse(document.querySelector('meta[name="current-user"]').content))
+        }
+        if (document.querySelector('meta[name="app-languages"]')) {
+            this.$store.dispatch('app/setLanguages', JSON.parse(document.querySelector('meta[name="app-languages"]').content))
+        }
+    }
 })

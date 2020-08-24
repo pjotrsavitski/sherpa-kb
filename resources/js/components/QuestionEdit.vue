@@ -16,7 +16,7 @@
             >
                 <b-form-group
                     id="input-group-question"
-                    label="Question"
+                    :label="questionLabel(language)"
                     label-for="input-question"
                     invalid-feedback="Question is required"
                     :state="questionState"
@@ -33,7 +33,7 @@
                 </b-form-group>
                 <b-form-group
                     id="input-group-translation"
-                    label="English translation"
+                    :label="questionLabel('en')"
                     label-for="input-translation"
                     invalid-feedback="English translation is required"
                     :state="translationState"
@@ -85,10 +85,11 @@
         computed: {
             ...mapState({
                 states: state => state.questions.states,
-                topics: state => state.questions.topics
+                topics: state => state.questions.topics,
+                languages: state => state.app.languages
             }),
             modalId() {
-                return 'question-edit-' + this.question.id
+                return `question-edit-${this.question.id}`
             },
             questionState() {
                 return (this.form.question && this.form.question.length) > 0 ? true : false
@@ -166,7 +167,7 @@
                 const data = {
                     descriptions: [],
                     status: this.form.status
-                };
+                }
                 data.descriptions.push({
                     code: 'en',
                     value: this.form.translation
@@ -180,7 +181,7 @@
                     data.topic = this.form.topic
                 }
 
-                axios.put('/questions/' + this.question.id, data)
+                axios.put(`/questions/${this.question.id}`, data)
                 .then(response => {
                     this.isBusy = false
                     this.$store.dispatch('questions/updateQuestion', response.data)
@@ -206,6 +207,11 @@
                         noCloseButton: true
                     })
                 })
+            },
+            questionLabel(code) {
+                const language = this.languages.find(language => language.code === code)
+
+                return `Question in ${language ? language.name : code}`
             }
         }
     }
