@@ -53,6 +53,7 @@
                     id="input-group-status"
                     label="Status"
                     label-for="input-status"
+                    description="Completed and Canceled are final states, former of those will create a new question as a result. Pending will send the pending question back to language experts."
                 >
                     <b-form-select
                         v-model="form.status"
@@ -66,9 +67,14 @@
 </template>
 
 <script>
+    import { mapState } from 'vuex'
+    
     export default {
         props: ['pendingQuestion'],
         computed: {
+            ...mapState({
+                states: state => state.pendingQuestions.states,
+            }),
             modalId() {
                 return 'pending-question-review-' + this.pendingQuestion.id;
             },
@@ -103,14 +109,11 @@
                 return item.descriptions.hasOwnProperty('en') ? item.descriptions.en : '';
             },
             statusOptions() {
-                // TODO This has to be loaded from somewhere
-                const states = ['pending', 'propagated', 'completed', 'canceled'];
-
-                return states.map(state => {
+                return this.states.map(state => {
                     return {
-                        value: state,
-                        text: state.replace(/^./, state[0].toUpperCase()),
-                        disabled: (this.pendingQuestion.status.transitionable.indexOf(state) !== -1 || this.pendingQuestion.status.value === state) ? false : true
+                        value: state.value,
+                        text: state.text,
+                        disabled: (this.pendingQuestion.status.transitionable.indexOf(state.value) !== -1 || this.pendingQuestion.status.value === state.value) ? false : true
                     };
                 });
             },
@@ -149,7 +152,7 @@
                     this.isBusy = false;
                     this.$store.dispatch('pendingQuestions/updatePendingQuestion', response.data)
                     if (response.data.status.value === 'completed') {
-                        this.$store.dispatch('questions/getAllQuestions')
+                        this.$store.dispatch('questions/loadAllQuestions')
                     }
 
 

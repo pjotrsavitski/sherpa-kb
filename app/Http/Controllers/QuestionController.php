@@ -20,7 +20,6 @@ class QuestionController extends Controller
 
     public function list()
     {
-        // TODO Might need additional protection and to provide different results to different roles
         return QuestionResource::collection(Question::with(['languages', 'topic', 'answer', 'pendingQuestion'])->get());
     }
 }

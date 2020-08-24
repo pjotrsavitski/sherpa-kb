@@ -1,5 +1,8 @@
 const state = () => ({
-    items: []
+    items: [],
+    states: [],
+    topics: [],
+    preloaded: []
 })
 
 const getters = {
@@ -16,15 +19,51 @@ const getters = {
 }
 
 const actions = {
-    getAllQuestions({ commit }) {
-        axios.get('/questions')
+    loadAllQuestions({ commit }) {
+        return axios.get('/questions')
         .then(response => {
             commit('setQuestions', response.data.data)
         })
         .catch(error => {
-            console.error('Questions loading:', error);
-        });
-    }
+            console.error('Questions loading:', error)
+        })
+    },
+    preloadAllQuestions({ state, dispatch, commit }) {
+        if (!state.preloaded.hasOwnProperty('items')) {
+            commit('setPreloaded', 'items')
+            dispatch('loadAllQuestions')
+        }
+    },
+    loadStates({ commit } ) {
+        return axios.get('/questions/states')
+        .then(response => {
+            commit('setStates', response.data.data)
+        })
+        .catch(error => {
+            console.error('Question states loading:', error)
+        })
+    },
+    preloadStates({ state, dispatch, commit }) {
+        if (!state.preloaded.hasOwnProperty('states')) {
+            commit('setPreloaded', 'states')
+            dispatch('loadStates')
+        }
+    },
+    loadTopics({ commit }) {
+        return axios.get('/topics')
+        .then(response => {
+            commit('setTopics', response.data.data)
+        })
+        .catch(error => {
+            console.error('Question topics loading:', error)
+        })
+    },
+    preloadTopics({ state, dispatch, commit }) {
+        if (!state.preloaded.hasOwnProperty('topics')) {
+            commit('setPreloaded', 'topics')
+            dispatch('loadTopics')
+        }
+    },
 }
 
 const mutations = {
@@ -34,11 +73,20 @@ const mutations = {
     updateQuestion (state, question) {
         const index = state.items.findIndex(item => {
             return item.id === question.id
-        });
+        })
 
         if (index !== -1) {
             Vue.set(state.items, index, question)
         }
+    },
+    setPreloaded (state, value) {
+        Vue.set(state.preloaded, value, value)
+    },
+    setStates(state, states) {
+        state.states = states
+    },
+    setTopics(state, topics) {
+        state.topics = topics
     }
 }
 

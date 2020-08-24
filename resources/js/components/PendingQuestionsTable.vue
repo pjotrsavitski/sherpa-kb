@@ -55,11 +55,11 @@
         props: ['items', 'language'],
         computed: {
             totalRows() {
-                return this.items.length;
+                return this.items.length
             }
         },
         data() {
-            const vm = this;
+            const vm = this
 
             return {
                 currentPage: 1,
@@ -95,48 +95,51 @@
                         key: 'status',
                         sortable: false,
                         tdClass: (value, key, item) => {
-                            let classes = ['align-middle', 'text-center'];
+                            let classes = ['align-middle', 'text-center']
 
                             switch(value.value) {
                                 case 'pending':
-                                    classes.push('table-warning');
-                                    break;
+                                    classes.push('table-warning')
+                                    break
                                 case 'completed':
-                                    classes.push('table-success');
-                                    break;
+                                    classes.push('table-success')
+                                    break
                                 case 'canceled':
-                                    classes.push('table-danger');
+                                    classes.push('table-danger')
                             }
 
-                            return classes;
+                            return classes
                         },
                     }
                 ]
-            };
+            }
         },
         methods: {
             getDescription(item) {
-                const languages = Object.keys(item.descriptions);
+                const languages = Object.keys(item.descriptions)
 
                 if (languages.length === 1 && languages[0] === 'en') {
-                    return item.descriptions.en;
+                    return item.descriptions.en
                 }
 
-                return (languages[0] !== 'en') ? item.descriptions[languages[0]] : item.descriptions[languages[1]];
+                return (languages[0] !== 'en') ? item.descriptions[languages[0]] : item.descriptions[languages[1]]
             },
             hasEnglishDescription(item) {
-                return item.descriptions.hasOwnProperty('en');
+                return item.descriptions.hasOwnProperty('en')
             },
             getEnglishDescription(item) {
-                return this.hasEnglishDescription(item) ? item.descriptions.en : null;
+                return this.hasEnglishDescription(item) ? item.descriptions.en : null
             },
             englishTranslationOrPlaceholderText(value) {
-                return (value && value.trim()) ? value : 'Add English translation';
+                return (value && value.trim()) ? value : 'Add English translation'
             },
             editModalId(id) {
-                const type = this.language ? 'edit' : 'review';
-                return 'pending-question-' + type + '-' + id;
+                const type = this.language ? 'edit' : 'review'
+                return 'pending-question-' + type + '-' + id
             }
+        },
+        created() {
+            this.$store.dispatch('pendingQuestions/preloadStates')
         }
     }
 </script>

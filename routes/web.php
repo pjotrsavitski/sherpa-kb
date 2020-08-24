@@ -34,4 +34,5 @@ Auth::routes();
 Route::get('/questions', 'QuestionController@list');
 
 Route::get('/pending_questions', 'PendingQuestionController@list');
+Route::get('/pending_questions/states', 'PendingQuestionController@states');
 Route::put('/pending_questions/{pending_question}', 'PendingQuestionController@update');

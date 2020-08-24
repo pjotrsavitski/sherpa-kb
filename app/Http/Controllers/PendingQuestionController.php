@@ -6,9 +6,7 @@ use Illuminate\Http\Request;
 use App\PendingQuestion;
 use App\Language;
 use App\Http\Resources\PendingQuestionResource;
-use App\States\PendingQuestion\Pending;
 use App\States\PendingQuestion\Propagated;
-use Illuminate\Database\Eloquent\Builder;
 use App\States\PendingQuestion\PendingQuestionState;
 use Illuminate\Validation\Rule;
 
@@ -37,31 +35,16 @@ class PendingQuestionController extends Controller
      */
     private function getMainLanguageId(PendingQuestion $pendingQuestion): int
     {
-        if ($pendingQuestion->languages->count() === 1 && $pendingQuestion->languages->first()->code === 'en')
-        {
+        if ($pendingQuestion->languages->count() === 1 && $pendingQuestion->languages->first()->code === 'en') {
             return $pendingQuestion->languages->first()->id;
         }
 
         return $pendingQuestion->languages()->where('code', '<>', 'en')->first()->id;
     }
 
-    public function list(Request $request)
+    public function list()
     {
-        $query = PendingQuestion::with('languages');
-
-        $language = $request->get('language');
-
-        if ($language) {
-            $query->whereHas('languages', function(Builder $query) use ($language) {
-                $query->where('code', $language);
-            });
-        }
-
-        if ($request->has('expert') && $request->get('expert')) {
-            $query->whereNotState('status', Pending::class);
-        }
-        // TODO Might need additional protection and to provide different results to different roles
-        return PendingQuestionResource::collection($query->get());
+        return PendingQuestionResource::collection(PendingQuestion::with('languages')->get());
     }
 
     public function update(Request $request, PendingQuestion $pendingQuestion)
@@ -121,5 +104,15 @@ class PendingQuestionController extends Controller
         }
 
         return response()->json(new PendingQuestionResource($pendingQuestion->refresh()), 200);
+    }
+
+    public function states()
+    {
+        return PendingQuestion::getStatesFor('status')->map(function($state) {
+            return [
+                'value' => $state::getMorphClass(),
+                'text' => ucfirst($state::getMorphClass()),
+            ];
+        });
     }
 }

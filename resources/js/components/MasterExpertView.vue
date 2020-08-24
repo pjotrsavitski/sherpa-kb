@@ -37,7 +37,7 @@
         data() {
             return {
                 tabIndex: 0,
-            };
+            }
         },
         computed: {
             ...mapState({
@@ -53,12 +53,12 @@
         },
         methods: {
             tabTitleBadgeVariant(index) {
-                return this.tabIndex === index ? 'light' : 'secondary';
+                return this.tabIndex === index ? 'light' : 'secondary'
             }
         },
         created() {
-            this.$store.dispatch('questions/getAllQuestions')
-            this.$store.dispatch('pendingQuestions/getAllPendingQuestions')
+            this.$store.dispatch('questions/preloadAllQuestions')
+            this.$store.dispatch('pendingQuestions/preloadAllPendingQuestions')
         }
     }
 </script>

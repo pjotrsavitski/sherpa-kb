@@ -1,5 +1,7 @@
 const state = () => ({
-    items: []
+    items: [],
+    states: [],
+    preloaded: {}
 })
 
 const getters = {
@@ -16,18 +18,39 @@ const getters = {
 }
 
 const actions = {
-    getAllPendingQuestions({ commit }) {
-        axios.get('/pending_questions')
+    loadAllPendingQuestions({ commit }) {
+        return axios.get('/pending_questions')
         .then(response => {
             commit('setPendingQuestions', response.data.data)
         })
         .catch(error => {
-            console.error('Pending questions loading:', error);
-        });
+            console.error('Pending questions loading:', error)
+        })
+    },
+    preloadAllPendingQuestions({ state, dispatch, commit }) {
+        if (!state.preloaded.hasOwnProperty('items')) {
+            commit('setPreloaded', 'items')
+            dispatch('loadAllPendingQuestions')
+        }
     },
     updatePendingQuestion({ commit }, question) {
         commit('updatePendingQuestion', question)
-    }
+    },
+    loadStates({ commit }) {
+        return axios.get('/pending_questions/states')
+        .then(response => {
+            commit('setStates', response.data)
+        })
+        .catch(error => {
+            console.error('Pending question states:', error)
+        })
+    },
+    preloadStates({ state, dispatch, commit }) {
+        if (!state.preloaded.hasOwnProperty('states')) {
+            commit('setPreloaded', 'states')
+            dispatch('loadStates')
+        }
+    },
 }
 
 const mutations = {
@@ -37,11 +60,17 @@ const mutations = {
     updatePendingQuestion (state, question) {
         const index = state.items.findIndex(item => {
             return item.id === question.id
-        });
+        })
 
         if (index !== -1) {
             Vue.set(state.items, index, question)
         }
+    },
+    setPreloaded (state, value) {
+        Vue.set(state.preloaded, value, value)
+    },
+    setStates (state, states) {
+        state.states = states
     }
 }
 

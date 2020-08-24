@@ -42,7 +42,7 @@
     export default {
         props: ['items', 'language'],
         data() {
-            const vm = this;
+            const vm = this
 
             return {
                 fields: [
@@ -76,28 +76,28 @@
                         key: 'status',
                         sortable: false,
                         tdClass: (value, key, item) => {
-                            let classes = ['align-middle', 'text-center'];
+                            let classes = ['align-middle', 'text-center']
 
                             switch(value.value) {
                                 case 'in_translation':
-                                    classes.push('table-warning');
-                                    break;
+                                    classes.push('table-warning')
+                                    break
                                 case 'translated':
-                                    classes.push('table-info');
-                                    break;
+                                    classes.push('table-info')
+                                    break
                                 case 'published':
-                                    classes.push('table-success');
+                                    classes.push('table-success')
                             }
 
-                            return classes;
+                            return classes
                         },
                     }
                 ]
-            };
+            }
         },
         methods: {
             editModalId(id) {
-                return 'question-edit-' + id;
+                return 'question-edit-' + id
             }
         }
     }

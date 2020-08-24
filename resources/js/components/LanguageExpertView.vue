@@ -60,8 +60,8 @@
             }
         },
         created() {
-            this.$store.dispatch('questions/getAllQuestions')
-            this.$store.dispatch('pendingQuestions/getAllPendingQuestions')
+            this.$store.dispatch('questions/preloadAllQuestions')
+            this.$store.dispatch('pendingQuestions/preloadAllPendingQuestions')
         }
     }
 </script>
