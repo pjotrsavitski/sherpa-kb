@@ -44,12 +44,9 @@
         },
         computed: {
             ...mapState({
-                answers: state => state.answers.items,
+                questions: state => state.questions.items,
+                answers: state => state.answers.items
             }),
-            questions() {
-                return this.$store.getters['questions/forLanguage'](this.language)
-
-            },
             pendingQuestions() {
                 return this.$store.getters['pendingQuestions/forLanguage'](this.language)
             }

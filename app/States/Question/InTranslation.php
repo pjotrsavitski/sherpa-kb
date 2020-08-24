@@ -6,7 +6,7 @@ class InTranslation extends QuestionState
 {
     public static $name = 'in_translation';
 
-    public function status(): string
+    public static function status(): string
     {
         return 'inTranslation';
     }

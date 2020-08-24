@@ -111,7 +111,7 @@ class PendingQuestionController extends Controller
         return PendingQuestion::getStatesFor('status')->map(function($state) {
             return [
                 'value' => $state::getMorphClass(),
-                'text' => ucfirst($state::getMorphClass()),
+                'text' => $state::status(),
             ];
         });
     }

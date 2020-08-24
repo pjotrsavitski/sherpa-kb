@@ -6,5 +6,5 @@ use Spatie\ModelStates\State;
 
 abstract class QuestionState extends State
 {
-    abstract public function status(): string;
+    abstract public static function status(): string;
 }

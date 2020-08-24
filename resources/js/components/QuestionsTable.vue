@@ -13,10 +13,11 @@
         >
             <template v-slot:cell(id)="data">
                 {{ data.value }}
+                <question-edit :question="data.item" :language="language" v-if="language"></question-edit>
             </template>
 
             <template v-slot:cell(description)="data">
-                <b-button v-b-modal="editModalId(data.item.id)" variant="link">{{ data.item.descriptions[language] }}</b-button>
+                <b-button v-b-modal="editModalId(data.item.id)" variant="link" :class="{ 'text-secondary': !hasDescription(data.item) }">{{ descriptionOrPlaceholderText(data.item) }}</b-button>
             </template>
 
             <template v-slot:cell(english_translation)="data">
@@ -24,7 +25,11 @@
             </template>
 
             <template v-slot:cell(category)="data">
-                {{ data.item.category ? data.item.category.value : null }}
+                {{ data.item.topic ? data.item.topic.value : null }}
+            </template>
+
+            <template v-slot:cell(languages)="data">
+                {{ descriptionsCount(data.item) }}
             </template>
 
             <template v-slot:cell(date)="data">
@@ -73,6 +78,11 @@
                         tdClass: ['align-middle', 'text-center']
                     },
                     {
+                        key: 'languages',
+                        sortable: false,
+                        tdClass: ['align-middle', 'text-center']
+                    },
+                    {
                         key: 'status',
                         sortable: false,
                         tdClass: (value, key, item) => {
@@ -98,7 +108,20 @@
         methods: {
             editModalId(id) {
                 return 'question-edit-' + id
-            }
+            },
+            descriptionsCount(item) {
+                return Object.keys(item.descriptions).length
+            },
+            hasDescription(item) {
+                return item.descriptions.hasOwnProperty(this.language) && item.descriptions[this.language].trim()
+            },
+            descriptionOrPlaceholderText(item) {
+                return this.hasDescription(item) ? item.descriptions[this.language] : 'Add translation'
+            },
+        },
+        created() {
+            this.$store.dispatch('questions/preloadStates')
+            this.$store.dispatch('questions/preloadTopics')
         }
     }
 </script>

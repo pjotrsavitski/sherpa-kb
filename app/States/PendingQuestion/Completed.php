@@ -6,7 +6,7 @@ class Completed extends PendingQuestionState
 {
     public static $name = 'completed';
 
-    public function status(): string
+    public static function status(): string
     {
         return 'Completed';
     }

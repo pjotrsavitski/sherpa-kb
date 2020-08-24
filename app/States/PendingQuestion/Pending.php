@@ -6,7 +6,7 @@ class Pending extends PendingQuestionState
 {
     public static $name = 'pending';
 
-    public function status(): string
+    public static function status(): string
     {
         return 'Pending';
     }

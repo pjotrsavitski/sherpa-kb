@@ -29,6 +29,7 @@ Vue.component('pending-questions-table', require('./components/PendingQuestionsT
 Vue.component('questions-table', require('./components/QuestionsTable.vue').default)
 Vue.component('language-expert-view', require('./components/LanguageExpertView.vue').default)
 Vue.component('master-expert-view', require('./components/MasterExpertView.vue').default)
+Vue.component('question-edit', require('./components/QuestionEdit.vue').default)
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

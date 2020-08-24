@@ -6,7 +6,7 @@ class Published extends QuestionState
 {
     public static $name = 'published';
 
-    public function status(): string
+    public static function status(): string
     {
         return 'Published';
     }

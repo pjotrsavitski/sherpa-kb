@@ -37,7 +37,7 @@ const actions = {
     loadStates({ commit } ) {
         return axios.get('/questions/states')
         .then(response => {
-            commit('setStates', response.data.data)
+            commit('setStates', response.data)
         })
         .catch(error => {
             console.error('Question states loading:', error)
@@ -50,7 +50,7 @@ const actions = {
         }
     },
     loadTopics({ commit }) {
-        return axios.get('/topics')
+        return axios.get('/questions/topics')
         .then(response => {
             commit('setTopics', response.data.data)
         })
@@ -63,6 +63,9 @@ const actions = {
             commit('setPreloaded', 'topics')
             dispatch('loadTopics')
         }
+    },
+    updateQuestion({ commit }, question) {
+        commit('updateQuestion', question)
     },
 }
 
@@ -87,6 +90,15 @@ const mutations = {
     },
     setTopics(state, topics) {
         state.topics = topics
+    },
+    updateQuestion (state, question) {
+        const index = state.items.findIndex(item => {
+            return item.id === question.id
+        })
+
+        if (index !== -1) {
+            Vue.set(state.items, index, question)
+        }
     }
 }
 

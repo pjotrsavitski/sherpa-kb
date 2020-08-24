@@ -31,10 +31,11 @@ class QuestionResource extends JsonResource
             'descriptions' => $this->languages->keyBy('code')->map(function($language) {
                 return $language->pivot->description;
             }),
-            'category' => $this->getTopicData(),
+            'topic' => $this->getTopicData(),
             'status' => [
                 'value' => $this->status->getValue(),
                 'status' => $this->status->status(),
+                'transitionable' => $this->status->transitionableStates(),
             ],
             'date' => $this->created_at->format('d.m.Y'),
         ];

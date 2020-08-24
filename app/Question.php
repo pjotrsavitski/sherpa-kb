@@ -44,36 +44,4 @@ class Question extends Model
     {
         return $this->belongsTo('App\PendingQuestion');
     }
-
-    public function getDescription() : string
-    {
-        $languages = $this->languages()->get();
-        
-        if ($languages->count() > 1)
-        {
-            $language = $languages->first(function ($value) {
-                return $value->code !== 'en';
-            });
-
-            return $language->pivot->description;
-        }
-
-        return $languages->first()->pivot->description;
-    }
-
-    public function getEnglishDescription() : ?string
-    {
-        $languages = $this->languages()->get();
-
-        if ($languages->count() > 0)
-        {
-            $language = $languages->first(function ($value) {
-                return $value->code === 'en';
-            });
-
-            return $language->pivot->description ?? NULL;
-        }
-
-        return NULL;
-    }
 }

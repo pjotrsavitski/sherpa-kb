@@ -32,6 +32,9 @@ Route::get('/home/answers', 'AnswerController@index')->name('answers');
 Auth::routes();
 
 Route::get('/questions', 'QuestionController@list');
+Route::get('/questions/states', 'QuestionController@states');
+Route::get('/questions/topics', 'QuestionController@topics');
+Route::put('/questions/{question}', 'QuestionController@update');
 
 Route::get('/pending_questions', 'PendingQuestionController@list');
 Route::get('/pending_questions/states', 'PendingQuestionController@states');
