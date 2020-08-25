@@ -59,6 +59,7 @@
         created() {
             this.$store.dispatch('questions/preloadAllQuestions')
             this.$store.dispatch('pendingQuestions/preloadAllPendingQuestions')
+            this.$store.dispatch('answers/preloadAllAnswers')
         }
     }
 </script>

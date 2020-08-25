@@ -27,6 +27,11 @@
                     Answers
                     <b-badge :variant="tabTitleBadgeVariant(2)" pill>{{ answers.length }}</b-badge>
                 </template>
+
+                <answer-create :language="language"></answer-create>
+                <b-button v-b-modal="'answer-create'" variant="primary" class="mb-4">Add new answer</b-button>
+                
+                <answers-table :items="answers" :language="language"></answers-table>
             </b-tab>
         </b-tabs>
     </div>
@@ -34,9 +39,15 @@
 
 <script>
     import { mapState, mapActions } from 'vuex'
+    import AnswerCreate from './Answer/Create.vue'
+    import AnswersTable from './Answer/Table.vue'
 
     export default {
         props: ['language'],
+        components: {
+            AnswerCreate,
+            AnswersTable
+        },
         data() {
             return {
                 tabIndex: 0,
@@ -44,11 +55,13 @@
         },
         computed: {
             ...mapState({
-                questions: state => state.questions.items,
-                answers: state => state.answers.items
+                questions: state => state.questions.items
             }),
             pendingQuestions() {
                 return this.$store.getters['pendingQuestions/forLanguage'](this.language)
+            },
+            answers() {
+                return this.$store.getters['answers/forLanguage'](this.language) 
             }
         },
         methods: {
@@ -59,6 +72,8 @@
         created() {
             this.$store.dispatch('questions/preloadAllQuestions')
             this.$store.dispatch('pendingQuestions/preloadAllPendingQuestions')
+            this.$store.dispatch('answers/preloadAllAnswers')
+
         }
     }
 </script>

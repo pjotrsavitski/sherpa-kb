@@ -29,8 +29,6 @@ Route::get('/home/questions', 'QuestionController@index')->name('questions');
 Route::get('/home/pending_questions', 'PendingQuestionController@index')->name('pending_questions');
 Route::get('/home/answers', 'AnswerController@index')->name('answers');
 
-Auth::routes();
-
 Route::get('/questions', 'QuestionController@list');
 Route::get('/questions/states', 'QuestionController@states');
 Route::get('/questions/topics', 'QuestionController@topics');
@@ -39,3 +37,7 @@ Route::put('/questions/{question}', 'QuestionController@update');
 Route::get('/pending_questions', 'PendingQuestionController@list');
 Route::get('/pending_questions/states', 'PendingQuestionController@states');
 Route::put('/pending_questions/{pending_question}', 'PendingQuestionController@update');
+
+Route::get('/answers', 'AnswerController@list');
+Route::get('/answers/states', 'AnswerController@states');
+Route::post('/answers', 'AnswerController@store');

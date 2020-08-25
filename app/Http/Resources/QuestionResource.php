@@ -11,7 +11,7 @@ class QuestionResource extends JsonResource
         if ($this->topic) {
             return [
                 'id' => $this->topic->id,
-                'value' => $this->topic->description,
+                'description' => $this->topic->description,
             ];
         }
 
@@ -32,6 +32,7 @@ class QuestionResource extends JsonResource
                 return $language->pivot->description;
             }),
             'topic' => $this->getTopicData(),
+            'answer' => $this->answer ? $this->answer->id : NULL,
             'status' => [
                 'value' => $this->status->getValue(),
                 'status' => $this->status->status(),

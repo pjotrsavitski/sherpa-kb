@@ -10,6 +10,7 @@ use App\Http\Resources\TopicResource;
 use Illuminate\Validation\Rule;
 use App\States\Question\QuestionState;
 use App\Language;
+use App\Answer;
 
 class QuestionController extends Controller
 {
@@ -23,6 +24,7 @@ class QuestionController extends Controller
         $this->middleware('auth');
     }
 
+    // TODO Move into a service
     private function getLanguageId(string $code)
     {
         // TODO Create a sttaic lookup structure
@@ -85,6 +87,12 @@ class QuestionController extends Controller
             $question->topic()->associate(Topic::find($request->get('topic')))->save();
         } else {
             $question->topic()->dissociate()->save();
+        }
+
+        if ($request->has('answer')) {
+            $question->answer()->associate(Answer::find($request->get('answer')))->save();
+        } else {
+            $question->answer()->dissociate()->save();
         }
 
         $descriptions = collect($validatedData['descriptions'])

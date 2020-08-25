@@ -25,7 +25,7 @@
             </template>
 
             <template v-slot:cell(category)="data">
-                {{ data.item.topic ? data.item.topic.value : null }}
+                {{ data.item.topic ? data.item.topic.description : null }}
             </template>
 
             <template v-slot:cell(languages)="data">

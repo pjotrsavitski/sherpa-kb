@@ -37,7 +37,6 @@
                     label-for="input-translation"
                     invalid-feedback="English translation is required"
                     :state="translationState"
-                    description="Translation is not needed if suggestion was submitted in English."
                 >
                     <b-form-input
                         id="input-translation"
@@ -62,13 +61,25 @@
                     ></b-form-select>
                 </b-form-group>
                 <b-form-group
-                    id="input-group-sttaus"
+                    id="input-group-status"
                     label="Status"
-                    label-for="input-sttaus"
+                    label-for="input-status"
                 >
                     <b-form-select
                         v-model="form.status"
                         :options="statusOptions"
+                        id="input-status"
+                        :disabled="!canEdit()"
+                    ></b-form-select>
+                </b-form-group>
+                <b-form-group
+                    id="input-group-answer"
+                    label="Answer"
+                    label-for="input-answer"
+                >
+                    <b-form-select
+                        v-model="form.answer"
+                        :options="answerOptions"
                         id="input-status"
                         :disabled="!canEdit()"
                     ></b-form-select>
@@ -86,7 +97,8 @@
             ...mapState({
                 states: state => state.questions.states,
                 topics: state => state.questions.topics,
-                languages: state => state.app.languages
+                languages: state => state.app.languages,
+                answers: state => state.answers.items
             }),
             modalId() {
                 return `question-edit-${this.question.id}`
@@ -121,15 +133,31 @@
                         disabled: ((this.question.status.transitionable.indexOf(state.value) !== -1 || this.question.status.value === state.value)) ? false : true
                     }
                 })
+            },
+            answerOptions() {
+                const options = this.answers
+                .map(answer => {
+                    return {
+                        value: answer.id,
+                        text: answer.descriptions.hasOwnProperty(this.language) ? answer.descriptions[this.language] : answer.descriptions.en
+                    }
+                })
+                options.unshift({
+                    value: '',
+                    text: ''
+                })
+
+                return options
             }
         },
         data() {
             return {
                 form: {
-                    question: "",
-                    translation: "",
-                    topic: "",
-                    status: ""
+                    question: '',
+                    translation: '',
+                    topic: '',
+                    status: '',
+                    answer: ''
                 },
                 isBusy: false
             }
@@ -146,6 +174,7 @@
                 this.form.translation = this.getEnglishDescription(this.question)
                 this.form.topic = this.question.topic ? this.question.topic.id : ''
                 this.form.status = this.question.status.value
+                this.form.answer = this.question.answer ? this.question.answer : ''
             },
             canEdit() {
                 return this.question.status.value === 'in_translation'
@@ -179,6 +208,10 @@
 
                 if (this.form.topic) {
                     data.topic = this.form.topic
+                }
+
+                if (this.form.answer) {
+                    data.answer = this.form.answer
                 }
 
                 axios.put(`/questions/${this.question.id}`, data)

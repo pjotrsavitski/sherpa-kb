@@ -66,7 +66,7 @@ const actions = {
     },
     updateQuestion({ commit }, question) {
         commit('updateQuestion', question)
-    },
+    }
 }
 
 const mutations = {
@@ -90,15 +90,6 @@ const mutations = {
     },
     setTopics(state, topics) {
         state.topics = topics
-    },
-    updateQuestion (state, question) {
-        const index = state.items.findIndex(item => {
-            return item.id === question.id
-        })
-
-        if (index !== -1) {
-            Vue.set(state.items, index, question)
-        }
     }
 }
 
