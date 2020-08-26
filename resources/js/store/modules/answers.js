@@ -63,6 +63,8 @@ const mutations = {
 
         if (index !== -1) {
             Vue.set(state.items, index, answer)
+        } else {
+            console.warn('Index not found, could not update an answer:', answer)
         }
     },
     setPreloaded (state, value) {

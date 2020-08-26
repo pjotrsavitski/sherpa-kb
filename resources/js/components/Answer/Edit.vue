@@ -31,6 +31,7 @@
                         trim
                         debounce="250"
                         @update="updateAnswerState"
+                        :disabled="!canEdit()"
                     ></b-form-textarea>
                 </b-form-group>
                 <b-form-group
@@ -50,12 +51,18 @@
                         trim
                         debounce="250"
                         @update="updateTranslationState"
+                        :disabled="!canEdit()"
                     ></b-form-textarea>
                 </b-form-group>
                 <b-form-group
                     description="Changing status to Translated will send the answer for review by SELFIE master. This would also prevent you from making any changes to the answer itself or English translation."
                 >
-                    <b-form-checkbox v-model="form.translated" name="translated" switch :disabled="!canChangeStatus()">
+                    <b-form-checkbox 
+                        v-model="form.translated"
+                        name="translated"
+                        switch
+                        :disabled="!canChangeStatus()"
+                    >
                         <b>Change status to translated</b>
                     </b-form-checkbox>
                 </b-form-group>
@@ -103,13 +110,16 @@
                     translation: this.form.translation.length > 0
                 }
             },
+            canEdit() {
+                return this.answer.status.value === 'in_translation'
+            },
             canSave() {
-                // TODO Should also consider current status
-                return this.form.state.answer && this.form.state.translation
+                return this.canEdit() && this.form.state.answer && this.form.state.translation
             },
             canChangeStatus() {
                 // TODO Check if this check is correct (saving last missing language should allow status to be changed)
-                return this.answer.status.value === 'in_translation' && Object.keys(this.answer.descriptions).length === this.totalLanguages
+                return this.answer.status.value === 'in_translation' && this.form.state.answer && this.form.state.translation
+                //return this.answer.status.value === 'in_translation' && Object.keys(this.answer.descriptions).length === this.totalLanguages
             },
             handleSave(bvModelEvent) {
                 bvModelEvent.preventDefault()
@@ -134,7 +144,11 @@
                     value: this.form.answer
                 })
 
-                axios.put('/answers', data)
+                if (this.form.translated) {
+                    data.status = 'translated'
+                }
+
+                axios.put(`/answers/${this.answer.id}`, data)
                 .then(response => {
                     this.isBusy = false
                     this.$store.dispatch('answers/updateAnswer', response.data)

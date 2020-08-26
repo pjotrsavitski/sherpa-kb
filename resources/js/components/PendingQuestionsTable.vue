@@ -51,9 +51,14 @@
 </template>
 
 <script>
+    import { mapState } from 'vuex'
+
     export default {
         props: ['items', 'language'],
         computed: {
+            ...mapState({
+                perPage: state => state.app.itemsPerPage
+            }),
             totalRows() {
                 return this.items.length
             }
@@ -63,7 +68,6 @@
 
             return {
                 currentPage: 1,
-                perPage: 2, // TODO Need to set a value of 25
                 fields: [
                     {
                         key: 'id',

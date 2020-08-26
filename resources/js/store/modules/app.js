@@ -1,6 +1,7 @@
 const state = () => ({
     user: null,
-    languages: []
+    languages: [],
+    itemsPerPage: 2 // TODO Set to a meaningful value
 })
 
 const getters = {
