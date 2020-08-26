@@ -19,15 +19,17 @@
                     :label="questionLabel(language)"
                     label-for="input-question"
                     invalid-feedback="Question is required"
-                    :state="questionState"
+                    :state="form.state.question"
                 >
                     <b-form-input
                         id="input-question"
                         v-model="form.question"
                         type="text"
                         required
-                        :state="questionState"
+                        :state="form.state.question"
                         trim
+                        debounce="250"
+                        @update="updateInputState('question', ...arguments)"
                     ></b-form-input>
                 </b-form-group>
                 <b-form-group
@@ -35,15 +37,17 @@
                     :label="questionLabel('en')"
                     label-for="input-translation"
                     invalid-feedback="English translation is required"
-                    :state="translationState"
+                    :state="form.state.translation"
                 >
                     <b-form-input
                         id="input-translation"
                         v-model="form.translation"
                         type="text"
                         required
-                        :state="translationState"
+                        :state="form.state.translation"
                         trim
+                        debounce="250"
+                        @update="updateInputState('translation', ...arguments)"
                     ></b-form-input>
                 </b-form-group>
                 <b-form-group
@@ -88,12 +92,6 @@
             modalId() {
                 return 'question-create'
             },
-            questionState() {
-                return (this.form.question && this.form.question.length) > 0 ? true : false
-            },
-            translationState() {
-                return (this.form.translation && this.form.translation.length) > 0 ? true : false
-            },
             topicOptions() {
                 const options = this.topics.map(topic => {
                     return {
@@ -130,7 +128,11 @@
                     question: '',
                     translation: '',
                     topic: '',
-                    answer: ''
+                    answer: '',
+                    state: {
+                        question: null,
+                        translation: null
+                    }
                 },
                 isBusy: false
             }
@@ -141,9 +143,11 @@
                 this.form.translation = ''
                 this.form.topic = ''
                 this.form.answer = ''
+                this.form.state.question = null
+                this.form.state.translation = null
             },
             canSave() {
-                return this.questionState && this.translationState
+                return this.form.state.question && this.form.state.translation
             },
             handleSave(bvModelEvent) {
                 bvModelEvent.preventDefault()
@@ -208,6 +212,9 @@
                 const language = this.languages.find(language => language.code === code)
 
                 return `Question in ${language ? language.name : code}`
+            },
+            updateInputState(input, value) {
+                this.form.state[input] = value.length > 0
             }
         }
     }
