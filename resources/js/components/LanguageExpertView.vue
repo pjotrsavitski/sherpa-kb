@@ -38,15 +38,19 @@
 </template>
 
 <script>
-    import { mapState, mapActions } from 'vuex'
-    import AnswerCreate from './Answer/Create.vue'
+    import { mapState } from 'vuex'
+    import QuestionsTable from './Question/Table.vue'
+    import PendingQuestionsTable from './PendingQuestion/Table.vue'
     import AnswersTable from './Answer/Table.vue'
+    import AnswerCreate from './Answer/Create.vue'
 
     export default {
         props: ['language'],
         components: {
-            AnswerCreate,
-            AnswersTable
+            QuestionsTable,
+            PendingQuestionsTable,
+            AnswersTable,
+            AnswerCreate
         },
         data() {
             return {

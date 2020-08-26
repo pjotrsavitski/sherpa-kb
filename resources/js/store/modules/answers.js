@@ -10,6 +10,9 @@ const getters = {
     },
     forLanguage: state => language => {
         return state.items.filter(item => item.descriptions.hasOwnProperty(language))
+    },
+    forReview: state => {
+        return state.items.filter(item => item.status.value !== 'in_translation')
     }
 }
 
