@@ -1,7 +1,7 @@
 <template>
         <b-modal
             ref="modal"
-            id="question-create"
+            :id="modalId"
             title="Add new question"
             ok-title="Create"
             @show="resetModal"
@@ -85,6 +85,9 @@
             ...mapGetters({
                 answers: 'answers/published'
             }),
+            modalId() {
+                return 'question-create'
+            },
             questionState() {
                 return (this.form.question && this.form.question.length) > 0 ? true : false
             },

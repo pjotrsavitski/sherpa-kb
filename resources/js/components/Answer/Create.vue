@@ -66,7 +66,7 @@
                 languages: state => state.app.languages
             }),
             modalId() {
-                return 'question-create'
+                return 'answer-create'
             }
         },
         data() {
