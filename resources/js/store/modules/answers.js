@@ -13,6 +13,9 @@ const getters = {
     },
     forReview: state => {
         return state.items.filter(item => item.status.value !== 'in_translation')
+    },
+    published: state => {
+        return state.items.filter(item => item.status.value === 'published')
     }
 }
 

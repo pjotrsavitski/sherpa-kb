@@ -51,6 +51,43 @@ class QuestionController extends Controller
         return TopicResource::collection(Topic::all());
     }
 
+    public function store(Request $request) {
+        $validatedData = $request->validate([
+            'descriptions' => 'required|array',
+            'descriptions.*.code' => 'required|exists:App\Language,code',
+            'descriptions.*.value' => 'required', 
+            'topic' => 'sometimes|required|exists:App\Topic,id',
+        ]);
+
+        $question = new Question;
+        $question->save();
+
+        if ($request->has('topic')) {
+            $question->topic()->associate(Topic::find($request->get('topic')))->save();
+        }
+
+        if ($request->has('answer')) {
+            $question->answer()->associate(Answer::find($request->get('answer')))->save();
+        }
+
+        $descriptions = collect($validatedData['descriptions'])
+        ->keyBy(function($single) {
+            return $this->getLanguageId($single['code']);
+        })
+        ->filter(function($single) {
+            return trim($single['value']) !== '';
+        })
+        ->map(function($single) {
+            return [
+                'description' => $single['value'],
+            ];
+        });
+
+        $question->languages()->attach($descriptions);
+
+        return response()->json(new QuestionResource($question), 200);
+    }
+
     public function update(Request $request, Question $question)
     {
         $states = Question::getStatesFor('status')->map(function($state) {

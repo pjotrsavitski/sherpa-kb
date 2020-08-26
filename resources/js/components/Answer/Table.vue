@@ -30,7 +30,7 @@
             <template v-slot:cell(languages)="data">
                 <b-button
                     pill
-                    :variant="answerLanguagesVariant(data.item)"
+                    :variant="languagesButtonVariant(data.item)"
                     v-b-popover.hover.click.blur.top="languagesPopoverData(data.item)"
                 >
                     {{ descriptionsCount(data.item) }} / {{ totalLanguages }}
@@ -57,22 +57,20 @@
 </template>
 
 <script>
-    import { mapGetters, mapState } from 'vuex'
+    import { mapState } from 'vuex'
     import AnswerEdit from './Edit.vue'
     import AnswerReview from './Review.vue'
+    import TableHelpers from '../../mixins/TableHelpers'
 
     export default {
         props: ['items', 'language'],
+        mixins: [TableHelpers],
         components: {
             AnswerEdit,
             AnswerReview
         },
         computed: {
-            ...mapGetters({
-                totalLanguages: 'app/totalLanguages'
-            }),
             ...mapState({
-                languages: state => state.app.languages,
                 perPage: state => state.app.itemsPerPage
             }),
             totalRows() {
@@ -159,22 +157,6 @@
                     content: item.descriptions.hasOwnProperty(code) ? item.descriptions[code] : '',
                     customClass: 'popover-preserve-new-lines'
                 }
-            },
-            languagesPopoverData(item) {
-                const languages = this.languages.filter(language => {
-                    return item.descriptions.hasOwnProperty(language.code)
-                })
-                .map(language => {
-                    return language.name
-                })
-
-                return {
-                    title: 'Translated to languages',
-                    content: languages.join(', ')
-                }
-            },
-            answerLanguagesVariant(item) {
-                return this.descriptionsCount(item) >= this.totalLanguages ? 'outline-success' : 'outline-secondary'
             }
         },
         created() {

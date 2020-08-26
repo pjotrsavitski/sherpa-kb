@@ -12,6 +12,9 @@
                     <b-badge :variant="tabTitleBadgeVariant(0)" pill>{{ questions.length }}</b-badge>
                 </template>
 
+                <question-create :language="language"></question-create>
+                <b-button v-b-modal="'question-create'" variant="primary" class="mb-4">Add new question</b-button>
+
                 <questions-table :items="questions" :language="language"></questions-table>
             </b-tab>
             <b-tab lazy>
@@ -43,6 +46,7 @@
     import PendingQuestionsTable from './PendingQuestion/Table.vue'
     import AnswersTable from './Answer/Table.vue'
     import AnswerCreate from './Answer/Create.vue'
+    import QuestionCreate from './Question/Create.vue'
 
     export default {
         props: ['language'],
@@ -50,7 +54,8 @@
             QuestionsTable,
             PendingQuestionsTable,
             AnswersTable,
-            AnswerCreate
+            AnswerCreate,
+            QuestionCreate
         },
         data() {
             return {

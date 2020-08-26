@@ -2,7 +2,7 @@
         <b-modal
             ref="modal"
             :id="modalId"
-            title="Create answer"
+            title="Add new answer"
             ok-title="Create"
             @show="resetModal"
             @hidden="resetModal"
@@ -66,7 +66,7 @@
                 languages: state => state.app.languages
             }),
             modalId() {
-                return 'answer-create'
+                return 'question-create'
             }
         },
         data() {

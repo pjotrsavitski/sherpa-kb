@@ -66,6 +66,9 @@ const actions = {
     },
     updateQuestion({ commit }, question) {
         commit('updateQuestion', question)
+    },
+    insertQuestion({ commit }, question) {
+        commit('insertQuestion', question)
     }
 }
 
@@ -90,6 +93,9 @@ const mutations = {
     },
     setTopics(state, topics) {
         state.topics = topics
+    },
+    insertQuestion(state, question) {
+        state.items.push(question)
     }
 }
 

@@ -29,7 +29,13 @@
             </template>
 
             <template v-slot:cell(languages)="data">
-                {{ descriptionsCount(data.item) }} / {{ totalLanguages }}
+                <b-button
+                    pill
+                    :variant="languagesButtonVariant(data.item)"
+                    v-b-popover.hover.click.blur.top="languagesPopoverData(data.item)"
+                >
+                    {{ descriptionsCount(data.item) }} / {{ totalLanguages }}
+                </b-button>
             </template>
 
             <template v-slot:cell(date)="data">
@@ -44,22 +50,16 @@
 </template>
 
 <script>
-    import { mapGetters } from 'vuex'
     import QuestionEdit from './Edit.vue'
+    import TableHelpers from '../../mixins/TableHelpers'
 
     export default {
         props: ['items', 'language'],
+        mixins: [TableHelpers],
         components: {
             QuestionEdit
         },
-        computed: {
-            ...mapGetters({
-                totalLanguages: 'app/totalLanguages'
-            })
-        },
         data() {
-            const vm = this
-
             return {
                 fields: [
                     {
