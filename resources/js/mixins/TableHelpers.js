@@ -33,6 +33,19 @@ export default {
         },
         descriptionInLanguageOrEnglish(descriptions, language) {
             return descriptions.hasOwnProperty(language) ? descriptions[language] : descriptions.en
+        },
+        shortenDescription(description, length) {
+            // TODO See if there is a cleaner way to proide default value
+            if (!length) {
+                length = 50
+            }
+
+            // TODO It might make sense to remove newlines before checking length
+            if (description.length > length) {
+                return `${description.substr(0, length)}...`
+            }
+
+            return description
         }
     }
 }

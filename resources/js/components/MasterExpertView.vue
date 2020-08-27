@@ -6,14 +6,13 @@
                 dropup
                 text="Open language expert view"
                 variant="outline-secondary"
-                class="m-2"
-                size="lg"
+                class="mb-4"
             >
                 <b-dropdown-item
                     v-for="language in languages"
                     :href="languageUrl(language)"
                     v-bind:key="language.code"
-                    class="text-uppercase"
+                    class="text-uppercase text-center"
                 >
                     {{ language.name }}
                 </b-dropdown-item>

@@ -22,11 +22,11 @@
             </template>
 
             <template v-slot:cell(description)="data" v-if="language">
-                <b-button v-b-modal="modalId(data.item.id)" variant="link" :class="{ 'text-secondary': !hasDescription(data.item) }" v-b-popover.hover.top="popoverData(data.item, language)">{{ descriptionOrPlaceholderText(data.item) }}</b-button>
+                <b-button v-b-modal="modalId(data.item.id)" variant="link" :class="{ 'text-secondary': !hasDescription(data.item) }" v-b-popover.hover.top="popoverData(data.item, language)">{{ shortenDescription(descriptionOrPlaceholderText(data.item)) }}</b-button>
             </template>
 
             <template v-slot:cell(english_translation)="data">
-                <b-button v-b-modal="modalId(data.item.id)" variant="link" v-b-popover.hover.top="popoverData(data.item, 'en')">{{ data.item.descriptions.en }}</b-button>
+                <b-button v-b-modal="modalId(data.item.id)" variant="link" v-b-popover.hover.top="popoverData(data.item, 'en')">{{ shortenDescription(data.item.descriptions.en) }}</b-button>
             </template>
 
             <template v-slot:cell(languages)="data">

@@ -6,7 +6,10 @@
             active-nav-item-class="bg-primary text-white"
             fill
         >
-            <b-tab lazy>
+            <b-tab
+                :disabled="isEnglish"
+                lazy
+            >
                 <template v-slot:title>
                     Questions
                     <b-badge :variant="tabTitleBadgeVariant(0)" pill>{{ questions.length }}</b-badge>
@@ -33,7 +36,10 @@
 
                 <pending-questions-table :items="pendingQuestions" :language="language"></pending-questions-table>
             </b-tab>
-            <b-tab lazy>
+            <b-tab
+                :disabled="isEnglish"
+                lazy
+            >
                 <template v-slot:title>
                     Answers
                     <b-badge :variant="tabTitleBadgeVariant(2)" pill>{{ answers.length }}</b-badge>
@@ -91,6 +97,9 @@
             },
             answers() {
                 return this.$store.getters['answers/forLanguage'](this.language) 
+            },
+            isEnglish() {
+                return this.language === 'en'
             }
         },
         methods: {
