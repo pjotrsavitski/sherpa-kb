@@ -103,14 +103,10 @@
                 this.form.status = this.answer.status.value
             },
             canEdit() {
-                return this.answer.status.value === 'translated'
+                return true
             },
             canSave() {
                 return this.canEdit() && Object.values(this.form.state).every(value => value === true)
-            },
-            canChangeStatus() {
-                // TODO Needs a real check
-                return true
             },
             handleSave(bvModelEvent) {
                 bvModelEvent.preventDefault()

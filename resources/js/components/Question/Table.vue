@@ -12,10 +12,13 @@
             stacked="lg"
             :per-page="perPage"
             :current-page="currentPage"
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
         >
             <template v-slot:cell(id)="data">
                 {{ data.value }}
                 <question-edit :question="data.item" :language="language" v-if="language"></question-edit>
+                <question-review :question="data.item" v-if="!language"></question-review>
             </template>
 
             <template v-slot:cell(description)="data" v-if="language">
@@ -73,6 +76,7 @@
 <script>
     import { mapState, mapGetters } from 'vuex'
     import QuestionEdit from './Edit.vue'
+    import QuestionReview from './Review.vue'
     import TableHelpers from '../../mixins/TableHelpers'
     import { library } from '@fortawesome/fontawesome-svg-core'
     import { faInfo } from '@fortawesome/free-solid-svg-icons'
@@ -83,7 +87,8 @@
         props: ['items', 'language'],
         mixins: [TableHelpers],
         components: {
-            QuestionEdit
+            QuestionEdit,
+            QuestionReview
         },
         computed: {
             ...mapState({
@@ -100,7 +105,7 @@
                     {
                         key: 'id',
                         label: 'ID',
-                        sortable: false,
+                        sortable: true,
                         tdClass: ['align-middle', 'text-center']
                     },
                     {
@@ -164,7 +169,9 @@
         },
         data() {
             return {
-                currentPage: 1
+                currentPage: 1,
+                sortBy: 'id',
+                sortDesc: true
             }
         },
         methods: {

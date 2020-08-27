@@ -12,6 +12,8 @@
             stacked="lg"
             :per-page="perPage"
             :current-page="currentPage"
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
         >
             <template v-slot:cell(id)="data">
                 {{ data.value }}
@@ -81,7 +83,7 @@
                     {
                         key: 'id',
                         label: 'ID',
-                        sortable: false,
+                        sortable: true,
                         tdClass: ['align-middle', 'text-center']
                     },
                     {
@@ -135,7 +137,9 @@
         },
         data() {
             return {
-                currentPage: 1
+                currentPage: 1,
+                sortBy: 'id',
+                sortDesc: true
             }
         },
         methods: {
