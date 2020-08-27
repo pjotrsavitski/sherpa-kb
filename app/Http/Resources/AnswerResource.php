@@ -24,7 +24,7 @@ class AnswerResource extends JsonResource
                 'status' => $this->status->status(),
                 'transitionable' => $this->status->transitionableStates(),
             ],
-            'date' => $this->created_at->format('d.m.Y'),
+            'date' => $this->created_at,
         ];
     }
 }

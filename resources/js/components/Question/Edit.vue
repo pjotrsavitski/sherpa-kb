@@ -89,7 +89,7 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex'
+    import { mapState, mapGetters } from 'vuex'
 
     export default {
         props: ['question', 'language'],
@@ -97,8 +97,10 @@
             ...mapState({
                 states: state => state.questions.states,
                 topics: state => state.questions.topics,
-                languages: state => state.app.languages,
-                answers: state => state.answers.items
+                languages: state => state.app.languages
+            }),
+            ...mapGetters({
+                answers: 'answers/published'
             }),
             modalId() {
                 return `question-edit-${this.question.id}`

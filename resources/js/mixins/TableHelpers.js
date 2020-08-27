@@ -25,6 +25,14 @@ export default {
         },
         languagesButtonVariant(item) {
             return Object.keys(item.descriptions).length >= this.totalLanguages ? 'outline-success' : 'outline-secondary'
+        },
+        formatDate(dateString) {
+            const date = new Date(dateString)
+
+            return `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`
+        },
+        descriptionInLanguageOrEnglish(descriptions, language) {
+            return descriptions.hasOwnProperty(language) ? descriptions[language] : descriptions.en
         }
     }
 }

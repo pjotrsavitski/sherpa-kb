@@ -32,7 +32,7 @@
             </template>
 
             <template v-slot:cell(date)="data">
-                {{ data.value }}
+                {{ formatDate(data.value) }}
             </template>
 
             <template v-slot:cell(status)="data">
@@ -54,9 +54,11 @@
     import { mapState } from 'vuex'
     import PendingQuestionEdit from './Edit.vue'
     import PendingQuestionReview from './Review.vue'
+    import TableHelpers from '../../mixins/TableHelpers'
 
     export default {
         props: ['items', 'language'],
+        mixins: [TableHelpers],
         components: {
             PendingQuestionEdit,
             PendingQuestionReview

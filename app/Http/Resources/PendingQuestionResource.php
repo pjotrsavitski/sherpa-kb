@@ -20,12 +20,12 @@ class PendingQuestionResource extends JsonResource
                 return $language->pivot->description;
             }),
             'group' => $this->group_no,
-            'date' => $this->created_at->format('d.m.Y'),
             'status' => [
                 'value' => $this->status->getValue(),
                 'status' => $this->status->status(),
                 'transitionable' => $this->status->transitionableStates(),
             ],
+            'date' => $this->created_at,
         ];
     }
 }

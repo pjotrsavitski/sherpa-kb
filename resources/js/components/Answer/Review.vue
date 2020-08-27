@@ -2,7 +2,7 @@
         <b-modal
             ref="modal"
             :id="modalId"
-            title="Edit answer"
+            title="Review answer"
             ok-title="Save"
             @show="resetModal"
             @hidden="resetModal"

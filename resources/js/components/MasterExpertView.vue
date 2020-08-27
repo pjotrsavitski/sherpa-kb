@@ -11,6 +11,8 @@
                     Questions
                     <b-badge :variant="tabTitleBadgeVariant(0)" pill>{{ questions.length }}</b-badge>
                 </template>
+
+                <questions-table :items="questions"></questions-table>
             </b-tab>
             <b-tab lazy>
                 <template v-slot:title>

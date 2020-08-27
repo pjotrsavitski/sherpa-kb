@@ -16,16 +16,27 @@
                 <question-edit :question="data.item" :language="language" v-if="language"></question-edit>
             </template>
 
-            <template v-slot:cell(description)="data">
-                <b-button v-b-modal="editModalId(data.item.id)" variant="link" :class="{ 'text-secondary': !hasDescription(data.item) }">{{ descriptionOrPlaceholderText(data.item) }}</b-button>
+            <template v-slot:cell(description)="data" v-if="language">
+                <b-button v-b-modal="modalId(data.item.id)" variant="link" :class="{ 'text-secondary': !hasDescription(data.item) }">{{ descriptionOrPlaceholderText(data.item) }}</b-button>
             </template>
 
             <template v-slot:cell(english_translation)="data">
-                <b-button v-b-modal="editModalId(data.item.id)" variant="link">{{ data.item.descriptions.en }}</b-button>
+                <b-button v-b-modal="modalId(data.item.id)" variant="link">{{ data.item.descriptions.en }}</b-button>
             </template>
 
             <template v-slot:cell(category)="data">
                 {{ data.item.topic ? data.item.topic.description : null }}
+            </template>
+
+            <template v-slot:cell(answer)="data">
+                <b-button
+                    pill
+                    variant="outline-secondary"
+                    v-b-popover.hover.click.blur.top="answerPopoverData(data.item)"
+                    v-if="data.item.answer"
+                >
+                    info
+                </b-button>
             </template>
 
             <template v-slot:cell(languages)="data">
@@ -39,7 +50,7 @@
             </template>
 
             <template v-slot:cell(date)="data">
-                {{ data.value }}
+                {{ formatDate(data.value) }}
             </template>
 
             <template v-slot:cell(status)="data">
@@ -50,6 +61,7 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
     import QuestionEdit from './Edit.vue'
     import TableHelpers from '../../mixins/TableHelpers'
 
@@ -59,9 +71,12 @@
         components: {
             QuestionEdit
         },
-        data() {
-            return {
-                fields: [
+        computed: {
+            ...mapGetters({
+                answers: 'answers/published'
+            }),
+            fields() {
+                const fields = [
                     {
                         key: 'id',
                         label: 'ID',
@@ -80,6 +95,11 @@
                     },
                     {
                         key: 'category',
+                        sortable: false,
+                        tdClass: ['align-middle', 'text-center']
+                    },
+                                       {
+                        key: 'answer',
                         sortable: false,
                         tdClass: ['align-middle', 'text-center']
                     },
@@ -114,11 +134,18 @@
                         },
                     }
                 ]
+
+                if (!this.language) {
+                    return fields.filter(field => field.key !== 'description')
+                }
+
+                return fields
             }
         },
         methods: {
-            editModalId(id) {
-                return 'question-edit-' + id
+            modalId(id) {
+                const type = this.language ? 'edit' : 'review'
+                return `question-${type}-${id}`
             },
             descriptionsCount(item) {
                 return Object.keys(item.descriptions).length
@@ -129,6 +156,15 @@
             descriptionOrPlaceholderText(item) {
                 return this.hasDescription(item) ? item.descriptions[this.language] : 'Add translation'
             },
+            answerPopoverData(item) {
+                const answer = this.answers.find(answer => answer.id === item.answer)
+                const language = this.language ? this.language : 'en'
+
+                return {
+                    content: answer ? this.descriptionInLanguageOrEnglish(answer.descriptions, language) : '',
+                    customClass: 'popover-preserve-new-lines'
+                }
+            }
         },
         created() {
             this.$store.dispatch('questions/preloadStates')
@@ -136,3 +172,9 @@
         }
     }
 </script>
+
+<style>
+.popover-preserve-new-lines .popover-body{
+    white-space: pre-wrap;
+}
+</style>

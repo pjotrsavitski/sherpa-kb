@@ -38,7 +38,7 @@
             </template>
 
             <template v-slot:cell(date)="data">
-                {{ data.value }}
+                {{ formatDate(data.value) }}
             </template>
 
             <template v-slot:cell(status)="data">
