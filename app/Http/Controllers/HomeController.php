@@ -2,13 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\PendingQuestion;
-use App\Question;
-use App\Answer;
-use App\Http\Resources\PendingQuestionResource;
-use App\Http\Resources\QuestionResource;
-
+use App\Language;
 
 class HomeController extends Controller
 {
@@ -29,13 +23,18 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home')->with([
-            'pendingQuestionStates' => PendingQuestion::getStatesFor('status')->map(function($state) {
-                return [
-                    'value' => $state::getMorphClass(),
-                    'text' => ucfirst($state::getMorphClass()),
-                ];
-            }),
+        return view('home');
+    }
+
+    /**
+     * Show language expert view
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function languageExpert(Language $language) {
+        // TODO Might need to add a permission/role check
+        return view('language-expert')->with([
+            'language' => $language,
         ]);
     }
 }

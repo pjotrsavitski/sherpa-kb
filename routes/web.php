@@ -25,9 +25,7 @@ Auth::routes([
 ]);
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/home/questions', 'QuestionController@index')->name('questions');
-Route::get('/home/pending_questions', 'PendingQuestionController@index')->name('pending_questions');
-Route::get('/home/answers', 'AnswerController@index')->name('answers');
+Route::get('/home/{language:code}', 'HomeController@languageExpert')->name('languageExpert');
 
 Route::get('/questions', 'QuestionController@list');
 Route::get('/questions/states', 'QuestionController@states');

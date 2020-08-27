@@ -7,13 +7,9 @@
             <div class="card">
                 <div class="card-body">
                     <h1>Hello, {{ Auth::user()->name }}</h1>
-                    
-                    @if (Auth::user()->isMasterExpert())
-                        <h2>SELFIE master</h2>
-                        <master-expert-view></master-expert-view>
-                    @elseif (Auth::user()->isLanguageExpert())
+                    @if (Auth::user()->isLanguageExpert())
                         <h2>Country SELFIE Expert {{ $language->name }}</h2>
-                        <language-expert-view language="et"></language-expert-view>
+                        <language-expert-view language="{{ $language->code }}"></language-expert-view>
                     @endif
                 </div>
             </div>

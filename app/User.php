@@ -36,4 +36,24 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Determines if user is a language expert.
+     *
+     * @return boolean
+     */
+    public function isLanguageExpert()
+    {
+        return true;
+    }
+
+    /**
+     * Determines if user is a master expert.
+     *
+     * @return boolean
+     */
+    public function isMasterExpert()
+    {
+        return true;
+    }
 }

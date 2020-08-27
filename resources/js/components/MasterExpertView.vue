@@ -1,5 +1,25 @@
 <template>
     <div class="mt-4">
+        <div class="text-right">
+            <b-dropdown
+                id="language-expert-view"
+                dropup
+                text="Open language expert view"
+                variant="outline-secondary"
+                class="m-2"
+                size="lg"
+            >
+                <b-dropdown-item
+                    v-for="language in languages"
+                    :href="languageUrl(language)"
+                    v-bind:key="language.code"
+                    class="text-uppercase"
+                >
+                    {{ language.name }}
+                </b-dropdown-item>
+            </b-dropdown>
+        </div>
+
         <b-tabs
             v-model="tabIndex"
             content-class="mt-4"
@@ -35,6 +55,7 @@
 </template>
 
 <script>
+    import { mapState } from 'vuex'
     import QuestionsTable from './Question/Table.vue'
     import PendingQuestionsTable from './PendingQuestion/Table.vue'
     import AnswersTable from './Answer/Table.vue'
@@ -51,6 +72,9 @@
             }
         },
         computed: {
+            ...mapState({
+                languages: state => state.app.languages
+            }),
             questions() {
                 return this.$store.getters['questions/forReview']
             },
@@ -64,6 +88,9 @@
         methods: {
             tabTitleBadgeVariant(index) {
                 return this.tabIndex === index ? 'light' : 'secondary'
+            },
+            languageUrl(language) {
+                return `${window.location.href}/${language.code}`
             }
         },
         created() {
