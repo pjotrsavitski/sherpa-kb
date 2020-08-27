@@ -9,7 +9,10 @@ const getters = {
         return state.items.length
     },
     forLanguage: state => language => {
-        // TODO Handle special case for English
+        if (language === 'en') {
+            return state.items.filter(item => item.descriptions.hasOwnProperty(language) && Object.keys(item.descriptions).length === 1)
+        }
+
         return state.items.filter(item => item.descriptions.hasOwnProperty(language))
     },
     forReview: state => {
