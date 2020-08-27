@@ -10,9 +10,10 @@
             >
                 <b-dropdown-item
                     v-for="language in languages"
-                    :href="languageUrl(language)"
+                    href="#"
                     v-bind:key="language.code"
                     class="text-uppercase text-center"
+                    @click="onLanguageSelected(language)"
                 >
                     {{ language.name }}
                 </b-dropdown-item>
@@ -24,6 +25,7 @@
             content-class="mt-4"
             active-nav-item-class="bg-primary text-white"
             fill
+            v-if="!selectedLanguage"
         >
             <b-tab lazy>
                 <template v-slot:title>
@@ -50,6 +52,27 @@
                 <answers-table :items="answers"></answers-table>
             </b-tab>
         </b-tabs>
+
+        <b-card
+            v-if="selectedLanguage"
+        >
+            <template v-slot:header>
+                <h3 class="mb-0">
+                    Country SELFIE Expert {{ selectedLanguage.name }}
+                    <b-button
+                        v-b-tooltip
+                        title="Clear selected language"
+                        @click="onLanguageSelected(null)"
+                        size="sm"
+                        variant="outline-secondary"
+                    >
+                        <font-awesome-icon :icon="['fas', 'times']" />
+                    </b-button>
+                </h3>
+            </template>
+
+            <language-expert-view :language="selectedLanguage.code"></language-expert-view>
+        </b-card>
     </div>
 </template>
 
@@ -58,6 +81,10 @@
     import QuestionsTable from './Question/Table.vue'
     import PendingQuestionsTable from './PendingQuestion/Table.vue'
     import AnswersTable from './Answer/Table.vue'
+    import { library } from '@fortawesome/fontawesome-svg-core'
+    import { faTimes } from '@fortawesome/free-solid-svg-icons'
+
+    library.add(faTimes)
     
     export default {
         components: {
@@ -68,6 +95,7 @@
         data() {
             return {
                 tabIndex: 0,
+                selectedLanguage: null
             }
         },
         computed: {
@@ -88,8 +116,8 @@
             tabTitleBadgeVariant(index) {
                 return this.tabIndex === index ? 'light' : 'secondary'
             },
-            languageUrl(language) {
-                return `${window.location.href}/${language.code}`
+            onLanguageSelected(language) {
+                this.selectedLanguage = language
             }
         },
         created() {

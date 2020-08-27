@@ -8,32 +8,68 @@ use App\Language;
 use App\Http\Resources\AnswerResource;
 use Illuminate\Validation\Rule;
 use App\States\Answer\AnswerState;
+use App\Services\LanguageService;
+use Illuminate\Support\Collection;
 
 class AnswerController extends Controller
 {
+    /**
+     * LanguageService instance
+     *
+     * @var LanguageService
+     */
+    private $languageService;
+
     /**
      * Create new controller instance
      * 
      * @return void
      */
-    public function __construct()
+    public function __construct(LanguageService $languageService)
     {
         $this->middleware('auth');
+
+        $this->languageService = $languageService;
     }
 
-    // TODO Move into a service
-    private function getLanguageId(string $code)
+    /**
+     * Process validated descriptions and turn those into data set to be used with languages relation.
+     * Desctiptions with empty values are removed.
+     *
+     * @param array $data
+     * @return Collection
+     */
+    private function processDescriptions(array $data): Collection
     {
-        // TODO Create a sttaic lookup structure
-        return Language::where('code', $code)->first()->id;
+        return collect($data)
+        ->keyBy(function($single) {
+            return $this->languageService->getLanguageIdByCode($single['code']);
+        })
+        ->filter(function($single) {
+            return trim($single['value']) !== '';
+        })
+        ->map(function($single) {
+            return [
+                'description' => $single['value'],
+            ];
+        });
     }
-    
+
+    /**
+     * Respond with answers using AnswerResource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function list()
     {
-        // TODO Might need additional protection and to provide different results to different roles
         return AnswerResource::collection(Answer::with('languages')->get());
     }
 
+    /**
+     * Respond with answer states.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function states()
     {
         return Answer::getStatesFor('status')->map(function($state) {
@@ -44,6 +80,12 @@ class AnswerController extends Controller
         });
     }
 
+    /**
+     * Create new Answer and respond with AnswerResource.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -52,19 +94,7 @@ class AnswerController extends Controller
             'descriptions.*.value' => 'required',
         ]);
 
-        // TODO Make this reusable
-        $descriptions = collect($validatedData['descriptions'])
-        ->keyBy(function($single) {
-            return $this->getLanguageId($single['code']);
-        })
-        ->filter(function($single) {
-            return trim($single['value']) !== '';
-        })
-        ->map(function($single) {
-            return [
-                'description' => $single['value'],
-            ];
-        });
+        $descriptions = $this->processDescriptions($validatedData['descriptions']);
 
         $answer = new Answer;
         $answer->save();
@@ -73,6 +103,13 @@ class AnswerController extends Controller
         return response()->json(new AnswerResource($answer), 200);
     }
 
+    /**
+     * Update existing Answer and respond with AnswerResource or code 422 if state transition is not allowed.
+     *
+     * @param Request $request
+     * @param Answer $answer
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update(Request $request, Answer $answer)
     {
         $states = Answer::getStatesFor('status')->map(function($state) {
@@ -104,18 +141,7 @@ class AnswerController extends Controller
             }
         }
 
-        $descriptions = collect($validatedData['descriptions'])
-        ->keyBy(function($single) {
-            return $this->getLanguageId($single['code']);
-        })
-        ->filter(function($single) {
-            return trim($single['value']) !== '';
-        })
-        ->map(function($single) {
-            return [
-                'description' => $single['value'],
-            ];
-        });
+        $descriptions = $this->processDescriptions($validatedData['descriptions']);
 
         $answer->languages()->syncWithoutDetaching($descriptions);
 

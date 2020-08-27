@@ -25,16 +25,4 @@ class HomeController extends Controller
     {
         return view('home');
     }
-
-    /**
-     * Show language expert view
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function languageExpert(Language $language) {
-        // TODO Might need to add a permission/role check
-        return view('language-expert')->with([
-            'language' => $language,
-        ]);
-    }
 }

@@ -29,7 +29,6 @@ Auth::routes([
 ]);
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/home/{language:code}', 'HomeController@languageExpert')->name('languageExpert');
 
 Route::get('/questions', 'QuestionController@list');
 Route::get('/questions/states', 'QuestionController@states');
