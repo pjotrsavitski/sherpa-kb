@@ -11,6 +11,10 @@ window.Vue = require('vue')
 Vue.use(require('bootstrap-vue'))
 
 import store from './store'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.config.productionTip = false
 
 /**
  * The following block of code may be used to automatically register your

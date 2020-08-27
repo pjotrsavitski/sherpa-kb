@@ -10,6 +10,8 @@
             primary-key="id"
             thead-class="text-center"
             stacked="lg"
+            :per-page="perPage"
+            :current-page="currentPage"
         >
             <template v-slot:cell(id)="data">
                 {{ data.value }}
@@ -35,7 +37,7 @@
                     v-b-popover.hover.click.blur.top="answerPopoverData(data.item)"
                     v-if="data.item.answer"
                 >
-                    info
+                    <font-awesome-icon :icon="['fas', 'info']" />
                 </b-button>
             </template>
 
@@ -57,13 +59,25 @@
                 {{ data.item.status.status }}
             </template>
         </b-table>
+
+        <b-pagination
+          v-model="currentPage"
+          :total-rows="totalRows"
+          :per-page="perPage"
+          align="center"
+          v-if="totalRows > perPage"
+        ></b-pagination>
     </div>
 </template>
 
 <script>
-    import { mapGetters } from 'vuex'
+    import { mapState, mapGetters } from 'vuex'
     import QuestionEdit from './Edit.vue'
     import TableHelpers from '../../mixins/TableHelpers'
+    import { library } from '@fortawesome/fontawesome-svg-core'
+    import { faInfo } from '@fortawesome/free-solid-svg-icons'
+
+    library.add(faInfo)
 
     export default {
         props: ['items', 'language'],
@@ -72,9 +86,15 @@
             QuestionEdit
         },
         computed: {
+            ...mapState({
+                perPage: state => state.app.itemsPerPage
+            }),
             ...mapGetters({
                 answers: 'answers/published'
             }),
+            totalRows() {
+                return this.items.length
+            },
             fields() {
                 const fields = [
                     {
@@ -140,6 +160,11 @@
                 }
 
                 return fields
+            }
+        },
+        data() {
+            return {
+                currentPage: 1
             }
         },
         methods: {

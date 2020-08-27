@@ -13,7 +13,15 @@
                 </template>
 
                 <question-create :language="language"></question-create>
-                <b-button v-b-modal="'question-create'" variant="primary" class="mb-4">Add new question</b-button>
+                <b-button
+                    v-b-modal="'question-create'"
+                    variant="primary"
+                    class="mb-4"
+                    v-b-tooltip
+                    title="Add new question"
+                >
+                    <font-awesome-icon :icon="['fas', 'plus']" />
+                </b-button>
 
                 <questions-table :items="questions" :language="language"></questions-table>
             </b-tab>
@@ -32,7 +40,15 @@
                 </template>
 
                 <answer-create :language="language"></answer-create>
-                <b-button v-b-modal="'answer-create'" variant="primary" class="mb-4">Add new answer</b-button>
+                <b-button
+                    v-b-modal="'answer-create'"
+                    variant="primary"
+                    class="mb-4"
+                    v-b-tooltip
+                    title="Add new answer"
+                >
+                    <font-awesome-icon :icon="['fas', 'plus']" />
+                </b-button>
                 
                 <answers-table :items="answers" :language="language"></answers-table>
             </b-tab>
@@ -47,6 +63,10 @@
     import AnswersTable from './Answer/Table.vue'
     import AnswerCreate from './Answer/Create.vue'
     import QuestionCreate from './Question/Create.vue'
+    import { library } from '@fortawesome/fontawesome-svg-core'
+    import { faPlus } from '@fortawesome/free-solid-svg-icons'
+
+    library.add(faPlus)
 
     export default {
         props: ['language'],
