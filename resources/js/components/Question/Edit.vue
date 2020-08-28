@@ -61,18 +61,6 @@
                     ></b-form-select>
                 </b-form-group>
                 <b-form-group
-                    id="input-group-status"
-                    label="Status"
-                    label-for="input-status"
-                >
-                    <b-form-select
-                        v-model="form.status"
-                        :options="statusOptions"
-                        id="input-status"
-                        :disabled="!canEdit()"
-                    ></b-form-select>
-                </b-form-group>
-                <b-form-group
                     id="input-group-answer"
                     label="Answer"
                     label-for="input-answer"
@@ -83,6 +71,18 @@
                         id="input-status"
                         :disabled="!canEdit()"
                     ></b-form-select>
+                </b-form-group>
+                <b-form-group
+                    description="Changing status to Translated will send the question for review by SELFIE master. This would also prevent you from making any changes to the question itself or English translation."
+                >
+                    <b-form-checkbox 
+                        v-model="form.translated"
+                        name="translated"
+                        switch
+                        :disabled="!canChangeStatus()"
+                    >
+                        <b>Change status to translated</b>
+                    </b-form-checkbox>
                 </b-form-group>
             </form>
         </b-modal>
@@ -158,8 +158,8 @@
                     question: '',
                     translation: '',
                     topic: '',
-                    status: '',
-                    answer: ''
+                    answer: '',
+                    translated: false
                 },
                 isBusy: false
             }
@@ -175,14 +175,18 @@
                 this.form.question = this.getDescription(this.question)
                 this.form.translation = this.getEnglishDescription(this.question)
                 this.form.topic = this.question.topic ? this.question.topic.id : ''
-                this.form.status = this.question.status.value
                 this.form.answer = this.question.answer ? this.question.answer : ''
+                this.form.translated = false
             },
             canEdit() {
                 return this.question.status.value === 'in_translation'
             },
             canSave() {
                 return this.canEdit()
+            },
+            canChangeStatus() {
+                // TODO Check if this check is correct (saving last missing language should allow status to be changed)
+                return this.question.status.value === 'in_translation' && this.questionState && this.translationState
             },
             handleSave(bvModelEvent) {
                 bvModelEvent.preventDefault()
@@ -197,7 +201,6 @@
 
                 const data = {
                     descriptions: [],
-                    status: this.form.status
                 }
                 data.descriptions.push({
                     code: 'en',
@@ -214,6 +217,10 @@
 
                 if (this.form.answer) {
                     data.answer = this.form.answer
+                }
+
+                if (this.form.translated) {
+                    data.status = 'translated'
                 }
 
                 axios.put(`/questions/${this.question.id}`, data)

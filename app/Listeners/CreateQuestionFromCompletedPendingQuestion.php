@@ -28,7 +28,6 @@ class CreateQuestionFromCompletedPendingQuestion
     public function handle(StateChanged $event)
     {
         if ($event->model instanceof PendingQuestion && $event->model->status->is(Completed::class)) {
-            // TODO This could be moved to a standalone method defined on top of PendingQuestion model
             $question = new Question;
             $question->save();
             $question->pendingQuestion()->associate($event->model)->save();
