@@ -14,6 +14,7 @@
                     v-bind:key="language.code"
                     class="text-uppercase text-center"
                     @click="onLanguageSelected(language)"
+                    :disabled="selectedLanguage && selectedLanguage.code === language.code"
                 >
                     {{ language.name }}
                 </b-dropdown-item>

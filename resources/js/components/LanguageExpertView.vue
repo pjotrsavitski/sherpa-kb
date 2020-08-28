@@ -12,7 +12,20 @@
             >
                 <template v-slot:title>
                     Questions
-                    <b-badge :variant="tabTitleBadgeVariant(0)" pill>{{ questions.length }}</b-badge>
+                    <b-badge
+                        :variant="tabTitleBadgeVariant(0)"
+                        pill
+                        v-if="!isBusy"
+                    >
+                        {{ questions.length }}
+                    </b-badge>
+                    <b-spinner
+                        :variant="tabTitleBadgeVariant(0)"
+                        type="grow"
+                        label="Loading..."
+                        small
+                        v-if="isBusy"
+                    ></b-spinner>
                 </template>
 
                 <question-create :language="language"></question-create>
@@ -31,7 +44,20 @@
             <b-tab lazy>
                 <template v-slot:title>
                     Pending questions
-                    <b-badge :variant="tabTitleBadgeVariant(1)" pill>{{ pendingQuestions.length }}</b-badge>
+                    <b-badge
+                        :variant="tabTitleBadgeVariant(1)"
+                        pill
+                        v-if="!isBusy"
+                    >
+                        {{ pendingQuestions.length }}
+                    </b-badge>
+                    <b-spinner
+                        :variant="tabTitleBadgeVariant(1)"
+                        type="grow"
+                        label="Loading..."
+                        small
+                        v-if="isBusy"
+                    ></b-spinner>
                 </template>
 
                 <pending-questions-table :items="pendingQuestions" :language="language" :is-busy="isBusy"></pending-questions-table>
@@ -42,7 +68,20 @@
             >
                 <template v-slot:title>
                     Answers
-                    <b-badge :variant="tabTitleBadgeVariant(2)" pill>{{ answers.length }}</b-badge>
+                    <b-badge
+                        :variant="tabTitleBadgeVariant(2)"
+                        pill
+                        v-if="!isBusy"
+                    >
+                        {{ answers.length }}
+                    </b-badge>
+                    <b-spinner
+                        :variant="tabTitleBadgeVariant(2)"
+                        type="grow"
+                        label="Loading..."
+                        small
+                        v-if="isBusy"
+                    ></b-spinner>
                 </template>
 
                 <answer-create :language="language"></answer-create>
