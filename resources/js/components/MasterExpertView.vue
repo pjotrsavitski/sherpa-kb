@@ -55,7 +55,7 @@
             </b-tabs>
 
             <b-card
-                v-if="selectedLanguage && showLanguageExpertView"
+                v-if="selectedLanguage"
             >
                 <template v-slot:header>
                     <h3 class="mb-0">
@@ -72,7 +72,7 @@
                     </h3>
                 </template>
 
-                <language-expert-view :language="selectedLanguage.code"></language-expert-view>
+                <language-expert-view :language="selectedLanguage.code" :is-busy="isBusy"></language-expert-view>
             </b-card>
         </transition>
     </div>
@@ -98,7 +98,7 @@
             return {
                 tabIndex: 0,
                 selectedLanguage: null,
-                showLanguageExpertView: true
+                isBusy: false
             }
         },
         computed: {
@@ -121,11 +121,12 @@
             },
             onLanguageSelected(language) {
                 if (this.selectedLanguage && language && this.selectedLanguage.code !== language.code) {
-                    this.showLanguageExpertView = false
+                    this.isBusy = true
+                    this.selectedLanguage = language
+
                     setTimeout(() => {
-                        this.selectedLanguage = language
-                        this.showLanguageExpertView = true
-                    }, 250)
+                        this.isBusy = false
+                    }, 500)
                 } else {
                     this.selectedLanguage = language
                 }
@@ -145,5 +146,8 @@
 }
 .fade-enter, .fade-leave-to {
   opacity: 0;
+}
+table.b-table[aria-busy='true'] {
+  opacity: 0.6;
 }
 </style>

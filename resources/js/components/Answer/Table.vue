@@ -14,6 +14,7 @@
             :current-page="currentPage"
             :sort-by.sync="sortBy"
             :sort-desc.sync="sortDesc"
+            :busy="isBusy"
         >
             <template v-slot:cell(id)="data">
                 {{ data.value }}
@@ -65,7 +66,7 @@
     import TableHelpers from '../../mixins/TableHelpers'
 
     export default {
-        props: ['items', 'language'],
+        props: ['items', 'language', 'isBusy'],
         mixins: [TableHelpers],
         components: {
             AnswerEdit,

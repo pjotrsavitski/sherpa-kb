@@ -26,7 +26,7 @@
                     <font-awesome-icon :icon="['fas', 'plus']" />
                 </b-button>
 
-                <questions-table :items="questions" :language="language"></questions-table>
+                <questions-table :items="questions" :language="language" :is-busy="isBusy"></questions-table>
             </b-tab>
             <b-tab lazy>
                 <template v-slot:title>
@@ -34,7 +34,7 @@
                     <b-badge :variant="tabTitleBadgeVariant(1)" pill>{{ pendingQuestions.length }}</b-badge>
                 </template>
 
-                <pending-questions-table :items="pendingQuestions" :language="language"></pending-questions-table>
+                <pending-questions-table :items="pendingQuestions" :language="language" :is-busy="isBusy"></pending-questions-table>
             </b-tab>
             <b-tab
                 :disabled="isEnglish"
@@ -56,7 +56,7 @@
                     <font-awesome-icon :icon="['fas', 'plus']" />
                 </b-button>
                 
-                <answers-table :items="answers" :language="language"></answers-table>
+                <answers-table :items="answers" :language="language" :is-busy="isBusy"></answers-table>
             </b-tab>
         </b-tabs>
     </div>
@@ -75,7 +75,7 @@
     library.add(faPlus)
 
     export default {
-        props: ['language'],
+        props: ['language', 'isBusy'],
         components: {
             QuestionsTable,
             PendingQuestionsTable,
