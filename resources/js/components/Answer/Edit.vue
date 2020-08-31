@@ -102,7 +102,7 @@
         },
         methods: {
             resetModal() {
-                this.form.answer = this.answer.descriptions[this.language]
+                this.form.answer = this.answer.descriptions.hasOwnProperty(this.language) ? this.answer.descriptions[this.language] : ''
                 this.form.translation = this.answer.descriptions.en
                 this.form.translated = false
                 this.form.state = {
