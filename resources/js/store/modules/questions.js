@@ -9,10 +9,6 @@ const getters = {
     totalCount: state => {
         return state.items.length
     },
-    forLanguage: state => language => {
-        // TODO Handle special case for English
-        return state.items.filter(item => item.descriptions.hasOwnProperty(language))
-    },
     forReview: state => {
         return state.items.filter(item => item.status.value !== 'in_translation')
     }
