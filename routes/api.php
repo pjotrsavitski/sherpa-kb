@@ -2,8 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\PendingQuestion;
-use App\Language;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,19 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 // TODO Need to protect the API endpoit somehow, using reCAPTCHA might work
-Route::post('/question', function (Request $request) {
-    $validatedData = $request->validate([
-        'question' => 'required',
-        'language' => 'required|exists:App\Language,code',
-    ]);
-    
-    $question = new PendingQuestion;
-    $question->save();
-    $question->languages()->attach(Language::where('code', $validatedData['language'])->first()->id, [
-        'description' => $validatedData['question'],
-    ]);
+Route::post('/question', 'PendingQuestionController@store');
 
-    return [
-        'message' => 'OK',
-    ];
-});
+Route::get('/languages', 'LanguageController@list');
+Route::get('/export/{language:code}', 'ExportController@export');

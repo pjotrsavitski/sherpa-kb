@@ -27,7 +27,7 @@ class PendingQuestionController extends Controller
      */
     public function __construct(LanguageService $languageService)
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except('store');
 
         $this->languageService = $languageService;
     }
@@ -70,6 +70,30 @@ class PendingQuestionController extends Controller
                 'text' => $state::status(),
             ];
         });
+    }
+
+    /**
+     * Create new PendingQuestion.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'question' => 'required',
+            'language' => 'required|exists:App\Language,code',
+        ]);
+        
+        $question = new PendingQuestion;
+        $question->save();
+        $question->languages()->attach(Language::where('code', $validatedData['language'])->first()->id, [
+            'description' => $validatedData['question'],
+        ]);
+
+        return response()->json([
+            'message' => 'OK',
+        ]);
     }
 
     /**
