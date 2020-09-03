@@ -13,6 +13,9 @@ use App\Language;
 use App\Answer;
 use App\Services\LanguageService;
 use Illuminate\Support\Collection;
+use App\States\Answer\Published as PublishedAnswer;
+use App\States\Question\Published as PublishedQuestion;
+use Illuminate\Database\Eloquent\Builder;
 
 class QuestionController extends Controller
 {
@@ -30,7 +33,7 @@ class QuestionController extends Controller
      */
     public function __construct(LanguageService $languageService)
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except(['apiForLanguage', 'apiForLanguageAndTopic']);
 
         $this->languageService = $languageService;
     }
@@ -181,5 +184,89 @@ class QuestionController extends Controller
         $question->languages()->syncWithoutDetaching($descriptions);
 
         return response()->json(new QuestionResource($question->refresh()), 200);
+    }
+
+    /**
+     * Responds with published questions, with published answers that have both been translated to a given language.
+     *
+     * @param Language $language
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function apiForLanguage(Language $language)
+    {
+        $data = [];
+
+        Question::with(['languages', 'topic', 'answer'])
+        ->whereState('status', PublishedQuestion::class)
+        ->whereHas('languages', function(Builder $query) use ($language) {
+            $query->where('id', '=', $language->id);
+        })
+        ->whereHas('answer', function(Builder $query) use ($language) {
+            $query->whereState('status', PublishedAnswer::class)
+            ->whereHas('languages', function(Builder $query) use ($language) {
+                $query->where('id', '=', $language->id);
+            });
+        })
+        ->chunk(50, function($questions) use ($language, &$data) {
+            foreach($questions as $question) {
+                $data[] = [
+                    'id' => $question->id,
+                    'description' => $question->languages->keyBy('id')->get($language->id)->pivot->description,
+                    'answer' => [
+                        'id' => $question->answer->id,
+                        'description' => $question->answer->languages->keyBy('id')->get($language->id)->pivot->description,
+                    ],
+                    'topic' => $question->topic ? [
+                        'id' => $question->topic->id,
+                        'description' => $question->topic->description,
+                    ] : NULL,
+                ];
+            }
+        });
+
+        return response()->json($data);
+    }
+
+    /**
+     * Responds with published questions, with published answers that have been translated to a given language that belong to a given topic.
+     *
+     * @param Language $language
+     * @param Topic $topic
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function apiForLanguageAndTopic(Language $language, Topic $topic)
+    {
+        $data = [];
+
+        Question::with(['languages', 'topic', 'answer'])
+        ->whereState('status', PublishedQuestion::class)
+        ->whereHas('languages', function(Builder $query) use ($language) {
+            $query->where('id', '=', $language->id);
+        })
+        ->whereHas('answer', function(Builder $query) use ($language) {
+            $query->whereState('status', PublishedAnswer::class)
+            ->whereHas('languages', function(Builder $query) use ($language) {
+                $query->where('id', '=', $language->id);
+            });
+        })
+        ->where('topic_id', '=', $topic->id)
+        ->chunk(50, function($questions) use ($language, &$data) {
+            foreach($questions as $question) {
+                $data[] = [
+                    'id' => $question->id,
+                    'description' => $question->languages->keyBy('id')->get($language->id)->pivot->description,
+                    'answer' => [
+                        'id' => $question->answer->id,
+                        'description' => $question->answer->languages->keyBy('id')->get($language->id)->pivot->description,
+                    ],
+                    'topic' => [
+                        'id' => $question->topic->id,
+                        'description' => $question->topic->description,
+                    ],
+                ];
+            }
+        });
+
+        return response()->json($data);
     }
 }

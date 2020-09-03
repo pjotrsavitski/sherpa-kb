@@ -7,11 +7,11 @@ use App\Language;
 class LanguageController extends Controller
 {
     /**
-     * Responds with exportable corpus data.
+     * Responds languages for API.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function list()
+    public function api()
     {
         $languages = Language::all()->map(function($language) {
             return [

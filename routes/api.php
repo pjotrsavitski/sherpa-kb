@@ -21,5 +21,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // TODO Need to protect the API endpoit somehow, using reCAPTCHA might work
 Route::post('/question', 'PendingQuestionController@store');
 
-Route::get('/languages', 'LanguageController@list');
+Route::get('/languages', 'LanguageController@api');
+
+Route::get('/topics', 'TopicController@api');
+
+Route::get('/answers/{language:code}', 'AnswerController@apiForLanguage');
+
+Route::get('/questions/{language:code}', 'QuestionController@apiForLanguage');
+Route::get('/questions/{language:code}/{topic}', 'QuestionController@apiForLanguageAndTopic');
+
 Route::get('/export/{language:code}', 'ExportController@export');

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Language;
 use App\Question;
-use App\States\Question\Published as PublishdQuestion;
+use App\States\Question\Published as PublishedQuestion;
 use App\States\Answer\Published as PublishedAnswer;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -20,7 +20,7 @@ class ExportController extends Controller
         $data = [];
 
         Question::with(['languages', 'topic', 'answer'])
-        ->whereState('status', PublishdQuestion::class)
+        ->whereState('status', PublishedQuestion::class)
         ->whereHas('languages', function(Builder $query) use ($language) {
             $query->where('id', '=', $language->id);
         })

@@ -8,7 +8,9 @@ use App\Language;
 use App\Http\Resources\AnswerResource;
 use Illuminate\Validation\Rule;
 use App\States\Answer\AnswerState;
+use App\States\Answer\Published;
 use App\Services\LanguageService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class AnswerController extends Controller
@@ -27,7 +29,7 @@ class AnswerController extends Controller
      */
     public function __construct(LanguageService $languageService)
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except('apiForLanguage');
 
         $this->languageService = $languageService;
     }
@@ -146,5 +148,32 @@ class AnswerController extends Controller
         $answer->languages()->syncWithoutDetaching($descriptions);
 
         return response()->json(new AnswerResource($answer->refresh()), 200);
+    }
+
+    /**
+     * Responds with published answers that have been translated to a given language.
+     *
+     * @param Language $language
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function apiForLanguage(Language $language)
+    {
+        $data = [];
+
+        Answer::with(['languages'])
+        ->whereState('status', Published::class)
+        ->whereHas('languages', function(Builder $query) use ($language) {
+            $query->where('id', '=', $language->id);
+        })
+        ->chunk(50, function($answers) use ($language, &$data) {
+            foreach($answers as $answer) {
+                $data[] = [
+                    'id' => $answer->id,
+                    'description' => $answer->languages->keyBy('id')->get($language->id)->pivot->description,
+                ];
+            }
+        });
+
+        return response()->json($data);
     }
 }
