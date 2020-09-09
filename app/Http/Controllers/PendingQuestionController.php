@@ -10,6 +10,7 @@ use App\States\PendingQuestion\Propagated;
 use App\States\PendingQuestion\PendingQuestionState;
 use Illuminate\Validation\Rule;
 use App\Services\LanguageService;
+use App\Rules\ReCaptcha;
 
 class PendingQuestionController extends Controller
 {
@@ -83,6 +84,7 @@ class PendingQuestionController extends Controller
         $validatedData = $request->validate([
             'question' => 'required',
             'language' => 'required|exists:App\Language,code',
+            'token' => ['required', new ReCaptcha('suggest', 0.5),],
         ]);
         
         $question = new PendingQuestion;
