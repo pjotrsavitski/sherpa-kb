@@ -22,7 +22,7 @@
                 <pending-question-review :pending-question="data.item" v-if="!language"></pending-question-review>
             </template>
 
-            <template v-slot:cell(description)="data">
+            <template v-slot:cell(question)="data">
                 <b-button v-b-modal="editModalId(data.item.id)" variant="link">{{ getDescription(data.item) }}</b-button>
             </template>
 
@@ -87,7 +87,7 @@
                         tdClass: ['align-middle', 'text-center']
                     },
                     {
-                        key: 'description',
+                        key: 'question',
                         sortable: false,
                         tdClass: ['align-middle', 'text-center']
                     },

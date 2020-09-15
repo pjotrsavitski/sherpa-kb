@@ -141,7 +141,6 @@ class PendingQuestionController extends Controller
         }
 
         // XXX Need to check permissions
-        // TODO Need to determine the language that is allowed to be set
         if ($request->has('question')
             && $request->has('translation')
             && $request->get('question')

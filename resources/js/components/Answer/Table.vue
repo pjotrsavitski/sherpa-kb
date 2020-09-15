@@ -22,7 +22,7 @@
                 <answer-review :answer="data.item" v-if="!language"></answer-review>
             </template>
 
-            <template v-slot:cell(description)="data" v-if="language">
+            <template v-slot:cell(answer)="data" v-if="language">
                 <b-button v-b-modal="modalId(data.item.id)" variant="link" :class="{ 'text-secondary': !hasDescription(data.item) }" v-b-popover.hover.top="popoverData(data.item, language)">{{ shortenDescription(descriptionOrPlaceholderText(data.item)) }}</b-button>
             </template>
 
@@ -88,7 +88,7 @@
                         tdClass: ['align-middle', 'text-center']
                     },
                     {
-                        key: 'description',
+                        key: 'answer',
                         sortable: false,
                         tdClass: ['align-middle', 'text-center']
                     },
@@ -130,7 +130,7 @@
                 ]
 
                 if (!this.language) {
-                    return fields.filter(field => field.key !== 'description')
+                    return fields.filter(field => field.key !== 'answer')
                 }
 
                 return fields

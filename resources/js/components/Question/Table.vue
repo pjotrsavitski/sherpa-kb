@@ -22,7 +22,7 @@
                 <question-review :question="data.item" v-if="!language"></question-review>
             </template>
 
-            <template v-slot:cell(description)="data" v-if="language">
+            <template v-slot:cell(question)="data" v-if="language">
                 <b-button v-b-modal="modalId(data.item.id)" variant="link" :class="{ 'text-secondary': !hasDescription(data.item) }">{{ descriptionOrPlaceholderText(data.item) }}</b-button>
             </template>
 
@@ -110,7 +110,7 @@
                         tdClass: ['align-middle', 'text-center']
                     },
                     {
-                        key: 'description',
+                        key: 'question',
                         sortable: false,
                         tdClass: ['align-middle', 'text-center']
                     },
@@ -162,7 +162,7 @@
                 ]
 
                 if (!this.language) {
-                    return fields.filter(field => field.key !== 'description')
+                    return fields.filter(field => field.key !== 'question')
                 }
 
                 return fields

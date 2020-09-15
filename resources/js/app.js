@@ -12,6 +12,7 @@ Vue.use(require('bootstrap-vue'))
 
 import store from './store'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Vue from 'vue'
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.config.productionTip = false
@@ -29,6 +30,7 @@ Vue.config.productionTip = false
 
 Vue.component('language-expert-view', require('./components/LanguageExpertView.vue').default)
 Vue.component('master-expert-view', require('./components/MasterExpertView.vue').default)
+Vue.component('users-table', require('./components/User/Table.vue').default)
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

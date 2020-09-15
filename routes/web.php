@@ -44,3 +44,5 @@ Route::get('/answers', 'AnswerController@list');
 Route::get('/answers/states', 'AnswerController@states');
 Route::post('/answers', 'AnswerController@store');
 Route::put('/answers/{answer}', 'AnswerController@update');
+
+Route::get('/users', 'UserController@index')->name('users');
