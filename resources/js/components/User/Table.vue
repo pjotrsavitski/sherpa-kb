@@ -1,7 +1,16 @@
 <template>
     <div>
+        <user-create></user-create>
         <user-edit :user="user" v-if="user"></user-edit>
         <h3>Users</h3>
+        <b-button
+            v-b-modal="'user-create'"
+            variant="primary"
+            class="mb-2"
+            v-b-tooltip.right="'Add new user'"
+        >
+            <font-awesome-icon :icon="['fas', 'user-plus']" size="lg" />
+        </b-button>
         
         <b-table
             striped
@@ -64,6 +73,8 @@
                 <b-button
                     variant="success"
                     @click="onEditUser(data.item)"
+                    v-b-tooltip
+                    title="Edit user"
                 >
                     <font-awesome-icon :icon="['fas', 'user-edit']" size="lg" />
                 </b-button>
@@ -82,15 +93,18 @@
 
 <script>
     import { mapState } from 'vuex'
+    import UserCreate from './Create.vue'
     import UserEdit from './Edit.vue'
     import { library } from '@fortawesome/fontawesome-svg-core'
-    import { faUserCheck, faUserEdit } from '@fortawesome/free-solid-svg-icons'
+    import { faUserCheck, faUserEdit, faUserPlus } from '@fortawesome/free-solid-svg-icons'
 
     library.add(faUserCheck)
     library.add(faUserEdit)
+    library.add(faUserPlus)
 
     export default {
         components: {
+            UserCreate,
             UserEdit
         },
         computed: {
@@ -183,6 +197,22 @@
             .catch(error => {
                 this.isBusy = false
                 console.error('Users loading:', error)
+            })
+
+            this.$root.$on('userCreated', user => {
+                this.items.push(user)
+            })
+
+            this.$root.$on('userUpdated', user => {
+                const index = this.items.findIndex(item => {
+                    return item.id === user.id
+                })
+                
+                if (index !== -1) {
+                    Vue.set(this.items, index, user)
+                } else {
+                    console.warn('Index not found, could not update a user:', user)
+                }
             })
         }
     }

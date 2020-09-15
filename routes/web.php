@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,4 +46,6 @@ Route::get('/answers/states', 'AnswerController@states');
 Route::post('/answers', 'AnswerController@store');
 Route::put('/answers/{answer}', 'AnswerController@update');
 
-Route::get('/users', 'UserController@index')->name('users');
+Route::get('/users', [UserController::class, 'index'])->name('users');
+Route::post('/users', [UserController::class, 'store']);
+Route::put('/users/{user}', [UserController::class, 'update']);

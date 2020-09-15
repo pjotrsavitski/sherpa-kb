@@ -125,16 +125,24 @@
                     return
                 }
 
-                this.isBusy = true;
-                axios.put('/users/' + this.user.id, {
-                    name: this.form.name,
-                    email: this.form.email,
-                    password: this.form.password,
-                    confirmation: this.form.confirmation
-                })
+                this.isBusy = true
+                const data = {
+                    name: this.form.name
+                }
+
+                if (this.user.email !== this.form.email) {
+                    data.email = this.form.email
+                }
+
+                if (this.form.password && this.form.confirmation && this.form.password === this.form.confirmation) {
+                    data.password = this.form.password
+                    data.password_confirmation = this.form.confirmation
+                }
+
+                axios.put('/users/' + this.user.id, data)
                 .then(response => {
-                    this.isBusy = false;
-                    // TODO Make sure that user is updated
+                    this.isBusy = false
+                    this.$root.$emit('userUpdated', response.data)
 
                     this.$nextTick(() => {
                         this.$bvModal.hide(this.modalId)
