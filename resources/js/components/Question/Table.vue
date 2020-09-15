@@ -2,6 +2,8 @@
     <div>
         <question-edit :question="question" :language="language" v-if="language && question"></question-edit>
         <question-review :question="question" v-if="!language && question"></question-review>
+        <answer-edit :answer="answer" :language="language" v-if="language && answer"></answer-edit>
+        <answer-review :answer="answer" v-if="!language && answer"></answer-review>
         
         <h3>Questions</h3>
         
@@ -47,14 +49,20 @@
             </template>
 
             <template v-slot:cell(answer)="data">
-                <b-button
-                    pill
-                    variant="outline-secondary"
-                    v-b-popover.hover.click.blur.top="answerPopoverData(data.item)"
-                    v-if="data.item.answer"
-                >
-                    <font-awesome-icon :icon="['fas', 'info']" />
-                </b-button>
+                <b-button-group v-if="data.item.answer">
+                    <b-button
+                        variant="outline-secondary"
+                        v-b-popover.hover.click.blur.top="answerPopoverData(data.item)"
+                    >
+                        <font-awesome-icon :icon="['fas', 'info-circle']" />
+                    </b-button>
+                    <b-button
+                        variant="outline-secondary"
+                        @click="onOpenAnswerModal(data.item)"
+                    >
+                        <font-awesome-icon :icon="['fa', 'edit']" />
+                    </b-button>
+                </b-button-group>
             </template>
 
             <template v-slot:cell(languages)="data">
@@ -90,18 +98,23 @@
     import { mapState, mapGetters } from 'vuex'
     import QuestionEdit from './Edit.vue'
     import QuestionReview from './Review.vue'
+    import AnswerEdit from '../Answer/Edit.vue'
+    import AnswerReview from '../Answer/Review.vue'
     import TableHelpers from '../../mixins/TableHelpers'
     import { library } from '@fortawesome/fontawesome-svg-core'
-    import { faInfo } from '@fortawesome/free-solid-svg-icons'
+    import { faInfoCircle, faEdit } from '@fortawesome/free-solid-svg-icons'
 
-    library.add(faInfo)
+    library.add(faInfoCircle)
+    library.add(faEdit)
 
     export default {
         props: ['items', 'language', 'isBusy'],
         mixins: [TableHelpers],
         components: {
             QuestionEdit,
-            QuestionReview
+            QuestionReview,
+            AnswerEdit,
+            AnswerReview
         },
         computed: {
             ...mapState({
@@ -182,6 +195,10 @@
             modalId() {
                 const type = this.language ? 'edit' : 'review'
                 return `question-${type}`
+            },
+            answerModalId() {
+                const type = this.language ? 'edit' : 'review'
+                return `answer-${type}`
             }
         },
         data() {
@@ -189,7 +206,8 @@
                 currentPage: 1,
                 sortBy: 'id',
                 sortDesc: true,
-                question: null
+                question: null,
+                answer: null
             }
         },
         methods: {
@@ -216,11 +234,22 @@
                 this.$nextTick(() => {
                     this.$bvModal.show(this.modalId)
                 })
+            },
+            onOpenAnswerModal(question) {
+                const answer = this.answers.find(answer => answer.id === question.answer)
+                
+                if (answer) {
+                    this.answer = answer
+                    this.$nextTick(() => {
+                        this.$bvModal.show(this.answerModalId)
+                    })
+                }
             }
         },
         created() {
             this.$store.dispatch('questions/preloadStates')
             this.$store.dispatch('questions/preloadTopics')
+            this.$store.dispatch('answers/preloadStates')
         }
     }
 </script>
