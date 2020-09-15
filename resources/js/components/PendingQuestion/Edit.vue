@@ -65,7 +65,7 @@
         props: ['pendingQuestion'],
         computed: {
             modalId() {
-                return 'pending-question-edit-' + this.pendingQuestion.id;
+                return 'pending-question-edit';
             },
             questionState() {
                 return (this.form.question && this.form.question.length) > 0 ? true : false;

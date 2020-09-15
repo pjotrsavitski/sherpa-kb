@@ -2,6 +2,12 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PendingQuestionController;
+use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\TopicController;
+use App\Http\Controllers\AnswerController;
+use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\ExportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,16 +24,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// TODO Need to protect the API endpoit somehow, using reCAPTCHA might work
-Route::post('/question', 'PendingQuestionController@store');
+Route::post('/question', [PendingQuestionController::class, 'store']);
 
-Route::get('/languages', 'LanguageController@api');
+Route::get('/languages', [LanguageController::class, 'api']);
 
-Route::get('/topics', 'TopicController@api');
+Route::get('/topics', [TopicController::class, 'api']);
 
-Route::get('/answers/{language:code}', 'AnswerController@apiForLanguage');
+Route::get('/answers/{language:code}', [AnswerController::class, 'apiForLanguage']);
 
-Route::get('/questions/{language:code}', 'QuestionController@apiForLanguage');
-Route::get('/questions/{language:code}/{topic}', 'QuestionController@apiForLanguageAndTopic');
+Route::get('/questions/{language:code}', [QuestionController::class, 'apiForLanguage']);
+Route::get('/questions/{language:code}/{topic}', [QuestionController::class, 'apiForLanguageAndTopic']);
 
-Route::get('/export/{language:code}', 'ExportController@export');
+Route::get('/export/{language:code}', [ExportController::class, 'export']);

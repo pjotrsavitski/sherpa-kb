@@ -90,7 +90,7 @@
                 answers: 'answers/published'
             }),
             modalId() {
-                return `question-review-${this.question.id}`
+                return `question-review`
             },
             topicOptions() {
                 const options = this.topics.map(topic => {

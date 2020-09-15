@@ -1,5 +1,8 @@
 <template>
     <div>
+        <answer-edit :answer="answer" :language="language" v-if="language && answer"></answer-edit>
+        <answer-review :answer="answer" v-if="!language && answer"></answer-review>
+        
         <h3>Answers</h3>
         
         <b-table
@@ -18,16 +21,27 @@
         >
             <template v-slot:cell(id)="data">
                 {{ data.value }}
-                <answer-edit :answer="data.item" :language="language" v-if="language"></answer-edit>
-                <answer-review :answer="data.item" v-if="!language"></answer-review>
             </template>
 
             <template v-slot:cell(answer)="data" v-if="language">
-                <b-button v-b-modal="modalId(data.item.id)" variant="link" :class="{ 'text-secondary': !hasDescription(data.item) }" v-b-popover.hover.top="popoverData(data.item, language)">{{ shortenDescription(descriptionOrPlaceholderText(data.item)) }}</b-button>
+                <b-button
+                    variant="link"
+                    :class="{ 'text-secondary': !hasDescription(data.item) }"
+                    v-b-popover.hover.top="popoverData(data.item, language)"
+                    @click="onOpenModal(data.item)"
+                >
+                    {{ shortenDescription(descriptionOrPlaceholderText(data.item)) }}
+                </b-button>
             </template>
 
             <template v-slot:cell(english_translation)="data">
-                <b-button v-b-modal="modalId(data.item.id)" variant="link" v-b-popover.hover.top="popoverData(data.item, 'en')">{{ shortenDescription(data.item.descriptions.en) }}</b-button>
+                <b-button
+                    variant="link"
+                    v-b-popover.hover.top="popoverData(data.item, 'en')"
+                    @click="onOpenModal(data.item)"
+                >
+                    {{ shortenDescription(data.item.descriptions.en) }}
+                </b-button>
             </template>
 
             <template v-slot:cell(languages)="data">
@@ -134,20 +148,21 @@
                 }
 
                 return fields
-            }
+            },
+            modalId() {
+                const type = this.language ? 'edit' : 'review'
+                return `answer-${type}`
+            },
         },
         data() {
             return {
                 currentPage: 1,
                 sortBy: 'id',
-                sortDesc: true
+                sortDesc: true,
+                answer: null
             }
         },
         methods: {
-            modalId(id) {
-                const type = this.language ? 'edit' : 'review'
-                return `answer-${type}-${id}`
-            },
             descriptionsCount(item) {
                 return Object.keys(item.descriptions).length
             },
@@ -162,6 +177,12 @@
                     content: item.descriptions.hasOwnProperty(code) ? item.descriptions[code] : '',
                     customClass: 'popover-preserve-new-lines'
                 }
+            },
+            onOpenModal(answer) {
+                this.answer = answer
+                this.$nextTick(() => {
+                    this.$bvModal.show(this.modalId)
+                })
             }
         },
         created() {

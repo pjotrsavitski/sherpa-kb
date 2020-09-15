@@ -1,5 +1,8 @@
 <template>
     <div>
+        <pending-question-edit :pending-question="pendingQuestion" v-if="language && pendingQuestion"></pending-question-edit>
+        <pending-question-review :pending-question="pendingQuestion" v-if="!language && pendingQuestion"></pending-question-review>
+        
         <h3>Pending questions</h3>
         
         <b-table
@@ -18,16 +21,25 @@
         >
             <template v-slot:cell(id)="data">
                 {{ data.value }}
-                <pending-question-edit :pending-question="data.item" v-if="language"></pending-question-edit>
-                <pending-question-review :pending-question="data.item" v-if="!language"></pending-question-review>
             </template>
 
             <template v-slot:cell(question)="data">
-                <b-button v-b-modal="editModalId(data.item.id)" variant="link">{{ getDescription(data.item) }}</b-button>
+                <b-button
+                    variant="link"
+                    @click="onOpenModal(data.item)"
+                >
+                    {{ getDescription(data.item) }}
+                </b-button>
             </template>
 
             <template v-slot:cell(english_translation)="data">
-                <b-button v-b-modal="editModalId(data.item.id)" variant="link" :class="{ 'text-secondary': !hasEnglishDescription(data.item) }">{{ englishTranslationOrPlaceholderText(getEnglishDescription(data.item)) }}</b-button>
+                <b-button
+                    variant="link"
+                    :class="{ 'text-secondary': !hasEnglishDescription(data.item) }"
+                    @click="onOpenModal(data.item)"
+                >
+                    {{ englishTranslationOrPlaceholderText(getEnglishDescription(data.item)) }}
+                </b-button>
             </template>
 
             <template v-slot:cell(group)="data">
@@ -72,6 +84,10 @@
             }),
             totalRows() {
                 return this.items.length
+            },
+            modalId() {
+                const type = this.language ? 'edit' : 'review'
+                return 'pending-question-' + type
             }
         },
         data() {
@@ -126,7 +142,8 @@
                             return classes
                         },
                     }
-                ]
+                ],
+                pendingQuestion: null
             }
         },
         methods: {
@@ -148,9 +165,11 @@
             englishTranslationOrPlaceholderText(value) {
                 return (value && value.trim()) ? value : 'Add English translation'
             },
-            editModalId(id) {
-                const type = this.language ? 'edit' : 'review'
-                return 'pending-question-' + type + '-' + id
+            onOpenModal(pendingQuestion) {
+                this.pendingQuestion = pendingQuestion
+                this.$nextTick(() => {
+                    this.$bvModal.show(this.modalId)
+                })
             }
         },
         created() {

@@ -103,7 +103,7 @@
                 answers: 'answers/published'
             }),
             modalId() {
-                return `question-edit-${this.question.id}`
+                return `question-edit`
             },
             questionState() {
                 return (this.form.question && this.form.question.length) > 0 ? true : false

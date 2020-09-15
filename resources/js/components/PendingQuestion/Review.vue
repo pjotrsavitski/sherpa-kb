@@ -76,7 +76,7 @@
                 states: state => state.pendingQuestions.states,
             }),
             modalId() {
-                return 'pending-question-review-' + this.pendingQuestion.id;
+                return 'pending-question-review';
             },
             questionState() {
                 return (this.form.question && this.form.question.length) > 0 ? true : false;

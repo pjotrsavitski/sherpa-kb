@@ -80,7 +80,7 @@
                 languages: state => state.app.languages
             }),
             modalId() {
-                return `answer-edit-${this.answer.id}`
+                return `answer-edit`
             },
             totalLanguages() {
                 return this.$store.getters['app/totalLanguages']

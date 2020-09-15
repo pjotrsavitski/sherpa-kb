@@ -1,5 +1,8 @@
 <template>
     <div>
+        <question-edit :question="question" :language="language" v-if="language && question"></question-edit>
+        <question-review :question="question" v-if="!language && question"></question-review>
+        
         <h3>Questions</h3>
         
         <b-table
@@ -18,16 +21,25 @@
         >
             <template v-slot:cell(id)="data">
                 {{ data.value }}
-                <question-edit :question="data.item" :language="language" v-if="language"></question-edit>
-                <question-review :question="data.item" v-if="!language"></question-review>
             </template>
 
             <template v-slot:cell(question)="data" v-if="language">
-                <b-button v-b-modal="modalId(data.item.id)" variant="link" :class="{ 'text-secondary': !hasDescription(data.item) }">{{ descriptionOrPlaceholderText(data.item) }}</b-button>
+                <b-button
+                    variant="link"
+                    :class="{ 'text-secondary': !hasDescription(data.item) }"
+                    @click="onOpenModal(data.item)"
+                >
+                    {{ descriptionOrPlaceholderText(data.item) }}
+                </b-button>
             </template>
 
             <template v-slot:cell(english_translation)="data">
-                <b-button v-b-modal="modalId(data.item.id)" variant="link">{{ data.item.descriptions.en }}</b-button>
+                <b-button
+                    variant="link"
+                    @click="onOpenModal(data.item)"
+                >
+                    {{ data.item.descriptions.en }}
+                </b-button>
             </template>
 
             <template v-slot:cell(category)="data">
@@ -166,20 +178,21 @@
                 }
 
                 return fields
+            },
+            modalId() {
+                const type = this.language ? 'edit' : 'review'
+                return `question-${type}`
             }
         },
         data() {
             return {
                 currentPage: 1,
                 sortBy: 'id',
-                sortDesc: true
+                sortDesc: true,
+                question: null
             }
         },
         methods: {
-            modalId(id) {
-                const type = this.language ? 'edit' : 'review'
-                return `question-${type}-${id}`
-            },
             descriptionsCount(item) {
                 return Object.keys(item.descriptions).length
             },
@@ -197,6 +210,12 @@
                     content: answer ? this.descriptionInLanguageOrEnglish(answer.descriptions, language) : '',
                     customClass: 'popover-preserve-new-lines'
                 }
+            },
+            onOpenModal(question) {
+                this.question = question
+                this.$nextTick(() => {
+                    this.$bvModal.show(this.modalId)
+                })
             }
         },
         created() {

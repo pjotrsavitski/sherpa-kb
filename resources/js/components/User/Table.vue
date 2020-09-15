@@ -2,11 +2,13 @@
     <div>
         <user-create></user-create>
         <user-edit :user="user" v-if="user"></user-edit>
+
         <h3>Users</h3>
+
         <b-button
             v-b-modal="'user-create'"
             variant="primary"
-            class="mb-2"
+            class="my-4"
             v-b-tooltip.right="'Add new user'"
         >
             <font-awesome-icon :icon="['fas', 'user-plus']" size="lg" />

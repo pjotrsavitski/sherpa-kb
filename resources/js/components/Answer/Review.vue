@@ -64,7 +64,7 @@
                 states: state => state.answers.states
             }),
             modalId() {
-                return `answer-review-${this.answer.id}`
+                return `answer-review`
             },
             totalLanguages() {
                 return this.$store.getters['app/totalLanguages']
