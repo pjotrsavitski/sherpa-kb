@@ -29,6 +29,8 @@
                         :state="nameState"
                         trim
                         :disabled="!canEdit()"
+                        debounce="250"
+                        @update="setDirty('name')"
                     ></b-form-input>
                 </b-form-group>
                 <b-form-group
@@ -46,12 +48,16 @@
                         :state="emailState"
                         trim
                         :disabled="!canEdit()"
+                        debounce="250"
+                        @update="setDirty('email')"
                     ></b-form-input>
                 </b-form-group>
                 <b-form-group
                     id="input-group-password"
                     label="Password"
                     label-for="input-password"
+                    invalid-feedback="Password is required. Length should be at least 8 characters."
+                    :state="passwordState"
                 >
                     <b-form-input
                         id="input-password"
@@ -59,13 +65,18 @@
                         type="password"
                         trim
                         required
+                        :state="passwordState"
                         :disabled="!canEdit()"
+                        debounce="250"
+                        @update="setDirty('password')"
                     ></b-form-input>
                 </b-form-group>
                 <b-form-group
                     id="input-group-confirmation"
                     label="Password confirmation"
                     label-for="input-confirmation"
+                    invalid-feedback="Confirmation is required. Length should be at least 8 characters. Password and confirmation should match."
+                    :state="confirmationState"
                 >
                     <b-form-input
                         id="input-confirmation"
@@ -73,7 +84,10 @@
                         type="password"
                         trim
                         required
+                        :state="confirmationState"
                         :disabled="!canEdit()"
+                        debounce="250"
+                        @update="setDirty('confirmation')"
                     ></b-form-input>
                 </b-form-group>
             </form>
@@ -87,15 +101,38 @@
                 return 'user-create'
             },
             nameState() {
+                if (this.form.dirty.indexOf('name') === -1) {
+                    return null;
+                }
+
                 return (this.form.name && this.form.name.length) > 0 ? true : false
             },
             emailState() {
+                if (this.form.dirty.indexOf('email') === -1) {
+                    return null;
+                }
+
                 return (this.form.email && this.form.email.length) > 0 ? true : false
+            },
+            passwordState() {
+                if (this.form.dirty.indexOf('password') === -1) {
+                    return null;
+                }
+
+                return (this.form.password && this.form.password.length >= 8) ? true : false
+            },
+            confirmationState() {
+                if (this.form.dirty.indexOf('confirmation') === -1) {
+                    return null;
+                }
+                
+                return (this.form.confirmation && this.form.confirmation.length >= 8 && this.form.password === this.form.confirmation) ? true : false
             }
         },
         data() {
             return {
                 form: {
+                    dirty: [],
                     name: "",
                     email: "",
                     password: "",
@@ -106,6 +143,7 @@
         },
         methods: {
             resetModal() {
+                this.form.dirty = []
                 this.form.name = ""
                 this.form.email = ""
                 this.form.password = ""
@@ -115,7 +153,7 @@
                 return true
             },
             canSave() {
-                return this.canEdit() && this.nameState && this.emailState
+                return this.canEdit() && this.nameState && this.emailState && this.passwordState && this.confirmationState
             },
             handleSave(bvModelEvent) {
                 bvModelEvent.preventDefault()
@@ -158,6 +196,11 @@
                         noCloseButton: true
                     })
                 })
+            },
+            setDirty(field) {
+                if (this.form.dirty.indexOf(field) === -1) {
+                    this.form.dirty.push(field)
+                }
             }
         }
     }
