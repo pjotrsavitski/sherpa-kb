@@ -74,13 +74,25 @@
                         :disabled="!canEdit()"
                     ></b-form-input>
                 </b-form-group>
+                <b-form-group
+                    id="input-group-roles"
+                    label="Roles"
+                    label-for="input-roles"
+                >
+                    <b-form-select
+                        id="input-roles"
+                        v-model="form.roles"
+                        :options="roleOptions"
+                        multiple
+                    ></b-form-select>
+                </b-form-group>
             </form>
         </b-modal>
 </template>
 
 <script>
     export default {
-        props: ['user'],
+        props: ['user', 'roleOptions'],
         computed: {
             modalId() {
                 return 'user-edit'
@@ -98,7 +110,8 @@
                     name: "",
                     email: "",
                     password: "",
-                    confirmation: ""
+                    confirmation: "",
+                    roles: []
                 },
                 isBusy: false
             };
@@ -109,6 +122,9 @@
                 this.form.email = this.user.email
                 this.form.password = ""
                 this.form.confirmation = ""
+                this.form.roles = this.user.roles.map(role => {
+                    return role.id
+                })
             },
             canEdit() {
                 return true
@@ -127,7 +143,8 @@
 
                 this.isBusy = true
                 const data = {
-                    name: this.form.name
+                    name: this.form.name,
+                    roles: this.form.roles
                 }
 
                 if (this.user.email !== this.form.email) {

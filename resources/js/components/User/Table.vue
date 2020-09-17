@@ -1,7 +1,7 @@
 <template>
     <div>
-        <user-create></user-create>
-        <user-edit :user="user" v-if="user"></user-edit>
+        <user-create :role-options="roleOptions"></user-create>
+        <user-edit :user="user" :role-options="roleOptions" v-if="user"></user-edit>
 
         <h3>Users</h3>
 
@@ -159,6 +159,14 @@
                 ]
 
                 return fields
+            },
+            roleOptions() {
+                return this.roles.map(role => {
+                    return {
+                        value: role.id,
+                        text: this.capitalize(role.name)
+                    }
+                })
             }
         },
         data() {
@@ -168,7 +176,8 @@
                 sortDesc: true,
                 items: [],
                 isBusy: true,
-                user: null
+                user: null,
+                roles: []
             }
         },
         methods: {
@@ -201,6 +210,16 @@
                 console.error('Users loading:', error)
             })
 
+            axios.get('/users/roles')
+            .then(response => {
+                this.isBusy = false
+                this.roles = response.data
+            })
+            .catch(error => {
+                this.isBusy = false
+                console.error('Roles loading:', error)
+            })
+
             this.$root.$on('userCreated', user => {
                 this.items.push(user)
             })
@@ -219,3 +238,9 @@
         }
     }
 </script>
+
+<style scoped>
+.badge:not(:last-child) {
+    margin-right: 5px;
+}
+</style>

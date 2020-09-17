@@ -90,12 +90,25 @@
                         @update="setDirty('confirmation')"
                     ></b-form-input>
                 </b-form-group>
+                <b-form-group
+                    id="input-group-roles"
+                    label="Roles"
+                    label-for="input-roles"
+                >
+                    <b-form-select
+                        id="input-roles"
+                        v-model="form.roles"
+                        :options="roleOptions"
+                        multiple
+                    ></b-form-select>
+                </b-form-group>
             </form>
         </b-modal>
 </template>
 
 <script>
     export default {
+        props: ['roleOptions'],
         computed: {
             modalId() {
                 return 'user-create'
@@ -136,7 +149,8 @@
                     name: "",
                     email: "",
                     password: "",
-                    confirmation: ""
+                    confirmation: "",
+                    roles: []
                 },
                 isBusy: false
             };
@@ -148,6 +162,7 @@
                 this.form.email = ""
                 this.form.password = ""
                 this.form.confirmation = ""
+                this.form.roles = []
             },
             canEdit() {
                 return true
@@ -169,7 +184,8 @@
                     name: this.form.name,
                     email: this.form.email,
                     password: this.form.password,
-                    password_confirmation: this.form.confirmation
+                    password_confirmation: this.form.confirmation,
+                    roles: this.form.roles
                 })
                 .then(response => {
                     this.isBusy = false;

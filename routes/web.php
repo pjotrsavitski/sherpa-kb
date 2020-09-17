@@ -51,5 +51,6 @@ Route::post('/answers', [AnswerController::class, 'store']);
 Route::put('/answers/{answer}', [AnswerController::class, 'update']);
 
 Route::get('/users', [UserController::class, 'index'])->name('users');
+Route::get('/users/roles', [UserController::class, 'roles']);
 Route::post('/users', [UserController::class, 'store']);
 Route::put('/users/{user}', [UserController::class, 'update']);
