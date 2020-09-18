@@ -52,6 +52,8 @@
                     id="input-group-password"
                     label="Password"
                     label-for="input-password"
+                    invalid-feedback="Length should be at least 8 characters."
+                    :state="passwordState"
                 >
                     <b-form-input
                         id="input-password"
@@ -59,12 +61,15 @@
                         type="password"
                         trim
                         :disabled="!canEdit()"
+                        :state="passwordState"
                     ></b-form-input>
                 </b-form-group>
                 <b-form-group
                     id="input-group-confirmation"
                     label="Password confirmation"
                     label-for="input-confirmation"
+                    invalid-feedback="Length should be at least 8 characters. Password and confirmation should match."
+                    :state="confirmationState"
                 >
                     <b-form-input
                         id="input-confirmation"
@@ -72,6 +77,7 @@
                         type="password"
                         trim
                         :disabled="!canEdit()"
+                        :state="confirmationState"
                     ></b-form-input>
                 </b-form-group>
                 <b-form-group
@@ -91,8 +97,11 @@
 </template>
 
 <script>
+    import ToastHelpers from '../../mixins/ToastHelpers'
+
     export default {
         props: ['user', 'roleOptions'],
+        mixins: [ToastHelpers],
         computed: {
             modalId() {
                 return 'user-edit'
@@ -102,6 +111,20 @@
             },
             emailState() {
                 return (this.form.email && this.form.email.length) > 0 ? true : false
+            },
+            passwordState() {
+                if (this.form.password === '') {
+                    return null
+                }
+
+                return (this.form.password && this.form.password.length >= 8) ? true : false
+            },
+            confirmationState() {
+                if (this.form.confirmation === '') {
+                    return null
+                }
+
+                return (this.form.confirmation && this.form.confirmation.length >= 8 && this.form.password === this.form.confirmation) ? true : false
             }
         },
         data() {
@@ -130,7 +153,7 @@
                 return true
             },
             canSave() {
-                return this.canEdit() && this.nameState && this.emailState
+                return this.canEdit() && this.nameState && this.emailState && (this.passwordState || this.passwordState === null) && (this.confirmationState || this.confirmationState === null)
             },
             handleSave(bvModelEvent) {
                 bvModelEvent.preventDefault()
@@ -151,7 +174,7 @@
                     data.email = this.form.email
                 }
 
-                if (this.form.password && this.form.confirmation && this.form.password === this.form.confirmation) {
+                if (this.form.password && this.form.confirmation) {
                     data.password = this.form.password
                     data.password_confirmation = this.form.confirmation
                 }
@@ -169,18 +192,7 @@
                     this.isBusy = false
                     console.error(error)
 
-                    let message = error.message
-
-                    if (error.response && error.response.data && error.response.data.message) {
-                        message = error.response.data.message
-                    }
-
-                    this.$bvToast.toast(message, {
-                        variant: 'danger',
-                        solid: true,
-                        autoHideDelay: 2500,
-                        noCloseButton: true
-                    })
+                    this.displayHttpError(error)
                 })
             }
         }

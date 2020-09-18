@@ -7,6 +7,8 @@ use App\User;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\RoleResource;
+use App\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
@@ -29,7 +31,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         if ($request->wantsJson()) {
-            return response()->json(User::with('roles')->get());
+            return UserResource::collection(User::with('roles')->get());
         }
         
         return view('users');
@@ -42,7 +44,7 @@ class UserController extends Controller
      */
     public function roles()
     {
-        return Role::all();
+        return RoleResource::collection(Role::all());
     }
 
     /**
@@ -73,7 +75,7 @@ class UserController extends Controller
             $user->syncRoles($data['roles']);
         }
 
-        return $user->loadMissing('roles');
+        return new UserResource($user);
     }
 
     /**
@@ -121,6 +123,25 @@ class UserController extends Controller
         
         $user->syncRoles($roles);
 
-        return $user->refresh()->loadMissing('roles');
+        return new UserResource($user->refresh());
+    }
+
+    /**
+     * Delete a User and respond with JSON.
+     *
+     * @param User $user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete(User $user)
+    {
+        if (Auth::user()->is($user)) {
+            return response()->json([
+                'message' => 'You can not delete yourself!',
+            ], 422);
+        }
+
+        $user->delete();
+
+        return new UserResource($user);
     }
 }

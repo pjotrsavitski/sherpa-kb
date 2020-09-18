@@ -72,14 +72,25 @@
             </template>
 
             <template v-slot:cell(actions)="data">
-                <b-button
-                    variant="success"
-                    @click="onEditUser(data.item)"
-                    v-b-tooltip
-                    title="Edit user"
-                >
-                    <font-awesome-icon :icon="['fas', 'user-edit']" size="lg" />
-                </b-button>
+                <b-button-group>
+                    <b-button
+                        variant="success"
+                        @click="onEditUser(data.item)"
+                        v-b-tooltip
+                        title="Edit user"
+                    >
+                        <font-awesome-icon :icon="['fas', 'user-edit']" size="lg" />
+                    </b-button>
+                    <b-button
+                        variant="danger"
+                        @click="onDeleteUser(data.item)"
+                        v-b-tooltip
+                        title="Delete user"
+                        :disabled="data.item.id === currentUser.id"
+                    >
+                        <font-awesome-icon :icon="['fas', 'user-minus']" size="lg" />
+                    </b-button>
+                </b-button-group>
             </template>
         </b-table>
 
@@ -97,21 +108,25 @@
     import { mapState } from 'vuex'
     import UserCreate from './Create.vue'
     import UserEdit from './Edit.vue'
+    import ToastHelpers from '../../mixins/ToastHelpers'
     import { library } from '@fortawesome/fontawesome-svg-core'
-    import { faUserCheck, faUserEdit, faUserPlus } from '@fortawesome/free-solid-svg-icons'
+    import { faUserCheck, faUserEdit, faUserPlus, faUserMinus } from '@fortawesome/free-solid-svg-icons'
 
     library.add(faUserCheck)
     library.add(faUserEdit)
     library.add(faUserPlus)
+    library.add(faUserMinus)
 
     export default {
         components: {
             UserCreate,
             UserEdit
         },
+        mixins: [ToastHelpers],
         computed: {
             ...mapState({
-                perPage: state => state.app.itemsPerPage
+                perPage: state => state.app.itemsPerPage,
+                currentUser: state => state.app.user
             }),
             totalRows() {
                 return this.items.length
@@ -197,13 +212,52 @@
             },
             capitalize(string) {
                 return string.charAt(0).toUpperCase() + string.slice(1)
+            },
+            onDeleteUser(user) {
+                this.$bvModal.msgBoxConfirm(`Please confirm that you really want to delete user ${user.name}.`, {
+                    title: 'Please Confirm',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'danger',
+                    okTitle: 'YES',
+                    cancelTitle: 'NO',
+                    footerClass: 'p-2',
+                    hideHeaderClose: false,
+                    centered: true
+                })
+                .then(value => {
+                    if (value) {
+                        this.isBusy = true
+                        axios.delete(`/users/${user.id}`)
+                        .then(response => {
+                            this.isBusy = false
+
+                            const index = this.items.findIndex(item => {
+                                return item.id === user.id
+                            })
+
+                            if (index !== -1) {
+                                this.items.splice(index, 1)
+                            }
+                        })
+                        .catch(error => {
+                            this.isBusy = false
+                            console.error('User delete:', error)
+
+                            this.displayHttpError(error)
+                        })
+                    }
+                })
+                .catch(err => {
+                    console.log('User delete confirmation error:', err)
+                })
             }
         },
         created() {
             axios.get('/users')
             .then(response => {
                 this.isBusy = false
-                this.items = response.data
+                this.items = response.data.data
             })
             .catch(error => {
                 this.isBusy = false
@@ -213,7 +267,7 @@
             axios.get('/users/roles')
             .then(response => {
                 this.isBusy = false
-                this.roles = response.data
+                this.roles = response.data.data
             })
             .catch(error => {
                 this.isBusy = false

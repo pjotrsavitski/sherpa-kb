@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="base-url" content="{{ url('/') }}">
     @auth
-    <meta name="current-user" content="{{ json_encode(Auth::user()) }}">
+    <meta name="current-user" content="{{ json_encode(new App\Http\Resources\UserResource(Auth::user())) }}">
     <meta name="app-languages" content="{{ json_encode(App\Language::all()) }}">
     @endauth
 

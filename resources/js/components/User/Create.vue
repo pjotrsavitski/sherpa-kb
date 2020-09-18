@@ -107,8 +107,11 @@
 </template>
 
 <script>
+    import ToastHelpers from '../../mixins/ToastHelpers'
+
     export default {
         props: ['roleOptions'],
+        mixins: [ToastHelpers],
         computed: {
             modalId() {
                 return 'user-create'
@@ -199,18 +202,7 @@
                     this.isBusy = false
                     console.error(error)
 
-                    let message = error.message
-
-                    if (error.response && error.response.data && error.response.data.message) {
-                        message = error.response.data.message
-                    }
-
-                    this.$bvToast.toast(message, {
-                        variant: 'danger',
-                        solid: true,
-                        autoHideDelay: 2500,
-                        noCloseButton: true
-                    })
+                    this.displayHttpError(error)
                 })
             },
             setDirty(field) {

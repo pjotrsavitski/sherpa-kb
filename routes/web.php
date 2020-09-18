@@ -54,3 +54,4 @@ Route::get('/users', [UserController::class, 'index'])->name('users');
 Route::get('/users/roles', [UserController::class, 'roles']);
 Route::post('/users', [UserController::class, 'store']);
 Route::put('/users/{user}', [UserController::class, 'update']);
+Route::delete('/users/{user}', [UserController::class, 'delete']);
