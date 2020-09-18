@@ -182,7 +182,7 @@
                 axios.put('/users/' + this.user.id, data)
                 .then(response => {
                     this.isBusy = false
-                    this.$root.$emit('userUpdated', response.data)
+                    this.$root.$emit('userUpdated', response.data.data)
 
                     this.$nextTick(() => {
                         this.$bvModal.hide(this.modalId)

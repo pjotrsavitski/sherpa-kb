@@ -192,7 +192,7 @@
                 })
                 .then(response => {
                     this.isBusy = false;
-                    this.$root.$emit('userCreated', response.data)
+                    this.$root.$emit('userCreated', response.data.data)
 
                     this.$nextTick(() => {
                         this.$bvModal.hide(this.modalId)
