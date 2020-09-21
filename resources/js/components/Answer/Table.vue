@@ -4,12 +4,14 @@
         <answer-review :answer="answer" v-if="!language && answer"></answer-review>
         
         <h3>Answers</h3>
+
+        <table-search-descriptions></table-search-descriptions>
         
         <b-table
             striped
             hover
             :fields="fields"
-            :items="items"
+            :items="filteredItems"
             primary-key="id"
             thead-class="text-center"
             stacked="lg"
@@ -77,22 +79,22 @@
     import { mapState } from 'vuex'
     import AnswerEdit from './Edit.vue'
     import AnswerReview from './Review.vue'
+    import TableSearchDescriptions from '../TableSearchDescriptions.vue'
     import TableHelpers from '../../mixins/TableHelpers'
+    import TableSearchHelpers from '../../mixins/TableSearchHelpers'
 
     export default {
         props: ['items', 'language', 'isBusy'],
-        mixins: [TableHelpers],
+        mixins: [TableHelpers, TableSearchHelpers],
         components: {
             AnswerEdit,
-            AnswerReview
+            AnswerReview,
+            TableSearchDescriptions
         },
         computed: {
             ...mapState({
                 perPage: state => state.app.itemsPerPage
             }),
-            totalRows() {
-                return this.items.length
-            },
             fields() {
                 const fields = [
                     {

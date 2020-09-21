@@ -6,12 +6,14 @@
         <answer-review :answer="answer" v-if="!language && answer"></answer-review>
         
         <h3>Questions</h3>
+
+        <table-search-descriptions></table-search-descriptions>
         
         <b-table
             striped
             hover
             :fields="fields"
-            :items="items"
+            :items="filteredItems"
             primary-key="id"
             thead-class="text-center"
             stacked="lg"
@@ -100,7 +102,9 @@
     import QuestionReview from './Review.vue'
     import AnswerEdit from '../Answer/Edit.vue'
     import AnswerReview from '../Answer/Review.vue'
+    import TableSearchDescriptions from '../TableSearchDescriptions.vue'
     import TableHelpers from '../../mixins/TableHelpers'
+    import TableSearchHelpers from '../../mixins/TableSearchHelpers'
     import { library } from '@fortawesome/fontawesome-svg-core'
     import { faInfoCircle, faEdit } from '@fortawesome/free-solid-svg-icons'
 
@@ -109,12 +113,13 @@
 
     export default {
         props: ['items', 'language', 'isBusy'],
-        mixins: [TableHelpers],
+        mixins: [TableHelpers, TableSearchHelpers],
         components: {
             QuestionEdit,
             QuestionReview,
             AnswerEdit,
-            AnswerReview
+            AnswerReview,
+            TableSearchDescriptions
         },
         computed: {
             ...mapState({
@@ -123,9 +128,6 @@
             ...mapGetters({
                 answers: 'answers/published'
             }),
-            totalRows() {
-                return this.items.length
-            },
             fields() {
                 const fields = [
                     {
