@@ -118,6 +118,7 @@ class PendingQuestionController extends Controller
                 'required',
                 Rule::in($states),
             ],
+            'group' => 'nullable|integer|min:0',
         ]);
 
         // TODO Need to make sure that current user is allowed to set status as propagted
@@ -158,6 +159,11 @@ class PendingQuestionController extends Controller
             }
             
             $pendingQuestion->languages()->sync($languageData);
+        }
+
+        if ($request->has('group')) {
+            $pendingQuestion->group_no = $request->get('group');
+            $pendingQuestion->save();
         }
 
         return response()->json(new PendingQuestionResource($pendingQuestion->refresh()), 200);

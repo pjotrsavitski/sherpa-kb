@@ -50,6 +50,19 @@
                     ></b-form-input>
                 </b-form-group>
                 <b-form-group
+                    id="input-group-group"
+                    label="Group number"
+                >
+                    <b-form-input
+                        id="input-group"
+                        v-model="form.group"
+                        type="number"
+                        min="0"
+                        :disabled="!canEdit()"
+                    >
+                    </b-form-input>
+                </b-form-group>
+                <b-form-group
                     id="input-group-status"
                     label="Status"
                     label-for="input-status"
@@ -90,6 +103,7 @@
                 form: {
                     question: "",
                     translation: "",
+                    group: null,
                     status: ""
                 },
                 isBusy: false
@@ -120,6 +134,7 @@
             resetModal() {
                 this.form.question = this.getDescription(this.pendingQuestion);
                 this.form.translation = this.getEnglishDescription(this.pendingQuestion);
+                this.form.group = this.pendingQuestion.group;
                 this.form.status = this.pendingQuestion.status.value;
             },
             isEnglishOnly() {
@@ -146,6 +161,7 @@
                 axios.put('/pending_questions/' + this.pendingQuestion.id, {
                     question: this.form.question,
                     translation: this.form.translation,
+                    group: this.form.group,
                     status: this.form.status
                 })
                 .then(response => {
