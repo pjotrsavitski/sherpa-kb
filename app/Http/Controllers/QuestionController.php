@@ -14,7 +14,9 @@ use App\Answer;
 use App\Services\LanguageService;
 use Illuminate\Support\Collection;
 use App\States\Answer\Published as PublishedAnswer;
+use App\States\Answer\Translated as TranslatedAnswer;
 use App\States\Question\Published as PublishedQuestion;
+use App\States\Question\Translated as TranslatedQuestion;
 use Illuminate\Database\Eloquent\Builder;
 
 class QuestionController extends Controller
@@ -197,12 +199,12 @@ class QuestionController extends Controller
         $data = [];
 
         Question::with(['languages', 'topic', 'answer'])
-        ->whereState('status', PublishedQuestion::class)
+        ->whereState('status', [TranslatedQuestion::class, PublishedQuestion::class])
         ->whereHas('languages', function(Builder $query) use ($language) {
             $query->where('id', '=', $language->id);
         })
         ->whereHas('answer', function(Builder $query) use ($language) {
-            $query->whereState('status', PublishedAnswer::class)
+            $query->whereState('status', [TranslatedAnswer::class, PublishedAnswer::class])
             ->whereHas('languages', function(Builder $query) use ($language) {
                 $query->where('id', '=', $language->id);
             });
@@ -215,11 +217,13 @@ class QuestionController extends Controller
                     'answer' => [
                         'id' => $question->answer->id,
                         'description' => $question->answer->languages->keyBy('id')->get($language->id)->pivot->description,
+                        'status' => $question->answer->status,
                     ],
                     'topic' => $question->topic ? [
                         'id' => $question->topic->id,
                         'description' => $question->topic->description,
                     ] : NULL,
+                    'status' => $question->status,
                 ];
             }
         });
@@ -239,12 +243,12 @@ class QuestionController extends Controller
         $data = [];
 
         Question::with(['languages', 'topic', 'answer'])
-        ->whereState('status', PublishedQuestion::class)
+        ->whereState('status', [TranslatedQuestion::class, PublishedQuestion::class])
         ->whereHas('languages', function(Builder $query) use ($language) {
             $query->where('id', '=', $language->id);
         })
         ->whereHas('answer', function(Builder $query) use ($language) {
-            $query->whereState('status', PublishedAnswer::class)
+            $query->whereState('status', [TranslatedAnswer::class, PublishedAnswer::class])
             ->whereHas('languages', function(Builder $query) use ($language) {
                 $query->where('id', '=', $language->id);
             });
@@ -258,11 +262,13 @@ class QuestionController extends Controller
                     'answer' => [
                         'id' => $question->answer->id,
                         'description' => $question->answer->languages->keyBy('id')->get($language->id)->pivot->description,
+                        'status' => $question->answer->status,
                     ],
                     'topic' => [
                         'id' => $question->topic->id,
                         'description' => $question->topic->description,
                     ],
+                    'status' => $question->status,
                 ];
             }
         });

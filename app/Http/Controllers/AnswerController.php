@@ -8,6 +8,7 @@ use App\Language;
 use App\Http\Resources\AnswerResource;
 use Illuminate\Validation\Rule;
 use App\States\Answer\AnswerState;
+use App\States\Answer\Translated;
 use App\States\Answer\Published;
 use App\Services\LanguageService;
 use Illuminate\Database\Eloquent\Builder;
@@ -161,7 +162,7 @@ class AnswerController extends Controller
         $data = [];
 
         Answer::with(['languages'])
-        ->whereState('status', Published::class)
+        ->whereState('status', [Translated::class, Published::class])
         ->whereHas('languages', function(Builder $query) use ($language) {
             $query->where('id', '=', $language->id);
         })
@@ -170,6 +171,7 @@ class AnswerController extends Controller
                 $data[] = [
                     'id' => $answer->id,
                     'description' => $answer->languages->keyBy('id')->get($language->id)->pivot->description,
+                    'status' => $answer->status,
                 ];
             }
         });
