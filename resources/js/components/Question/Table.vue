@@ -60,6 +60,12 @@
                     </b-button>
                     <b-button
                         variant="outline-secondary"
+                        v-b-popover.hover.click.blur.top="answerLanguagesPopoverData(data.item.answer)"
+                    >
+                        {{ answerDescriptionsCount(data.item.answer) }} / {{ totalLanguages }}
+                    </b-button>
+                    <b-button
+                        variant="outline-secondary"
                         @click="onOpenAnswerModal(data.item)"
                     >
                         <font-awesome-icon :icon="['fa', 'edit']" />
@@ -126,7 +132,7 @@
                 perPage: state => state.app.itemsPerPage
             }),
             ...mapGetters({
-                answers: 'answers/published'
+                answers: 'answers/forQuestion'
             }),
             fields() {
                 const fields = [
@@ -246,6 +252,16 @@
                         this.$bvModal.show(this.answerModalId)
                     })
                 }
+            },
+            answerDescriptionsCount(id) {
+                const answer = this.answers.find(answer => answer.id === id)
+                
+                return this.descriptionsCount(answer)
+            },
+            answerLanguagesPopoverData(id) {
+                const answer = this.answers.find(answer => answer.id === id)
+
+                return this.languagesPopoverData(answer)
             }
         },
         created() {

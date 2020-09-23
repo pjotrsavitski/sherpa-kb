@@ -55,7 +55,7 @@
                     ></b-form-textarea>
                 </b-form-group>
                 <b-form-group
-                    description="Changing status to Translated will send the answer for review by SELFIE master. This would also prevent you from making any changes to the answer itself or English translation."
+                    description="Changing status to Translated will send the answer for review by SELFIE master. You and other Language Experts would still be able to make changes as needed."
                 >
                     <b-form-checkbox 
                         v-model="form.translated"
@@ -111,7 +111,7 @@
                 }
             },
             canEdit() {
-                return this.answer.status.value === 'in_translation'
+                return this.answer.status.value === 'in_translation' || this.answer.status.value === 'translated'
             },
             canSave() {
                 return this.canEdit() && this.form.state.answer && this.form.state.translation

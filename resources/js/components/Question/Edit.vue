@@ -73,7 +73,7 @@
                     ></b-form-select>
                 </b-form-group>
                 <b-form-group
-                    description="Changing status to Translated will send the question for review by SELFIE master. This would also prevent you from making any changes to the question itself or English translation."
+                    description="Changing status to Translated will send the question for review by SELFIE master. You and other Language Experts would still be able to make changes as needed."
                 >
                     <b-form-checkbox 
                         v-model="form.translated"
@@ -100,7 +100,7 @@
                 languages: state => state.app.languages
             }),
             ...mapGetters({
-                answers: 'answers/published'
+                answers: 'answers/forQuestion'
             }),
             modalId() {
                 return `question-edit`
@@ -179,7 +179,7 @@
                 this.form.translated = false
             },
             canEdit() {
-                return this.question.status.value === 'in_translation'
+                return this.question.status.value === 'in_translation' || this.question.status.value === 'translated'
             },
             canSave() {
                 return this.canEdit()

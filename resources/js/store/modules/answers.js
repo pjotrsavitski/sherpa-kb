@@ -13,6 +13,9 @@ const getters = {
     },
     published: state => {
         return state.items.filter(item => item.status.value === 'published')
+    },
+    forQuestion: state => {
+        return state.items.filter(item => item.status.value === 'published' || item.status.value === 'translated')
     }
 }
 

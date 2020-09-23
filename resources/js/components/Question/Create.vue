@@ -87,7 +87,7 @@
                 languages: state => state.app.languages
             }),
             ...mapGetters({
-                answers: 'answers/published'
+                answers: 'answers/forQuestion'
             }),
             modalId() {
                 return 'question-create'
