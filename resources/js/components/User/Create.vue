@@ -91,6 +91,17 @@
                     ></b-form-input>
                 </b-form-group>
                 <b-form-group
+                    id="input-group-language"
+                    label="Language"
+                    label-for="input-language"
+                >
+                    <b-form-select
+                        v-model="form.language"
+                        :options="languageOptions"
+                        id="input-language"
+                    ></b-form-select>
+                </b-form-group>
+                <b-form-group
                     id="input-group-roles"
                     label="Roles"
                     label-for="input-roles"
@@ -110,7 +121,7 @@
     import ToastHelpers from '../../mixins/ToastHelpers'
 
     export default {
-        props: ['roleOptions'],
+        props: ['languageOptions', 'roleOptions'],
         mixins: [ToastHelpers],
         computed: {
             modalId() {
@@ -153,6 +164,7 @@
                     email: "",
                     password: "",
                     confirmation: "",
+                    language: null,
                     roles: []
                 },
                 isBusy: false
@@ -165,6 +177,7 @@
                 this.form.email = ""
                 this.form.password = ""
                 this.form.confirmation = ""
+                this.form.language = this.languageOptions[0].value
                 this.form.roles = []
             },
             canEdit() {
@@ -188,6 +201,7 @@
                     email: this.form.email,
                     password: this.form.password,
                     password_confirmation: this.form.confirmation,
+                    language: this.form.language,
                     roles: this.form.roles
                 })
                 .then(response => {

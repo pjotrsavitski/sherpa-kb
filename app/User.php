@@ -39,6 +39,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function language()
+    {
+        return $this->belongsTo(Language::class);
+    }
+
     /**
      * Determines if user is a language expert.
      *
@@ -46,7 +51,7 @@ class User extends Authenticatable
      */
     public function isLanguageExpert()
     {
-        return true;
+        return $this->hasRole('expert');
     }
 
     /**
@@ -56,6 +61,16 @@ class User extends Authenticatable
      */
     public function isMasterExpert()
     {
-        return true;
+        return $this->hasRole('master');
+    }
+
+    /**
+     * Determines if user is an administrator.
+     *
+     * @return boolean
+     */
+    public function isAdministrator()
+    {
+        return $this->hasRole('administrator');
     }
 }
