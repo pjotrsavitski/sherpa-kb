@@ -1,7 +1,7 @@
 <template>
     <div>
-        <user-create :role-options="roleOptions"></user-create>
-        <user-edit :user="user" :role-options="roleOptions" v-if="user"></user-edit>
+        <user-create :language-options="languageOptions" :role-options="roleOptions"></user-create>
+        <user-edit :user="user" :language-options="languageOptions" :role-options="roleOptions" v-if="user"></user-edit>
 
         <h3>Users</h3>
 
@@ -67,6 +67,10 @@
                 {{ formatDate(data.value) }}
             </template>
 
+            <template v-slot:cell(language)="data">
+                {{ formatLanguage(data.value) }}
+            </template>
+
             <template v-slot:cell(roles)="data">
                 <b-badge v-for="role in data.value" v-bind:key="role.id" pill>{{ capitalize(role.name) }}</b-badge>
             </template>
@@ -126,7 +130,8 @@
         computed: {
             ...mapState({
                 perPage: state => state.app.itemsPerPage,
-                currentUser: state => state.app.user
+                currentUser: state => state.app.user,
+                languages: state => state.app.languages
             }),
             totalRows() {
                 return this.items.length
@@ -160,7 +165,12 @@
                         sortable: false,
                         tdClass: ['align-middle', 'text-center']
                     },
-                                       {
+                    {
+                        key: 'language',
+                        sortable: false,
+                        tdClass: ['align-middle', 'text-center']
+                    },
+                    {
                         key: 'roles',
                         sortable: false,
                         tdClass: ['align-middle', 'text-center']
@@ -180,6 +190,14 @@
                     return {
                         value: role.id,
                         text: this.capitalize(role.name)
+                    }
+                })
+            },
+            languageOptions() {
+                return this.languages.map(language => {
+                    return {
+                        value: language.id,
+                        text: language.name
                     }
                 })
             }
@@ -251,6 +269,11 @@
                 .catch(err => {
                     console.log('User delete confirmation error:', err)
                 })
+            },
+            formatLanguage(id) {
+                const language = this.languages.find(language => language.id === id)
+
+                return language ? language.name : id
             }
         },
         created() {

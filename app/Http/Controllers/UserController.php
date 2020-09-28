@@ -9,6 +9,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\RoleResource;
 use App\Http\Resources\UserResource;
+use App\Language;
 
 class UserController extends Controller
 {
@@ -31,7 +32,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         if ($request->wantsJson()) {
-            return UserResource::collection(User::with('roles')->get());
+            return UserResource::collection(User::with(['language', 'roles'])->get());
         }
         
         return view('users');
@@ -59,6 +60,7 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'language' => ['required', 'exists:App\Language,id'],
             'roles' => ['sometimes', 'array'],
             'roles.*' => ['exists:Spatie\Permission\Models\Role,id'],
         ]);
@@ -70,6 +72,8 @@ class UserController extends Controller
         ]);
 
         $user->markEmailAsVerified();
+
+        $user->language()->associate(Language::find($data['language']))->save();
 
         if (isset($data['roles']) && $data['roles']) {
             $user->syncRoles($data['roles']);
@@ -91,6 +95,7 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['sometimes', 'required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['sometimes', 'required', 'string', 'min:8', 'confirmed'],
+            'language' => ['required', 'exists:App\Language,id'],
             'roles' => ['sometimes', 'array'],
             'roles.*' => ['exists:Spatie\Permission\Models\Role,id'],
         ]);
@@ -110,6 +115,8 @@ class UserController extends Controller
         }
 
         $user->update($updated);
+
+        $user->language()->associate(Language::find($data['language']))->save();
 
         $roles = $data['roles'] ?? [];
 
