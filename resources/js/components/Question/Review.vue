@@ -77,9 +77,11 @@
 
 <script>
     import { mapState, mapGetters } from 'vuex'
+    import ToastHelpers from '../../mixins/ToastHelpers'
 
     export default {
         props: ['question'],
+        mixins: [ToastHelpers],
         computed: {
             ...mapState({
                 states: state => state.questions.states,
@@ -150,7 +152,7 @@
                 const question = {}
                 const state = {}
                 Object.values(this.languages).forEach(language => {
-                    const code = language.code;
+                    const code = language.code
                     question[code] = this.question.descriptions.hasOwnProperty(code) ? this.question.descriptions[code] : ''
                     state[code] = question[code] ? true : null
                 })
@@ -210,19 +212,7 @@
                 .catch(error => {
                     this.isBusy = false
                     console.error(error)
-
-                    let message = error.message
-
-                    if (error.response && error.response.data && error.response.data.message) {
-                        message = error.response.data.message
-                    }
-
-                    this.$bvToast.toast(message, {
-                        variant: 'danger',
-                        solid: true,
-                        autoHideDelay: 2500,
-                        noCloseButton: true
-                    })
+                    this.displayHttpError(error)
                 })
             },
             formGroupId(language) {
