@@ -32,7 +32,7 @@ class StatisticsController extends Controller
                 'translations' => DB::table('language_question')
                     ->join('languages', 'languages.id', '=', 'language_question.language_id')
                     ->select(DB::raw('count(*) AS count, languages.code AS code'))
-                    ->groupBy('language_id')
+                    ->groupBy('languages.code')
                     ->get(),
             ],
             'answers' => [
@@ -40,7 +40,7 @@ class StatisticsController extends Controller
                 'translations' => DB::table('answer_language')
                     ->join('languages', 'languages.id', '=', 'answer_language.language_id')
                     ->select(DB::raw('count(*) AS count, languages.code AS code'))
-                    ->groupBy('language_id')
+                    ->groupBy('languages.code')
                     ->get(),
             ],
         ];
