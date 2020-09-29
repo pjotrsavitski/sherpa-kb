@@ -81,21 +81,23 @@
 
 <script>
     import { mapState } from 'vuex'
+    import ToastHelpers from '../../mixins/ToastHelpers'
     
     export default {
         props: ['pendingQuestion'],
+        mixins: [ToastHelpers],
         computed: {
             ...mapState({
                 states: state => state.pendingQuestions.states,
             }),
             modalId() {
-                return 'pending-question-review';
+                return 'pending-question-review'
             },
             questionState() {
-                return (this.form.question && this.form.question.length) > 0 ? true : false;
+                return (this.form.question && this.form.question.length) > 0 ? true : false
             },
             translationState() {
-                return (this.form.translation && this.form.translation.length) > 0 ? true : false;
+                return (this.form.translation && this.form.translation.length) > 0 ? true : false
             }
         },
         data() {
@@ -107,20 +109,20 @@
                     status: ""
                 },
                 isBusy: false
-            };
+            }
         },
         methods: {
             getDescription(item) {
-                const languages = Object.keys(item.descriptions);
+                const languages = Object.keys(item.descriptions)
 
                 if (languages.length === 1 && languages[0] === 'en') {
-                    return item.descriptions.en;
+                    return item.descriptions.en
                 }
 
-                return (languages[0] !== 'en') ? item.descriptions[languages[0]] : item.descriptions[languages[1]];
+                return (languages[0] !== 'en') ? item.descriptions[languages[0]] : item.descriptions[languages[1]]
             },
             getEnglishDescription(item) {
-                return item.descriptions.hasOwnProperty('en') ? item.descriptions.en : '';
+                return item.descriptions.hasOwnProperty('en') ? item.descriptions.en : ''
             },
             statusOptions() {
                 return this.states.map(state => {
@@ -128,36 +130,36 @@
                         value: state.value,
                         text: state.text,
                         disabled: (this.pendingQuestion.status.transitionable.indexOf(state.value) !== -1 || this.pendingQuestion.status.value === state.value) ? false : true
-                    };
-                });
+                    }
+                })
             },
             resetModal() {
-                this.form.question = this.getDescription(this.pendingQuestion);
-                this.form.translation = this.getEnglishDescription(this.pendingQuestion);
-                this.form.group = this.pendingQuestion.group;
-                this.form.status = this.pendingQuestion.status.value;
+                this.form.question = this.getDescription(this.pendingQuestion)
+                this.form.translation = this.getEnglishDescription(this.pendingQuestion)
+                this.form.group = this.pendingQuestion.group
+                this.form.status = this.pendingQuestion.status.value
             },
             isEnglishOnly() {
-                const languages = Object.keys(this.pendingQuestion.descriptions);
+                const languages = Object.keys(this.pendingQuestion.descriptions)
 
-                return languages.length === 1 && languages[0] === 'en';
+                return languages.length === 1 && languages[0] === 'en'
             },
             canEdit() {
-                return this.pendingQuestion.status.value === 'propagated';
+                return this.pendingQuestion.status.value === 'propagated'
             },
             canSave() {
-                return this.canEdit();
+                return this.canEdit()
             },
             handleSave(bvModelEvent) {
-                bvModelEvent.preventDefault();
-                this.handleSubmit();
+                bvModelEvent.preventDefault()
+                this.handleSubmit()
             },
             handleSubmit() {
                 if (!this.$refs.form.checkValidity()) {
-                    return;
+                    return
                 }
 
-                this.isBusy = true;
+                this.isBusy = true
                 axios.put('/pending_questions/' + this.pendingQuestion.id, {
                     question: this.form.question,
                     translation: this.form.translation,
@@ -165,7 +167,7 @@
                     status: this.form.status
                 })
                 .then(response => {
-                    this.isBusy = false;
+                    this.isBusy = false
                     this.$store.dispatch('pendingQuestions/updatePendingQuestion', response.data)
                     if (response.data.status.value === 'completed') {
                         this.$store.dispatch('questions/loadAllQuestions')
@@ -173,26 +175,14 @@
 
 
                     this.$nextTick(() => {
-                        this.$bvModal.hide(this.modalId);
-                    });
+                        this.$bvModal.hide(this.modalId)
+                    })
                 })
                 .catch(error => {
-                    this.isBusy = false;
-                    console.error(error);
-
-                    let message = error.message;
-
-                    if (error.response && error.response.data && error.response.data.message) {
-                        message = error.response.data.message;
-                    }
-
-                    this.$bvToast.toast(message, {
-                        variant: 'danger',
-                        solid: true,
-                        autoHideDelay: 2500,
-                        noCloseButton: true
-                    });
-                });
+                    this.isBusy = false
+                    console.error(error)
+                    this.displayHttpError(error)
+                })
             }
         }
     }

@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\PendingQuestionController;
 use App\Http\Controllers\AnswerController;
+use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -55,3 +56,5 @@ Route::get('/users/roles', [UserController::class, 'roles']);
 Route::post('/users', [UserController::class, 'store']);
 Route::put('/users/{user}', [UserController::class, 'update']);
 Route::delete('/users/{user}', [UserController::class, 'delete']);
+
+Route::get('statistics', [StatisticsController::class, 'index']);

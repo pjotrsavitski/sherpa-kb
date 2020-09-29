@@ -55,9 +55,11 @@
 
 <script>
     import { mapState } from 'vuex'
+    import ToastHelpers from '../../mixins/ToastHelpers'
 
     export default {
         props: ['answer'],
+        mixins: [ToastHelpers],
         computed: {
             ...mapState({
                 languages: state => state.app.languages,
@@ -143,19 +145,7 @@
                 .catch(error => {
                     this.isBusy = false
                     console.error(error)
-
-                    let message = error.message
-
-                    if (error.response && error.response.data && error.response.data.message) {
-                        message = error.response.data.message
-                    }
-
-                    this.$bvToast.toast(message, {
-                        variant: 'danger',
-                        solid: true,
-                        autoHideDelay: 2500,
-                        noCloseButton: true
-                    })
+                    this.displayHttpError(error)
                 })
             },
             formGroupId(language) {

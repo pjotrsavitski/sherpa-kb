@@ -256,12 +256,12 @@
             answerDescriptionsCount(id) {
                 const answer = this.answers.find(answer => answer.id === id)
                 
-                return this.descriptionsCount(answer)
+                return answer ? this.descriptionsCount(answer) : 0
             },
             answerLanguagesPopoverData(id) {
                 const answer = this.answers.find(answer => answer.id === id)
 
-                return this.languagesPopoverData(answer)
+                return answer ? this.languagesPopoverData(answer) : {}
             }
         },
         created() {

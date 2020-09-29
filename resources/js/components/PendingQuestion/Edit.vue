@@ -74,17 +74,20 @@
 </template>
 
 <script>
+    import ToastHelpers from '../../mixins/ToastHelpers'
+
     export default {
         props: ['pendingQuestion'],
+        mixins: [ToastHelpers],
         computed: {
             modalId() {
-                return 'pending-question-edit';
+                return 'pending-question-edit'
             },
             questionState() {
-                return (this.form.question && this.form.question.length) > 0 ? true : false;
+                return (this.form.question && this.form.question.length) > 0 ? true : false
             },
             translationState() {
-                return (this.form.translation && this.form.translation.length) > 0 ? true : false;
+                return (this.form.translation && this.form.translation.length) > 0 ? true : false
             }
         },
         data() {
@@ -96,55 +99,55 @@
                     propagate: false
                 },
                 isBusy: false
-            };
+            }
         },
         methods: {
             getDescription(item) {
-                const languages = Object.keys(item.descriptions);
+                const languages = Object.keys(item.descriptions)
 
                 if (languages.length === 1 && languages[0] === 'en') {
-                    return item.descriptions.en;
+                    return item.descriptions.en
                 }
 
-                return (languages[0] !== 'en') ? item.descriptions[languages[0]] : item.descriptions[languages[1]];
+                return (languages[0] !== 'en') ? item.descriptions[languages[0]] : item.descriptions[languages[1]]
             },
             getEnglishDescription(item) {
-                return item.descriptions.hasOwnProperty('en') ? item.descriptions.en : '';
+                return item.descriptions.hasOwnProperty('en') ? item.descriptions.en : ''
             },
             resetModal() {
-                this.form.question = this.getDescription(this.pendingQuestion);
-                this.form.translation = this.getEnglishDescription(this.pendingQuestion);
-                this.form.group = this.pendingQuestion.group;
-                this.form.propagate = false;
+                this.form.question = this.getDescription(this.pendingQuestion)
+                this.form.translation = this.getEnglishDescription(this.pendingQuestion)
+                this.form.group = this.pendingQuestion.group
+                this.form.propagate = false
             },
             canBePropagated() {
                 return this.form.question
                     && this.form.translation
                     && this.form.question.trim()
                     && this.form.translation.trim()
-                    && this.pendingQuestion.status.value === 'pending';
+                    && this.pendingQuestion.status.value === 'pending'
             },
             isEnglishOnly() {
-                const languages = Object.keys(this.pendingQuestion.descriptions);
+                const languages = Object.keys(this.pendingQuestion.descriptions)
 
-                return languages.length === 1 && languages[0] === 'en';
+                return languages.length === 1 && languages[0] === 'en'
             },
             canEdit() {
-                return this.pendingQuestion.status.value === 'pending';
+                return this.pendingQuestion.status.value === 'pending'
             },
             canSave() {
-                return this.canEdit();
+                return this.canEdit()
             },
             handleSave(bvModelEvent) {
-                bvModelEvent.preventDefault();
-                this.handleSubmit();
+                bvModelEvent.preventDefault()
+                this.handleSubmit()
             },
             handleSubmit() {
                 if (!this.$refs.form.checkValidity()) {
-                    return;
+                    return
                 }
 
-                this.isBusy = true;
+                this.isBusy = true
                 axios.put('/pending_questions/' + this.pendingQuestion.id, {
                     question: this.form.question,
                     translation: this.form.translation,
@@ -152,30 +155,18 @@
                     propagate: this.form.propagate,
                 })
                 .then(response => {
-                    this.isBusy = false;
+                    this.isBusy = false
                     this.$store.dispatch('pendingQuestions/updatePendingQuestion', response.data)
 
                     this.$nextTick(() => {
-                        this.$bvModal.hide(this.modalId);
-                    });
+                        this.$bvModal.hide(this.modalId)
+                    })
                 })
                 .catch(error => {
-                    this.isBusy = false;
-                    console.error(error);
-
-                    let message = error.message;
-
-                    if (error.response && error.response.data && error.response.data.message) {
-                        message = error.response.data.message;
-                    }
-
-                    this.$bvToast.toast(message, {
-                        variant: 'danger',
-                        solid: true,
-                        autoHideDelay: 2500,
-                        noCloseButton: true
-                    });
-                });
+                    this.isBusy = false
+                    console.error(error)
+                    this.displayHttpError(error)
+                })
             }
         }
     }
