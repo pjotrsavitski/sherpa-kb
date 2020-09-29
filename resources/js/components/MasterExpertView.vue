@@ -1,25 +1,36 @@
 <template>
     <div class="mt-4">
         <div class="text-right">
-            <b-dropdown
-                id="language-expert-view"
-                dropup
-                text="Open language expert view"
-                variant="outline-secondary"
-                class="mb-4"
-            >
-                <b-dropdown-item
-                    v-for="language in languages"
-                    href="#"
-                    v-bind:key="language.code"
-                    class="text-uppercase text-center"
-                    @click="onLanguageSelected(language)"
-                    :disabled="selectedLanguage && selectedLanguage.code === language.code"
+            <b-button-group class="mb-4">
+                <b-button
+                    :variant="showStatistics ? 'secondary' : 'outline-secondary'"
+                    v-b-tooltip.hover
+                    title="Toggle statistics"
+                    @click="onToggleStatistics()"
                 >
-                    {{ language.name }}
-                </b-dropdown-item>
-            </b-dropdown>
+                    <font-awesome-icon :icon="['fas', 'table']" />
+                </b-button>
+                <b-dropdown
+                    id="language-expert-view"
+                    dropup
+                    text="Open language expert view"
+                    :variant="selectedLanguage ? 'secondary' : 'outline-secondary'"
+                >
+                    <b-dropdown-item
+                        v-for="language in languages"
+                        href="#"
+                        v-bind:key="language.code"
+                        class="text-uppercase text-center"
+                        @click="onLanguageSelected(language)"
+                        :disabled="selectedLanguage && selectedLanguage.code === language.code"
+                    >
+                        {{ language.name }}
+                    </b-dropdown-item>
+                </b-dropdown>
+            </b-button-group>
         </div>
+
+        <statistics-table v-if="showStatistics"></statistics-table>
 
         <transition name="fade" mode="out-in">
             <b-tabs
@@ -84,22 +95,26 @@
     import QuestionsTable from './Question/Table.vue'
     import PendingQuestionsTable from './PendingQuestion/Table.vue'
     import AnswersTable from './Answer/Table.vue'
+    import StatisticsTable from './Statistics/Table.vue'
     import { library } from '@fortawesome/fontawesome-svg-core'
-    import { faTimes } from '@fortawesome/free-solid-svg-icons'
+    import { faTimes, faTable } from '@fortawesome/free-solid-svg-icons'
 
     library.add(faTimes)
+    library.add(faTable)
     
     export default {
         components: {
             QuestionsTable,
             PendingQuestionsTable,
-            AnswersTable
+            AnswersTable,
+            StatisticsTable
         },
         data() {
             return {
                 tabIndex: 0,
                 selectedLanguage: null,
-                isBusy: false
+                isBusy: false,
+                showStatistics: false
             }
         },
         computed: {
@@ -131,6 +146,9 @@
                 } else {
                     this.selectedLanguage = language
                 }
+            },
+            onToggleStatistics() {
+                this.showStatistics = !this.showStatistics
             }
         },
         created() {
