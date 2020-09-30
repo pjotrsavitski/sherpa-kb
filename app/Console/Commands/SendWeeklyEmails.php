@@ -6,28 +6,28 @@ use Illuminate\Console\Command;
 use App\Language;
 use App\PendingQuestion;
 use App\States\PendingQuestion\Pending;
-use Carbon\Carbon;
 use App\User;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\DailyPendingQuestions;
+use App\Mail\WeeklyPendingQuestions;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
-class SendDailyEmails extends Command
+class SendWeeklyEmails extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'sherpa:send-daily-emails';
+    protected $signature = 'sherpa:send-weekly-emails';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Send all daily emails';
+    protected $description = 'Send all weekly emails';
 
     /**
      * Create a new command instance.
@@ -40,6 +40,24 @@ class SendDailyEmails extends Command
     }
 
     /**
+     * Applies special condition to English query that would make sure other languages are disregarded.
+     *
+     * @param Collection $languages
+     * @param Builder $query
+     * @return void
+     */
+    private function applyEnglishCondition(Collection $languages, Builder &$query) {
+        $inValue = $languages->filter(function($language) {
+            return $language->code !== 'en';
+        })->map(function($language) {
+            return $language->id;
+        });
+        $query->whereDoesntHave('languages', function(Builder $query) use ($inValue) {
+            $query->whereIn('language_id', $inValue);
+        });
+    }
+
+    /**
      * Execute the console command.
      *
      * @return int
@@ -48,14 +66,18 @@ class SendDailyEmails extends Command
     {
         $languages = Language::all();
 
-        $languages->each(function($language) {
-            $count = PendingQuestion::whereState('status', Pending::class)
-                ->whereColumn('created_at', 'updated_at')
-                ->whereDate('created_at', Carbon::yesterday())
-                ->whereHas('languages', function(Builder $query) use ($language) {
+        $languages->each(function($language) use ($languages) {
+            $query = PendingQuestion::whereState('status', Pending::class)
+                ->whereHas('languages', function(Builder $query) use ($language, $languages) {
                     $query->where('language_id', $language->id);
-                })
-                ->count();
+                });
+            
+            // English is a special case that should ignore ramslations to other languages
+            if ($language->code === 'en') {
+                $this->applyEnglishCondition($languages, $query);
+            }
+
+            $count = $query->count();
             
             if ($count > 0) {
                 Log::debug('Suitable Pending Questions found.', [
@@ -68,7 +90,7 @@ class SendDailyEmails extends Command
                     ->get();
 
                 $languageExperts->whenNotEmpty(function($user) use ($language, $count) {
-                    Mail::to($user)->send(new DailyPendingQuestions($language, $count));
+                    Mail::to($user)->send(new WeeklyPendingQuestions($language, $count));
                 });
 
                 if ($languageExperts->isEmpty()) {
