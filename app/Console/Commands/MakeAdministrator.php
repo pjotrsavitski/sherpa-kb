@@ -49,7 +49,7 @@ class MakeAdministrator extends Command
 
         if (!$user->hasRole($role)) {
             $user->assignRole($role);
-            $this->info("Administrator role was assigned a user {$user->name}");
+            $this->info("Administrator role was assigned to a user {$user->name}");
             return 0;
         }
         
