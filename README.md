@@ -26,7 +26,7 @@ APP_DEBUG=false
 APP_URL=https://<SOME_ADDRESS>
 ```
 
-In addition to that you will need to configure the database connection, mailer, and reCAPTCHA. Other configurations should be suitable and redis is not being used, at least for now.
+In addition to that you will need to configure the database connection, mailer, and [reCAPTCHA](https://developers.google.com/recaptcha/). Other configurations should be suitable and redis is not being used, at least for now.
 
 Make sure that the database has been configured properly before running database migrations. Go to the application home catalog and run these commands in order to setup the application (make sure you use the code from **production** branch outside of development):
 
