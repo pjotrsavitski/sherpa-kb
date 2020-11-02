@@ -70,6 +70,8 @@ class QuestionController extends Controller
      */
     public function list()
     {
+        $this->authorize('viewAny', Question::class);
+        
         return QuestionResource::collection(Question::with(['languages', 'topic', 'answer', 'pendingQuestion'])->get());
     }
 
@@ -80,6 +82,8 @@ class QuestionController extends Controller
      */
     public function states()
     {
+        $this->authorize('viewAny', Question::class);
+
         return Question::getStatesFor('status')->map(function($state) {
             return [
                 'value' => $state::getMorphClass(),
@@ -95,6 +99,8 @@ class QuestionController extends Controller
      */
     public function topics()
     {
+        $this->authorize('viewAny', Question::class);
+
         return TopicResource::collection(Topic::all());
     }
 
@@ -105,6 +111,8 @@ class QuestionController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request) {
+        $this->authorize('create', Question::class);
+
         $validatedData = $request->validate([
             'descriptions' => 'required|array',
             'descriptions.*.code' => 'required|exists:App\Language,code',
@@ -139,6 +147,8 @@ class QuestionController extends Controller
      */
     public function update(Request $request, Question $question)
     {
+        $this->authorize('update', $question);
+        
         $states = Question::getStatesFor('status')->map(function($state) {
             return $state::getMorphClass();
         });

@@ -55,6 +55,8 @@ class PendingQuestionController extends Controller
      */
     public function list()
     {
+        $this->authorize('viewAny', PendingQuestion::class);
+
         return PendingQuestionResource::collection(PendingQuestion::with('languages')->get());
     }
 
@@ -65,6 +67,8 @@ class PendingQuestionController extends Controller
      */
     public function states()
     {
+        $this->authorize('viewAny', PendingQuestion::class);
+
         return PendingQuestion::getStatesFor('status')->map(function($state) {
             return [
                 'value' => $state::getMorphClass(),
@@ -107,6 +111,8 @@ class PendingQuestionController extends Controller
      */
     public function update(Request $request, PendingQuestion $pendingQuestion)
     {
+        $this->authorize('update', $pendingQuestion);
+        
         $states = PendingQuestion::getStatesFor('status')->map(function($state) {
             return $state::getMorphClass();
         });

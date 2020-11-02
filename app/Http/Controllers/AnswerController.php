@@ -65,6 +65,8 @@ class AnswerController extends Controller
      */
     public function list()
     {
+        $this->authorize('viewAny', Answer::class);
+
         return AnswerResource::collection(Answer::with('languages')->get());
     }
 
@@ -75,6 +77,8 @@ class AnswerController extends Controller
      */
     public function states()
     {
+        $this->authorize('viewAny', Answer::class);
+
         return Answer::getStatesFor('status')->map(function($state) {
             return [
                 'value' => $state::getMorphClass(),
@@ -91,6 +95,8 @@ class AnswerController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Answer::class);
+
         $validatedData = $request->validate([
             'descriptions' => 'required|array',
             'descriptions.*.code' => 'required|exists:App\Language,code',
@@ -115,6 +121,8 @@ class AnswerController extends Controller
      */
     public function update(Request $request, Answer $answer)
     {
+        $this->authorize('update', $answer);
+         
         $states = Answer::getStatesFor('status')->map(function($state) {
             return $state::getMorphClass();
         });
