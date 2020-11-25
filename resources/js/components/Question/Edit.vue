@@ -65,12 +65,11 @@
                     label="Answer"
                     label-for="input-answer"
                 >
-                    <b-form-select
-                        v-model="form.answer"
+                    <form-answer
                         :options="answerOptions"
-                        id="input-status"
+                        v-model="form.answer"
                         :disabled="!canEdit()"
-                    ></b-form-select>
+                    ></form-answer>
                 </b-form-group>
                 <b-form-group
                     description="Changing status to Translated will send the question for review by SELFIE master. You and other Language Experts would still be able to make changes as needed."
@@ -91,10 +90,14 @@
 <script>
     import { mapState, mapGetters } from 'vuex'
     import ToastHelpers from '../../mixins/ToastHelpers'
+    import FormAnswer from '../Input/FormAnswer'
 
     export default {
         props: ['question', 'language'],
         mixins: [ToastHelpers],
+        components: {
+            FormAnswer
+        },
         computed: {
             ...mapState({
                 states: state => state.questions.states,
@@ -146,10 +149,10 @@
                         text: answer.descriptions.hasOwnProperty(this.language) ? answer.descriptions[this.language] : answer.descriptions.en
                     }
                 })
-                options.unshift({
+                /*options.unshift({
                     value: '',
                     text: ''
-                })
+                })*/
 
                 return options
             }

@@ -66,11 +66,10 @@
                     label="Answer"
                     label-for="input-answer"
                 >
-                    <b-form-select
-                        v-model="form.answer"
+                    <form-answer
                         :options="answerOptions"
-                        id="input-status"
-                    ></b-form-select>
+                        v-model="form.answer"
+                    ></form-answer>
                 </b-form-group>
             </form>
         </b-modal>
@@ -79,9 +78,13 @@
 <script>
     import { mapState, mapGetters } from 'vuex'
     import ToastHelpers from '../../mixins/ToastHelpers'
+    import FormAnswer from '../Input/FormAnswer'
 
     export default {
         props: ['language'],
+        components: {
+            FormAnswer
+        },
         mixins: [ToastHelpers],
         computed: {
             ...mapState({
@@ -116,10 +119,10 @@
                         text: answer.descriptions.hasOwnProperty(this.language) ? answer.descriptions[this.language] : answer.descriptions.en
                     }
                 })
-                options.unshift({
+                /*options.unshift({
                     value: '',
                     text: ''
-                })
+                })*/
 
                 return options
             }
