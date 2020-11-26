@@ -26,10 +26,10 @@
             v-for="option in filteredOptions"
             :key="option.value"
             :active="option.value==input.value"
-            class="flex-column align-items-start"
+            class="d-flex flex-row flex-row-reverse"
             :ref="`option-${option.value}`"
         >
-            <div class="d-flex w-100 flex-row-reverse mb-1">
+            <div class="ml-2">
                 <b-button-group size="sm">
                     <b-button
                         v-if="option.value!=value"
@@ -54,7 +54,7 @@
                 </b-button-group>
             </div>
 
-            <div>
+            <div class="w-100">
                 <small class="mb-0">
                     {{ shorten(option.text, 120) }}
                 </small>
