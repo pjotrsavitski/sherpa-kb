@@ -64,12 +64,11 @@
                     label="Answer"
                     label-for="input-answer"
                 >
-                    <b-form-select
-                        v-model="form.answer"
-                        :options="answerOptions"
-                        id="input-status"
+                    <form-answer
+                        :options="answerOptions" 
+                        v-model="form.answer" 
                         :disabled="!canEdit()"
-                    ></b-form-select>
+                    ></form-answer>
                 </b-form-group>
             </form>
         </b-modal>
@@ -78,10 +77,14 @@
 <script>
     import { mapState, mapGetters } from 'vuex'
     import ToastHelpers from '../../mixins/ToastHelpers'
+    import FormAnswer from '../Input/FormAnswer'
 
     export default {
         props: ['question'],
         mixins: [ToastHelpers],
+        components: {
+            FormAnswer
+        },
         computed: {
             ...mapState({
                 states: state => state.questions.states,
