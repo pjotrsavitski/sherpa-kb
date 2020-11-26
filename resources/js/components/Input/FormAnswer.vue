@@ -1,78 +1,95 @@
 <template>
-<div>
-    <b-modal ref="modal" :hide-footer="true">{{ modal.content }}</b-modal>
+    <div>
+        <b-modal ref="modal" :hide-footer="true">{{ modal.content }}</b-modal>
 
-    <b-input-group class="mb-2">
-        <b-form-input
-            id="search-text"
-            v-model="search"
-            type="text"
-            placeholder="Search text"
-            trim
-            debounce="500"
-            >
-        </b-form-input>
-        <b-input-group-append>
-            <b-button
-                variant="outline-danger"
-                @click="resetSearch"
-                :disabled="search == ''"
-            >Reset</b-button>
-        </b-input-group-append>
-    </b-input-group>
+        <b-input-group class="mb-2">
+            <b-form-input
+                id="search-text"
+                v-model="search"
+                type="text"
+                placeholder="Search text"
+                trim
+                debounce="500"
+                >
+            </b-form-input>
+            <b-input-group-append>
+                <b-button
+                    variant="outline-danger"
+                    @click="resetSearch"
+                    :disabled="search == ''"
+                >Reset</b-button>
+            </b-input-group-append>
+            <b-input-group-append>
+                <b-button
+                    variant="outline-secondary"
+                    @click="scrollToSelected"
+                    :disabled="!input.value"
+                    v-b-tooltip.hover
+                    title="Scroll to selected item"
+                >
+                    <font-awesome-icon :icon="['fas', 'eye']" />
+                </b-button>
+            </b-input-group-append>
+        </b-input-group>
 
-    <b-list-group :style="listStyle">
-        <b-list-group-item
-            v-for="option in filteredOptions"
-            :key="option.value"
-            :active="option.value==input.value"
-            class="d-flex flex-row flex-row-reverse"
-            :ref="`option-${option.value}`"
-        >
-            <div class="ml-2">
-                <b-button-group size="sm">
-                    <b-button
-                        v-if="option.value!=value"
-                        variant="success"
-                        @click="setValue(option.value)"
-                    >
-                        <font-awesome-icon :icon="['fas', 'check']" />
-                    </b-button>
-                    <b-button
-                        v-if="option.value==value"
-                        variant="danger"
-                        @click="removeValue"
-                    >
-                        <font-awesome-icon :icon="['fas', 'times-circle']" />
-                    </b-button>
-                    <b-button
-                        @click="openModal(option.text)"
-                        variant="secondary"
-                    >
-                        <font-awesome-icon :icon="['fas', 'info-circle']" />
-                    </b-button>
-                </b-button-group>
-            </div>
+        <div :style="listStyle">
+            <b-list-group>
+                <b-list-group-item
+                    v-for="option in filteredOptions"
+                    :key="option.value"
+                    :active="option.value==input.value"
+                    class="d-flex flex-row flex-row-reverse"
+                    :ref="`option-${option.value}`"
+                >
+                    <div class="pl-2">
+                        <b-button-group size="sm">
+                            <b-button
+                                v-if="option.value!=value"
+                                variant="success"
+                                @click="setValue(option.value)"
+                            >
+                                <font-awesome-icon :icon="['fas', 'check']" />
+                            </b-button>
+                            <b-button
+                                v-if="option.value==value"
+                                variant="danger"
+                                @click="removeValue"
+                            >
+                                <font-awesome-icon :icon="['fas', 'times-circle']" />
+                            </b-button>
+                            <b-button
+                                @click="openModal(option.text)"
+                                variant="secondary"
+                            >
+                                <font-awesome-icon :icon="['fas', 'info-circle']" />
+                            </b-button>
+                        </b-button-group>
+                    </div>
 
-            <div class="w-100">
-                <small class="mb-0">
-                    {{ shorten(option.text, 120) }}
-                </small>
-            </div>
-        </b-list-group-item>
-    </b-list-group>
-</div>
+                    <div class="flex-grow-1">
+                        <small class="mb-0">
+                            {{ shorten(option.text, 120) }}
+                        </small>
+                    </div>
+                </b-list-group-item>
+            </b-list-group>
+        </div>
+    </div>
 </template>
 
 <script>
     import { library } from '@fortawesome/fontawesome-svg-core'
-    import { faInfoCircle, faTimesCircle, faCheck } from '@fortawesome/free-solid-svg-icons'
+    import { faInfoCircle, faTimesCircle, faCheck, faEye } from '@fortawesome/free-solid-svg-icons'
 
-    library.add(faInfoCircle, faTimesCircle, faCheck)
+    library.add(faInfoCircle, faTimesCircle, faCheck, faEye)
 
     export default {
-        props: ['options', 'value'],
+        props: ['options', 'value', 'height'],
         mounted() {
+            if (this.height) {
+                this.listStyle['max-height'] = this.height
+            }
+
             this.$nextTick(() => {
                 this.scrollToSelected()
             })
@@ -85,6 +102,7 @@
             filteredOptions() {
                 if (this.search != '') {
                     return this.options.filter(option => {
+                        if (option.value == this.input.value) return true
                         return option.text.toLowerCase().includes(this.search.toLowerCase())
                     })
                 }
@@ -102,8 +120,9 @@
                     content: ''
                 },
                 listStyle: {
-                    'max-height': '300px', // TODO Make height configurable
-                    'overflow-y': 'scroll'
+                    'max-height': '300px',
+                    'overflow-y': 'scroll',
+                    'display': 'block'
                 }
             }
         },
@@ -127,7 +146,6 @@
                 this.$refs['modal'].show()
             },
             setValue(value) {
-                // TODO See if this is needed
                 this.input.value = value
                 this.$emit('input', this.input.value)
             },
