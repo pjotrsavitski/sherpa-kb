@@ -119,10 +119,6 @@
                         text: answer.descriptions.hasOwnProperty(this.language) ? answer.descriptions[this.language] : answer.descriptions.en
                     }
                 })
-                /*options.unshift({
-                    value: '',
-                    text: ''
-                })*/
 
                 return options
             }
