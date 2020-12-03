@@ -6,10 +6,7 @@
             active-nav-item-class="bg-primary text-white"
             fill
         >
-            <b-tab
-                :disabled="isEnglish"
-                lazy
-            >
+            <b-tab lazy>
                 <template v-slot:title>
                     Questions
                     <b-badge
@@ -62,10 +59,7 @@
 
                 <pending-questions-table :items="pendingQuestions" :language="language" :is-busy="isBusy"></pending-questions-table>
             </b-tab>
-            <b-tab
-                :disabled="isEnglish"
-                lazy
-            >
+            <b-tab lazy>
                 <template v-slot:title>
                     Answers
                     <b-badge

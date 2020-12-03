@@ -40,6 +40,7 @@
                     label-for="input-translation"
                     invalid-feedback="English translation is required"
                     :state="form.state.translation"
+                    v-if="!isEnglish"
                 >
                     <b-form-textarea
                         id="input-translation"
@@ -86,6 +87,9 @@
             },
             totalLanguages() {
                 return this.$store.getters['app/totalLanguages']
+            },
+            isEnglish() {
+                return this.language === 'en'
             }
         },
         data() {
@@ -116,7 +120,7 @@
                 return this.answer.status.value === 'in_translation' || this.answer.status.value === 'translated'
             },
             canSave() {
-                return this.canEdit() && this.form.state.answer && this.form.state.translation
+                return this.canEdit() && (this.isEnglish ? this.form.state.answer : this.form.state.answer && this.form.state.translation)
             },
             canChangeStatus() {
                 // TODO Check if this check is correct (saving last missing language should allow status to be changed)
@@ -137,10 +141,14 @@
                 const data = {
                     descriptions: []
                 }
-                data.descriptions.push({
-                    code: 'en',
-                    value: this.form.translation
-                })
+
+                if (!this.isEnglish) {
+                    data.descriptions.push({
+                        code: 'en',
+                        value: this.form.translation
+                    })
+                }
+
                 data.descriptions.push({
                     code: this.language,
                     value: this.form.answer

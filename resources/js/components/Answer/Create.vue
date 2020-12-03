@@ -39,6 +39,7 @@
                     label-for="input-translation"
                     invalid-feedback="English translation is required"
                     :state="form.state.translation"
+                    v-if="!isEnglish"
                 >
                     <b-form-textarea
                         id="input-translation"
@@ -69,6 +70,9 @@
             }),
             modalId() {
                 return 'answer-create'
+            },
+            isEnglish() {
+                return this.language === 'en'
             }
         },
         data() {
@@ -94,6 +98,10 @@
                 }
             },
             canSave() {
+                if (this.isEnglish) {
+                    return this.form.state.answer
+                }
+
                 return this.form.state.answer && this.form.state.translation
             },
             handleSave(bvModelEvent) {
@@ -110,10 +118,14 @@
                 const data = {
                     descriptions: []
                 }
-                data.descriptions.push({
-                    code: 'en',
-                    value: this.form.translation
-                })
+
+                if (!this.isEnglish) {
+                    data.descriptions.push({
+                        code: 'en',
+                        value: this.form.translation
+                    })
+                }
+
                 data.descriptions.push({
                     code: this.language,
                     value: this.form.answer

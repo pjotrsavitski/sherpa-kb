@@ -10,13 +10,14 @@
                 placeholder="Search text"
                 trim
                 debounce="500"
+                :disabled="isDisabled"
                 >
             </b-form-input>
             <b-input-group-append>
                 <b-button
                     variant="outline-danger"
                     @click="resetSearch"
-                    :disabled="search == ''"
+                    :disabled="isDisabled || search == ''"
                 >Reset</b-button>
             </b-input-group-append>
             <b-input-group-append>
@@ -47,6 +48,7 @@
                                 v-if="option.value!=value"
                                 variant="success"
                                 @click="setValue(option.value)"
+                                :disabled="isDisabled"
                             >
                                 <font-awesome-icon :icon="['fas', 'check']" />
                             </b-button>
@@ -54,6 +56,7 @@
                                 v-if="option.value==value"
                                 variant="danger"
                                 @click="removeValue"
+                                :disabled="isDisabled"
                             >
                                 <font-awesome-icon :icon="['fas', 'times-circle']" />
                             </b-button>
@@ -84,7 +87,7 @@
     library.add(faInfoCircle, faTimesCircle, faCheck, faEye)
 
     export default {
-        props: ['options', 'value', 'height'],
+        props: ['options', 'value', 'height', 'disabled'],
         mounted() {
             if (this.height) {
                 this.listStyle['max-height'] = this.height
@@ -108,6 +111,9 @@
                 }
 
                 return this.options;
+            },
+            isDisabled() {
+                return !!this.disabled
             }
         },
         data() {
