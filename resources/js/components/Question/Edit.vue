@@ -37,6 +37,7 @@
                     label-for="input-translation"
                     invalid-feedback="English translation is required"
                     :state="translationState"
+                    v-if="!isEnglish"
                 >
                     <b-form-input
                         id="input-translation"
@@ -151,6 +152,9 @@
                 })
 
                 return options
+            },
+            isEnglish() {
+                return this.language === 'en'
             }
         },
         data() {
@@ -183,7 +187,7 @@
                 return this.question.status.value === 'in_translation' || this.question.status.value === 'translated'
             },
             canSave() {
-                return this.canEdit()
+                return this.canEdit() && (this.isEnglish ? this.form.question : this.form.question && this.form.translation)
             },
             canChangeStatus() {
                 // TODO Check if this check is correct (saving last missing language should allow status to be changed)
@@ -203,10 +207,14 @@
                 const data = {
                     descriptions: [],
                 }
-                data.descriptions.push({
-                    code: 'en',
-                    value: this.form.translation
-                })
+
+                if (!this.isEnglish) {
+                    data.descriptions.push({
+                        code: 'en',
+                        value: this.form.translation
+                    })
+                }
+
                 data.descriptions.push({
                     code: this.language,
                     value: this.form.question
