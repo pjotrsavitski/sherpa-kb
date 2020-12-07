@@ -50,27 +50,21 @@ class ImportData extends Command
         $data = [];
         $handle = fopen($this->argument('file'), 'r');
         
-        $topic = NULL;
         while( ($row = fgetcsv($handle)) !== FALSE) {
-            if ($row[0]) {
-                $topic = trim($row[0]);
-            }
+            $topic = trim($row[0]);
+            $question = trim($row[1]);
+            $answer = trim($row[2]);
 
-            $tmp = [
+            if (!array_key_exists($answer, $data)) {
+                $data[$answer] = [
+                    'answer' => $answer,
+                    'questions' => [],
+                ];
+            }
+            $data[$answer]['questions'][] = [
                 'topic' => $topic,
-                'answer' => trim($row[2]),
-                'questions' => [trim($row[1])],
+                'question' => $question,
             ];
-
-            foreach (array_slice($row, 3) as $question) {
-                $question = trim($question);
-
-                if ($question) {
-                    $tmp['questions'][] = $question;
-                }
-            }
-
-            $data[] = $tmp;
         }
 
         fclose($handle);
@@ -80,12 +74,6 @@ class ImportData extends Command
         $topics = Topic::all()->keyBy('description');
 
         foreach ($data as $row) {
-            $topic = $topics->get($row['topic']);
-
-            if ($topic) {
-                $row['topic_id'] = $topic->id;
-            }
-
             $answer = new Answer;
             $answer->save();
             $answer->languages()->attach([
@@ -96,7 +84,9 @@ class ImportData extends Command
             $answer->status->transitionTo(TranslatedAnswer::class);
             $counts['answers']++;
 
-            foreach ($row['questions'] as $text) {
+            foreach ($row['questions'] as $single) {
+                $topic = $topics->get($single['topic']);
+
                 $question = new Question;
                 $question->save();
 
@@ -107,7 +97,7 @@ class ImportData extends Command
                 $question->answer()->associate($answer->id)->save();
                 $question->languages()->attach([
                     $languageId => [
-                        'description' => $text,
+                        'description' => $single['question'],
                     ],
                 ]);
                 $question->status->transitionTo(TranslatedQuestion::class);
