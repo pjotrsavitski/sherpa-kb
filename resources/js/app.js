@@ -6,13 +6,13 @@
 
 require('./bootstrap')
 
-window.Vue = require('vue')
-
 Vue.use(require('bootstrap-vue'))
 
 import store from './store'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import Vue from 'vue'
+
+window.Vue = Vue
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.config.productionTip = false
