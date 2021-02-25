@@ -2,6 +2,18 @@
 
 namespace App\Console\Commands;
 
+/*
+# This should truncate all the data, including pending questions
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE language_pending_question;
+TRUNCATE TABLE pending_questions;
+TRUNCATE TABLE language_question;
+TRUNCATE TABLE questions;
+TRUNCATE TABLE answer_language;
+TRUNCATE TABLE answers;
+SET FOREIGN_KEY_CHECKS = 1;
+*/
+
 use Illuminate\Console\Command;
 use App\Topic;
 use App\Answer;
@@ -49,7 +61,7 @@ class ImportData extends Command
         ];
         $data = [];
         $handle = fopen($this->argument('file'), 'r');
-        
+
         while( ($row = fgetcsv($handle)) !== FALSE) {
             $topic = trim($row[0]);
             $question = trim($row[1]);

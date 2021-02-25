@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class TopicSeeder extends Seeder
 {
@@ -15,7 +16,7 @@ class TopicSeeder extends Seeder
     public function run()
     {
         $now = Carbon::now();
-        
+
         DB::table('topics')->insert([
             [
                 'description' => 'General',

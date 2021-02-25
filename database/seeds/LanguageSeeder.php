@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class LanguageSeeder extends Seeder
 {
@@ -15,7 +16,7 @@ class LanguageSeeder extends Seeder
     public function run()
     {
         $now = Carbon::now();
-        
+
         DB::table('languages')->insert([
             [
                 'name' => 'English',
