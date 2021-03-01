@@ -8,6 +8,7 @@ use App\Http\Controllers\TopicController;
 use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\HelperActivityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,3 +37,5 @@ Route::get('/questions/{language:code}', [QuestionController::class, 'apiForLang
 Route::get('/questions/{language:code}/{topic}', [QuestionController::class, 'apiForLanguageAndTopic']);
 
 Route::get('/export/{language:code}', [ExportController::class, 'export']);
+
+Route::post('/helper_activity', [HelperActivityController::class, 'store']);
