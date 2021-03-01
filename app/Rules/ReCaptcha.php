@@ -19,7 +19,8 @@ class ReCaptcha implements Rule
     /**
      * Create a new rule instance.
      *
-     * @return void
+     * @param string $action
+     * @param float $score
      */
     public function __construct(string $action, float $score)
     {
@@ -34,7 +35,7 @@ class ReCaptcha implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         $response = Http::asForm()->post(self::ENDPOINT, [
             'secret' => config('services.recaptcha.secret'),
@@ -74,7 +75,7 @@ class ReCaptcha implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return $this->message;
     }
