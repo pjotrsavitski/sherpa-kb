@@ -29,8 +29,7 @@
                         rows="2"
                         max-rows="6"
                         trim
-                        debounce="250"
-                        @update="updateAnswerState"
+                        @update="updateInputState('answer', ...arguments)"
                     ></b-form-textarea>
                 </b-form-group>
                 <b-form-group
@@ -49,8 +48,7 @@
                         rows="2"
                         max-rows="6"
                         trim
-                        debounce="250"
-                        @update="updateTranslationState"
+                        @update="updateInputState('translation', ...arguments)"
                     ></b-form-textarea>
                 </b-form-group>
             </form>
@@ -151,14 +149,8 @@
 
                 return `Answer in ${language ? language.name : code}`
             },
-            updateInputState(value, name) {
+            updateInputState(name, value) {
                 this.form.state[name] = value.length > 0
-            },
-            updateAnswerState(value) {
-                this.updateInputState(value, 'answer')
-            },
-            updateTranslationState(value) {
-                this.updateInputState(value, 'translation')
             }
         }
     }

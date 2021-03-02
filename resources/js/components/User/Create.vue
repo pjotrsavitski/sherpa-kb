@@ -29,7 +29,6 @@
                         :state="nameState"
                         trim
                         :disabled="!canEdit()"
-                        debounce="250"
                         @update="setDirty('name')"
                     ></b-form-input>
                 </b-form-group>
@@ -48,7 +47,6 @@
                         :state="emailState"
                         trim
                         :disabled="!canEdit()"
-                        debounce="250"
                         @update="setDirty('email')"
                     ></b-form-input>
                 </b-form-group>
@@ -67,7 +65,6 @@
                         required
                         :state="passwordState"
                         :disabled="!canEdit()"
-                        debounce="250"
                         @update="setDirty('password')"
                     ></b-form-input>
                 </b-form-group>
@@ -86,7 +83,6 @@
                         required
                         :state="confirmationState"
                         :disabled="!canEdit()"
-                        debounce="250"
                         @update="setDirty('confirmation')"
                     ></b-form-input>
                 </b-form-group>
@@ -152,7 +148,7 @@
                 if (this.form.dirty.indexOf('confirmation') === -1) {
                     return null;
                 }
-                
+
                 return (this.form.confirmation && this.form.confirmation.length >= 8 && this.form.password === this.form.confirmation) ? true : false
             }
         },

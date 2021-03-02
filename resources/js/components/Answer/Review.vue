@@ -31,7 +31,6 @@
                         rows="2"
                         max-rows="6"
                         trim
-                        debounce="250"
                         @update="updateInputState(language.code, ...arguments)"
                         :disabled="!canEdit()"
                     ></b-form-textarea>

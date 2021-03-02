@@ -28,7 +28,6 @@
                         required
                         :state="form.state.question"
                         trim
-                        debounce="250"
                         @update="updateInputState('question', ...arguments)"
                     ></b-form-input>
                 </b-form-group>
@@ -47,7 +46,6 @@
                         required
                         :state="form.state.translation"
                         trim
-                        debounce="250"
                         @update="updateInputState('translation', ...arguments)"
                     ></b-form-input>
                 </b-form-group>

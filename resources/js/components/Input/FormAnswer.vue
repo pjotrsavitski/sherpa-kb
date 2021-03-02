@@ -9,7 +9,6 @@
                 type="text"
                 placeholder="Search text"
                 trim
-                debounce="500"
                 :disabled="isDisabled"
                 >
             </b-form-input>

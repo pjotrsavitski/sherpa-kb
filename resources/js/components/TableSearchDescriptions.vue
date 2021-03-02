@@ -16,7 +16,6 @@
                         type="text"
                         placeholder="Search text"
                         trim
-                        debounce="500"
                     >
                     </b-form-input>
                     <b-input-group-append>

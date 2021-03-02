@@ -2,10 +2,10 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Topic extends Model
+final class QuestionLanguage extends Pivot
 {
     use LogsActivity;
 
