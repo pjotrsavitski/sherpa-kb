@@ -2,10 +2,10 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphPivot;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Topic extends Model
+final class UserRole extends MorphPivot
 {
     use LogsActivity;
 

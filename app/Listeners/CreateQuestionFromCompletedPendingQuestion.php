@@ -22,7 +22,7 @@ class CreateQuestionFromCompletedPendingQuestion
     /**
      * Handle the event.
      *
-     * @param  object  $event
+     * @param StateChanged $event
      * @return void
      */
     public function handle(StateChanged $event)

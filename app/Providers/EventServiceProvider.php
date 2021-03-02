@@ -8,6 +8,10 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 use Illuminate\Support\Facades\Event;
 use Spatie\ModelStates\Events\StateChanged;
 use App\Listeners\CreateQuestionFromCompletedPendingQuestion;
+use Illuminate\Auth\Events\Login;
+use App\Listeners\LogSuccessfulLogin;
+use Illuminate\Auth\Events\Logout;
+use App\Listeners\LogSuccessfulLogout;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -19,6 +23,12 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+        Login::class => [
+            LogSuccessfulLogin::class,
+        ],
+        Logout::class => [
+            LogSuccessfulLogout::class,
         ],
         StateChanged::class => [
             CreateQuestionFromCompletedPendingQuestion::class,

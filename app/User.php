@@ -3,14 +3,31 @@
 namespace App;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
     use Notifiable;
-    use HasRoles;
+    use HasRoles
+    {
+        roles as private traitRoles;
+    }
+    use LogsActivity;
+
+    protected static $logAttributes = ['*'];
+    protected static $submitEmptyLogs = false;
+
+    protected static $logAttributesToIgnore = [
+        'password', 'remember_token',
+    ];
+    protected static $ignoreChangedAttributes = [
+        'remember_token',
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -39,9 +56,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function language()
+    public function language(): BelongsTo
     {
         return $this->belongsTo(Language::class);
+    }
+
+    // ActivityLog: Role removal is not captured as those are just being removed from the database instead
+    public function roles(): BelongsToMany
+    {
+        return $this->traitRoles()->using(UserRole::class);
     }
 
     /**
@@ -49,7 +72,7 @@ class User extends Authenticatable
      *
      * @return boolean
      */
-    public function isLanguageExpert()
+    public function isLanguageExpert(): bool
     {
         return $this->hasRole('expert');
     }
@@ -59,7 +82,7 @@ class User extends Authenticatable
      *
      * @return boolean
      */
-    public function isMasterExpert()
+    public function isMasterExpert(): bool
     {
         return $this->hasRole('master');
     }
@@ -69,7 +92,7 @@ class User extends Authenticatable
      *
      * @return boolean
      */
-    public function isAdministrator()
+    public function isAdministrator(): bool
     {
         return $this->hasRole('administrator');
     }
