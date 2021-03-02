@@ -29,8 +29,7 @@
                         rows="2"
                         max-rows="6"
                         trim
-                        debounce="250"
-                        @update="updateAnswerState"
+                        @update="updateInputState('answer', ...arguments)"
                         :disabled="!canEdit()"
                     ></b-form-textarea>
                 </b-form-group>
@@ -50,15 +49,14 @@
                         rows="2"
                         max-rows="6"
                         trim
-                        debounce="250"
-                        @update="updateTranslationState"
+                        @update="updateInputState('translation', ...arguments)"
                         :disabled="!canEdit()"
                     ></b-form-textarea>
                 </b-form-group>
                 <b-form-group
                     description="Changing status to Translated will send the answer for review by SELFIE master. You and other Language Experts would still be able to make changes as needed."
                 >
-                    <b-form-checkbox 
+                    <b-form-checkbox
                         v-model="form.translated"
                         name="translated"
                         switch
@@ -178,14 +176,8 @@
 
                 return `Answer in ${language ? language.name : code}`
             },
-            updateInputState(value, name) {
+            updateInputState(name, value) {
                 this.form.state[name] = value.length > 0
-            },
-            updateAnswerState(value) {
-                this.updateInputState(value, 'answer')
-            },
-            updateTranslationState(value) {
-                this.updateInputState(value, 'translation')
             }
         }
     }

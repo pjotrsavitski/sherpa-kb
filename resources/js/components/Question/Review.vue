@@ -30,7 +30,6 @@
                         required
                         :state="form.state[language.code]"
                         trim
-                        debounce="250"
                         @update="updateInputState(language.code, ...arguments)"
                         :disabled="!canEdit()"
                     ></b-form-input>
@@ -65,8 +64,8 @@
                     label-for="input-answer"
                 >
                     <form-answer
-                        :options="answerOptions" 
-                        v-model="form.answer" 
+                        :options="answerOptions"
+                        v-model="form.answer"
                         :disabled="!canEdit()"
                     ></form-answer>
                 </b-form-group>
