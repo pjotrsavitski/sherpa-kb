@@ -9,6 +9,7 @@ use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\HelperActivityController;
+use \App\Http\Controllers\HelperResponseUserRatingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,3 +40,5 @@ Route::get('/questions/{language:code}/{topic}', [QuestionController::class, 'ap
 Route::get('/export/{language:code}', [ExportController::class, 'export']);
 
 Route::post('/helper_activity', [HelperActivityController::class, 'store']);
+
+Route::post('/helper_response_user_ratings', [HelperResponseUserRatingController::class, 'store']);
