@@ -101,7 +101,7 @@ class QuestionController extends Controller
     {
         $this->authorize('viewAny', Question::class);
 
-        return TopicResource::collection(Topic::all());
+        return TopicResource::collection(Topic::orderBy('description', 'asc')->get());
     }
 
     /**
