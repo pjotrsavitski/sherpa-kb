@@ -4,11 +4,11 @@
         <question-review :question="question" v-if="!language && question"></question-review>
         <answer-edit :answer="answer" :language="language" v-if="language && answer"></answer-edit>
         <answer-review :answer="answer" v-if="!language && answer"></answer-review>
-        
+
         <h3>Questions</h3>
 
         <table-search-descriptions></table-search-descriptions>
-        
+
         <b-table
             striped
             hover
@@ -245,7 +245,7 @@
             },
             onOpenAnswerModal(question) {
                 const answer = this.answers.find(answer => answer.id === question.answer)
-                
+
                 if (answer) {
                     this.answer = answer
                     this.$nextTick(() => {
@@ -255,7 +255,7 @@
             },
             answerDescriptionsCount(id) {
                 const answer = this.answers.find(answer => answer.id === id)
-                
+
                 return answer ? this.descriptionsCount(answer) : 0
             },
             answerLanguagesPopoverData(id) {
@@ -266,7 +266,7 @@
         },
         created() {
             this.$store.dispatch('questions/preloadStates')
-            this.$store.dispatch('questions/preloadTopics')
+            this.$store.dispatch('topics/preloadAllTopics')
             this.$store.dispatch('answers/preloadStates')
         }
     }

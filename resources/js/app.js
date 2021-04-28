@@ -48,5 +48,15 @@ const app = new Vue({
         if (document.querySelector('meta[name="app-languages"]')) {
             this.$store.dispatch('app/setLanguages', JSON.parse(document.querySelector('meta[name="app-languages"]').content))
         }
+
+        setInterval(() => {
+            axios.post('/refresh_csrf_token')
+                .then(response => {
+                    document.querySelector('meta[name="csrf-token"]').content = response.data.csrfToken
+                })
+                .catch(error => {
+                    console.error(error)
+                })
+        }, 15 * 60 * 1000)
     }
 })

@@ -64,6 +64,14 @@
 
                     <answers-table :items="answers"></answers-table>
                 </b-tab>
+                <b-tab lazy>
+                    <template v-slot:title>
+                        Categories
+                        <b-badge :variant="tabTitleBadgeVariant(3)" pill>{{ topics.length }}</b-badge>
+                    </template>
+
+                    <topics-table :items="topics"></topics-table>
+                </b-tab>
             </b-tabs>
 
             <b-card
@@ -96,18 +104,20 @@
     import PendingQuestionsTable from './PendingQuestion/Table.vue'
     import AnswersTable from './Answer/Table.vue'
     import StatisticsTable from './Statistics/Table.vue'
+    import TopicsTable from './Topic/Table.vue'
     import { library } from '@fortawesome/fontawesome-svg-core'
     import { faTimes, faTable } from '@fortawesome/free-solid-svg-icons'
 
     library.add(faTimes)
     library.add(faTable)
-    
+
     export default {
         components: {
             QuestionsTable,
             PendingQuestionsTable,
             AnswersTable,
-            StatisticsTable
+            StatisticsTable,
+            TopicsTable
         },
         data() {
             return {
@@ -119,7 +129,8 @@
         },
         computed: {
             ...mapState({
-                languages: state => state.app.languages
+                languages: state => state.app.languages,
+                topics: state => state.topics.items
             }),
             questions() {
                 return this.$store.getters['questions/forReview']
@@ -155,6 +166,7 @@
             this.$store.dispatch('answers/preloadAllAnswers')
             this.$store.dispatch('questions/preloadAllQuestions')
             this.$store.dispatch('pendingQuestions/preloadAllPendingQuestions')
+            this.$store.dispatch('topics/preloadAllTopics')
         }
     }
 </script>
