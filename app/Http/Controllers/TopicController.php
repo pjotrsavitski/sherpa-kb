@@ -28,10 +28,10 @@ class TopicController extends Controller
     /**
      * Returns a list of all topics.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function list(): JsonResponse
+    public function list()
     {
         $this->authorize('viewAny', Topic::class);
 

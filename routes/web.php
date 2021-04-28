@@ -9,6 +9,7 @@ use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TopicController;
+use App\Http\Controllers\CSRFTokenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,3 +66,5 @@ Route::prefix('topics')->group(function() {
     Route::put('{topic}', [TopicController::class, 'update']);
     Route::delete('{topic}', [TopicController::class, 'delete']);
 });
+
+Route::post('refresh_csrf_token', [CSRFTokenController::class, 'refresh']);
