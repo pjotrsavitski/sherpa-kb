@@ -75,7 +75,7 @@
                 <b-form-group
                     description="Changing status to Translated will send the question for review by SELFIE master. You and other Language Experts would still be able to make changes as needed."
                 >
-                    <b-form-checkbox 
+                    <b-form-checkbox
                         v-model="form.translated"
                         name="translated"
                         switch
@@ -102,11 +102,11 @@
         computed: {
             ...mapState({
                 states: state => state.questions.states,
-                topics: state => state.questions.topics,
                 languages: state => state.app.languages
             }),
             ...mapGetters({
-                answers: 'answers/forQuestion'
+                answers: 'answers/forQuestion',
+                topics: 'topics/sortedAsc'
             }),
             modalId() {
                 return `question-edit`

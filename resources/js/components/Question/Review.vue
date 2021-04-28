@@ -87,11 +87,11 @@
         computed: {
             ...mapState({
                 states: state => state.questions.states,
-                topics: state => state.questions.topics,
                 languages: state => state.app.languages
             }),
             ...mapGetters({
-                answers: 'answers/forQuestion'
+                answers: 'answers/forQuestion',
+                topics: 'topics/sortedAsc'
             }),
             modalId() {
                 return `question-review`

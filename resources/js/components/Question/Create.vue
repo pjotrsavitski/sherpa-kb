@@ -87,11 +87,11 @@
         mixins: [ToastHelpers],
         computed: {
             ...mapState({
-                topics: state => state.questions.topics,
                 languages: state => state.app.languages
             }),
             ...mapGetters({
-                answers: 'answers/forQuestion'
+                answers: 'answers/forQuestion',
+                topics: 'topics/sortedAsc'
             }),
             modalId() {
                 return 'question-create'

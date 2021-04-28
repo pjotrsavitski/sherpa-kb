@@ -8,6 +8,7 @@ use App\Http\Controllers\PendingQuestionController;
 use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TopicController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +25,7 @@ Route::get('/', function () {
     if (Auth::check()) {
         return redirect('home');
     }
-    
+
     return view('welcome');
 });
 
@@ -38,7 +39,6 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::get('/questions', [QuestionController::class, 'list']);
 Route::get('/questions/states', [QuestionController::class, 'states']);
-Route::get('/questions/topics', [QuestionController::class, 'topics']);
 Route::post('/questions', [QuestionController::class, 'store']);
 Route::put('/questions/{question}', [QuestionController::class, 'update']);
 
@@ -58,3 +58,10 @@ Route::put('/users/{user}', [UserController::class, 'update']);
 Route::delete('/users/{user}', [UserController::class, 'delete']);
 
 Route::get('statistics', [StatisticsController::class, 'index']);
+
+Route::prefix('topics')->group(function() {
+    Route::get('/', [TopicController::class, 'list']);
+    Route::post('/', [TopicController::class, 'store']);
+    Route::put('{topic}', [TopicController::class, 'update']);
+    Route::delete('{topic}', [TopicController::class, 'delete']);
+});

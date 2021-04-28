@@ -1,7 +1,6 @@
 const state = () => ({
     items: [],
     states: [],
-    topics: [],
     preloaded: []
 })
 
@@ -45,21 +44,6 @@ const actions = {
             dispatch('loadStates')
         }
     },
-    loadTopics({ commit }) {
-        return axios.get('/questions/topics')
-        .then(response => {
-            commit('setTopics', response.data.data)
-        })
-        .catch(error => {
-            console.error('Question topics loading:', error)
-        })
-    },
-    preloadTopics({ state, dispatch, commit }) {
-        if (!state.preloaded.hasOwnProperty('topics')) {
-            commit('setPreloaded', 'topics')
-            dispatch('loadTopics')
-        }
-    },
     updateQuestion({ commit }, question) {
         commit('updateQuestion', question)
     },
@@ -86,9 +70,6 @@ const mutations = {
     },
     setStates(state, states) {
         state.states = states
-    },
-    setTopics(state, topics) {
-        state.topics = topics
     },
     insertQuestion(state, question) {
         state.items.push(question)

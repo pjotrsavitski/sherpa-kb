@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Question;
 use App\Http\Resources\QuestionResource;
 use App\Topic;
-use App\Http\Resources\TopicResource;
 use Illuminate\Validation\Rule;
 use App\States\Question\QuestionState;
 use App\Language;
@@ -30,7 +29,7 @@ class QuestionController extends Controller
 
     /**
      * Create new controller instance
-     * 
+     *
      * @return void
      */
     public function __construct(LanguageService $languageService)
@@ -71,7 +70,7 @@ class QuestionController extends Controller
     public function list()
     {
         $this->authorize('viewAny', Question::class);
-        
+
         return QuestionResource::collection(Question::with(['languages', 'topic', 'answer', 'pendingQuestion'])->get());
     }
 
@@ -93,18 +92,6 @@ class QuestionController extends Controller
     }
 
     /**
-     * Respond with question topics using TopicResource.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function topics()
-    {
-        $this->authorize('viewAny', Question::class);
-
-        return TopicResource::collection(Topic::orderBy('description', 'asc')->get());
-    }
-
-    /**
      * Create new Question and respond with QuestionResource.
      *
      * @param Request $request
@@ -116,7 +103,7 @@ class QuestionController extends Controller
         $validatedData = $request->validate([
             'descriptions' => 'required|array',
             'descriptions.*.code' => 'required|exists:App\Language,code',
-            'descriptions.*.value' => 'required', 
+            'descriptions.*.value' => 'required',
             'topic' => 'sometimes|required|exists:App\Topic,id',
         ]);
 
@@ -148,14 +135,14 @@ class QuestionController extends Controller
     public function update(Request $request, Question $question)
     {
         $this->authorize('update', $question);
-        
+
         $states = Question::getStatesFor('status')->map(function($state) {
             return $state::getMorphClass();
         });
         $validatedData = $request->validate([
             'descriptions' => 'required|array',
             'descriptions.*.code' => 'required|exists:App\Language,code',
-            'descriptions.*.value' => 'required', 
+            'descriptions.*.value' => 'required',
             'topic' => 'sometimes|required|exists:App\Topic,id',
             'status' => [
                 'sometimes',

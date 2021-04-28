@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Answer;
 use App\PendingQuestion;
+use App\Policies\TopicPolicy;
 use App\Question;
 use App\Policies\AnswerPolicy;
 use App\Policies\PendingQuestionPolicy;
@@ -22,6 +23,7 @@ class AuthServiceProvider extends ServiceProvider
         PendingQuestion::class => PendingQuestionPolicy::class,
         Question::class => QuestionPolicy::class,
         Answer::class => AnswerPolicy::class,
+        Topic::class => TopicPolicy::class,
     ];
 
     /**
