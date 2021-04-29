@@ -75,6 +75,17 @@
                         :disabled="!canEdit()"
                     ></b-form-select>
                 </b-form-group>
+
+                <div class="text-right">
+                    <b-button
+                        variant="danger"
+                        @click="handleDelete()"
+                        :disabled="isBusy"
+                        size="sm"
+                    >
+                        Delete
+                    </b-button>
+                </div>
             </form>
         </b-modal>
 </template>
@@ -82,7 +93,7 @@
 <script>
     import { mapState } from 'vuex'
     import ToastHelpers from '../../mixins/ToastHelpers'
-    
+
     export default {
         props: ['pendingQuestion'],
         mixins: [ToastHelpers],
@@ -183,6 +194,40 @@
                     console.error(error)
                     this.displayHttpError(error)
                 })
+            },
+            handleDelete() {
+                this.$bvModal.msgBoxConfirm(`Are you sure you want to delete pending question with ID of ${this.pendingQuestion.id}?`,
+                    {
+                        title: 'Please confirm',
+                        size: 'sm',
+                        buttonSize: 'sm',
+                        okVariant: 'danger',
+                        okTitle: 'Confirm',
+                        cancelTitle: 'Cancel',
+                        footerClass: 'p-2',
+                        hideHeaderClose: false,
+                        centered: true
+                    })
+                    .then(value => {
+                        if (value) {
+                            this.isBusy = true
+                            this.$store.dispatch('pendingQuestions/deletePendingQuestion', this.pendingQuestion)
+                                .then(() => {
+                                    this.isBusy = false
+                                    this.$nextTick(() => {
+                                        this.$bvModal.hide(this.modalId)
+                                    })
+                                })
+                                .catch(err => {
+                                    this.isBusy = false
+                                    console.error(err)
+                                    this.displayHttpError(err)
+                                })
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Delete pending question confirmation dialog error', err)
+                    })
             }
         }
     }

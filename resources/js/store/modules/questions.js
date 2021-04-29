@@ -51,7 +51,17 @@ const actions = {
         commit('insertQuestion', question)
     },
     deleteQuestion({ commit }, question) {
-        commit('deleteQuestion', question)
+        return axios.delete(`/questions/${question.id}`)
+            .then(response => {
+                commit('deleteQuestion', response.data)
+            })
+    },
+    answerDeleted({ state }, answer) {
+        state.items.forEach(question => {
+            if (question.answer && question.answer === answer.id) {
+                question.answer = null
+            }
+        })
     }
 }
 

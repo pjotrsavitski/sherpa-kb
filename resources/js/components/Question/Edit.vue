@@ -85,6 +85,17 @@
                         <b>Change status to translated</b>
                     </b-form-checkbox>
                 </b-form-group>
+
+                <div class="text-right" v-if="canDelete()">
+                    <b-button
+                        variant="danger"
+                        @click="handleDelete()"
+                        :disabled="isBusy"
+                        size="sm"
+                    >
+                        Delete
+                    </b-button>
+                </div>
             </form>
         </b-modal>
 </template>
@@ -190,6 +201,9 @@
             canSave() {
                 return this.canEdit() && (this.isEnglish ? this.form.question : this.form.question && this.form.translation)
             },
+            canDelete() {
+                return this.canEdit()
+            },
             canChangeStatus() {
                 // TODO Check if this check is correct (saving last missing language should allow status to be changed)
                 return this.question.status.value === 'in_translation' && this.questionState && this.translationState
@@ -252,6 +266,40 @@
                 const language = this.languages.find(language => language.code === code)
 
                 return `Question in ${language ? language.name : code}`
+            },
+            handleDelete() {
+                this.$bvModal.msgBoxConfirm(`Are you sure you want to delete question with ID of ${this.question.id}?`,
+                    {
+                        title: 'Please confirm',
+                        size: 'sm',
+                        buttonSize: 'sm',
+                        okVariant: 'danger',
+                        okTitle: 'Confirm',
+                        cancelTitle: 'Cancel',
+                        footerClass: 'p-2',
+                        hideHeaderClose: false,
+                        centered: true
+                    })
+                    .then(value => {
+                        if (value) {
+                            this.isBusy = true
+                            this.$store.dispatch('questions/deleteQuestion', this.question)
+                                .then(() => {
+                                    this.isBusy = false
+                                    this.$nextTick(() => {
+                                        this.$bvModal.hide(this.modalId)
+                                    })
+                                })
+                                .catch(err => {
+                                    this.isBusy = false
+                                    console.error(err)
+                                    this.displayHttpError(err)
+                                })
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Delete question confirmation dialog error', err)
+                    })
             }
         }
     }

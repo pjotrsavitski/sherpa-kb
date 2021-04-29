@@ -190,4 +190,21 @@ class AnswerController extends Controller
 
         return response()->json($data);
     }
+
+    /**
+     * Removes answer from the system.
+     *
+     * @param Answer $answer
+     *
+     * @return JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function delete(Answer $answer)
+    {
+        $this->authorize('delete', $answer);
+
+        $answer->delete();
+
+        return response()->json(new AnswerResource($answer), 200);
+    }
 }

@@ -37,7 +37,10 @@ const actions = {
         commit('insertTopic', topic)
     },
     deleteTopic({ commit }, topic) {
-        commit('deleteTopic', topic)
+        return axios.delete(`/topics/${topic.id}`)
+            .then(response => {
+                commit('deleteTopic', response.data)
+            })
     }
 }
 

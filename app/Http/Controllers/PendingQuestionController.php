@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\States\PendingQuestion\Pending;
 use Illuminate\Http\Request;
 use App\PendingQuestion;
 use App\Language;
@@ -23,7 +24,7 @@ class PendingQuestionController extends Controller
 
     /**
      * Create new controller instance
-     * 
+     *
      * @return void
      */
     public function __construct(LanguageService $languageService)
@@ -90,7 +91,7 @@ class PendingQuestionController extends Controller
             'language' => 'required|exists:App\Language,code',
             'token' => ['required', new ReCaptcha('suggest', 0.5),],
         ]);
-        
+
         $question = new PendingQuestion;
         $question->save();
         $question->languages()->attach(Language::where('code', $validatedData['language'])->first()->id, [
@@ -112,7 +113,7 @@ class PendingQuestionController extends Controller
     public function update(Request $request, PendingQuestion $pendingQuestion)
     {
         $this->authorize('update', $pendingQuestion);
-        
+
         $states = PendingQuestion::getStatesFor('status')->map(function($state) {
             return $state::getMorphClass();
         });
@@ -163,7 +164,7 @@ class PendingQuestionController extends Controller
             if ($mainLanguageId !== $englishLanguageId) {
                 $languageData[$englishLanguageId] = ['description' => $validatedData['translation']];
             }
-            
+
             $pendingQuestion->languages()->sync($languageData);
         }
 
@@ -173,5 +174,22 @@ class PendingQuestionController extends Controller
         }
 
         return response()->json(new PendingQuestionResource($pendingQuestion->refresh()), 200);
+    }
+
+    /**
+     * Removes pending question from the system.
+     *
+     * @param PendingQuestion $pendingQuestion
+     *
+     * @return JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function delete(PendingQuestion $pendingQuestion)
+    {
+        $this->authorize('delete', $pendingQuestion);
+
+        $pendingQuestion->delete();
+
+        return response()->json(new PendingQuestionResource($pendingQuestion), 200);
     }
 }

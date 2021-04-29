@@ -272,4 +272,21 @@ class QuestionController extends Controller
 
         return response()->json($data);
     }
+
+    /**
+     * Removes question from the system.
+     *
+     * @param Question $question
+     *
+     * @return JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function delete(Question $question)
+    {
+        $this->authorize('delete', $question);
+
+        $question->delete();
+
+        return response()->json(new QuestionResource($question), 200);
+    }
 }
