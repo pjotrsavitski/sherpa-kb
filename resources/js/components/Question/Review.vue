@@ -66,6 +66,7 @@
                     <form-answer
                         :options="answerOptions"
                         v-model="form.answer"
+                        language="en"
                         :disabled="!canEdit()"
                     ></form-answer>
                 </b-form-group>

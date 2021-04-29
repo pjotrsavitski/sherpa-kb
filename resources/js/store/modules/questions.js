@@ -49,6 +49,9 @@ const actions = {
     },
     insertQuestion({ commit }, question) {
         commit('insertQuestion', question)
+    },
+    deleteQuestion({ commit }, question) {
+        commit('deleteQuestion', question)
     }
 }
 
@@ -73,6 +76,15 @@ const mutations = {
     },
     insertQuestion(state, question) {
         state.items.push(question)
+    },
+    deleteQuestion(state, question) {
+        const index = state.items.findIndex(item => {
+            return item.id === question.id
+        })
+
+        if (index !== -1) {
+            state.items.splice(index, 1)
+        }
     }
 }
 
