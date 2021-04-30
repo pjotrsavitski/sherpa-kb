@@ -54,6 +54,12 @@ const actions = {
             dispatch('loadStates')
         }
     },
+    deletePendingQuestion({ commit }, question) {
+        return axios.delete(`/pending_questions/${question.id}`)
+            .then(response => {
+                commit('deletePendingQuestion', response.data)
+            })
+    }
 }
 
 const mutations = {
@@ -74,6 +80,15 @@ const mutations = {
     },
     setStates (state, states) {
         state.states = states
+    },
+    deletePendingQuestion(state, question) {
+        const index = state.items.findIndex(item => {
+            return item.id === question.id
+        })
+
+        if (index !== -1) {
+            state.items.splice(index, 1)
+        }
     }
 }
 

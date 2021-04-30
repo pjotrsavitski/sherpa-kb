@@ -14,6 +14,9 @@
                 ref="form"
                 @submit.stop.prevent="handleSubmit"
             >
+                <b-alert :show="setTranslated" class="text-center">
+                    Created answer will have a status of <strong>Translated</strong>. This will make it available for use with question dialogs.
+                </b-alert>
                 <b-form-group
                     id="input-group-answer"
                     :label="answerLabel(language)"
@@ -60,7 +63,7 @@
     import ToastHelpers from '../../mixins/ToastHelpers'
 
     export default {
-        props: ['language'],
+        props: ['language', 'setTranslated'],
         mixins: [ToastHelpers],
         computed: {
             ...mapState({
@@ -129,10 +132,16 @@
                     value: this.form.answer
                 })
 
+                if (this.setTranslated) {
+                    data.setTranslated = true
+                }
+
                 axios.post('/answers', data)
                 .then(response => {
                     this.isBusy = false
                     this.$store.dispatch('answers/insertAnswer', response.data)
+
+                    this.$emit('answer-created', response.data)
 
                     this.$nextTick(() => {
                         this.$bvModal.hide(this.modalId)

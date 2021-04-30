@@ -66,9 +66,22 @@
                     <form-answer
                         :options="answerOptions"
                         v-model="form.answer"
+                        language="en"
                         :disabled="!canEdit()"
                     ></form-answer>
                 </b-form-group>
+
+                <div class="text-right" v-if="canDelete()">
+                    <b-button
+                        variant="danger"
+                        @click="handleDelete()"
+                        :disabled="isBusy"
+                        v-b-tooltip
+                        title="Delete"
+                    >
+                        <font-awesome-icon :icon="['fas', 'trash']" />
+                    </b-button>
+                </div>
             </form>
         </b-modal>
 </template>
@@ -77,6 +90,10 @@
     import { mapState, mapGetters } from 'vuex'
     import ToastHelpers from '../../mixins/ToastHelpers'
     import FormAnswer from '../Input/FormAnswer'
+    import { library } from '@fortawesome/fontawesome-svg-core'
+    import { faTrash } from '@fortawesome/free-solid-svg-icons'
+
+    library.add(faTrash)
 
     export default {
         props: ['question'],
@@ -167,6 +184,9 @@
             canSave() {
                 return this.canEdit() && Object.values(this.form.state).every(value => value === true)
             },
+            canDelete() {
+                return this.canEdit()
+            },
             handleSave(bvModelEvent) {
                 bvModelEvent.preventDefault()
                 this.handleSubmit()
@@ -224,6 +244,39 @@
             },
             updateInputState(code, value) {
                 this.form.state[code] = value.length > 0
+            },handleDelete() {
+                this.$bvModal.msgBoxConfirm(`Are you sure you want to delete question with ID of ${this.question.id}?`,
+                    {
+                        title: 'Please confirm',
+                        size: 'sm',
+                        buttonSize: 'sm',
+                        okVariant: 'danger',
+                        okTitle: 'Confirm',
+                        cancelTitle: 'Cancel',
+                        footerClass: 'p-2',
+                        hideHeaderClose: false,
+                        centered: true
+                    })
+                    .then(value => {
+                        if (value) {
+                            this.isBusy = true
+                            this.$store.dispatch('questions/deleteQuestion', this.question)
+                                .then(() => {
+                                    this.isBusy = false
+                                    this.$nextTick(() => {
+                                        this.$bvModal.hide(this.modalId)
+                                    })
+                                })
+                                .catch(err => {
+                                    this.isBusy = false
+                                    console.error(err)
+                                    this.displayHttpError(err)
+                                })
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Delete question confirmation dialog error', err)
+                    })
             }
         }
     }

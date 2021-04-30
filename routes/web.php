@@ -42,15 +42,18 @@ Route::get('/questions', [QuestionController::class, 'list']);
 Route::get('/questions/states', [QuestionController::class, 'states']);
 Route::post('/questions', [QuestionController::class, 'store']);
 Route::put('/questions/{question}', [QuestionController::class, 'update']);
+Route::delete('/questions/{question}', [QuestionController::class, 'delete']);
 
 Route::get('/pending_questions', [PendingQuestionController::class, 'list']);
 Route::get('/pending_questions/states', [PendingQuestionController::class, 'states']);
 Route::put('/pending_questions/{pending_question}', [PendingQuestionController::class, 'update']);
+Route::delete('/pending_questions/{pending_question}', [PendingQuestionController::class, 'delete']);
 
 Route::get('/answers', [AnswerController::class, 'list']);
 Route::get('/answers/states', [AnswerController::class, 'states']);
 Route::post('/answers', [AnswerController::class, 'store']);
 Route::put('/answers/{answer}', [AnswerController::class, 'update']);
+Route::delete('/answers/{answer}', [AnswerController::class, 'delete']);
 
 Route::get('/users', [UserController::class, 'index'])->name('users');
 Route::get('/users/roles', [UserController::class, 'roles']);

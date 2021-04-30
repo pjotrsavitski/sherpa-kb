@@ -79,7 +79,7 @@ class PendingQuestionPolicy
      */
     public function delete(User $user, PendingQuestion $pendingQuestion)
     {
-        return false;
+        return $user->isLanguageExpert() || $user->isMasterExpert();
     }
 
     /**

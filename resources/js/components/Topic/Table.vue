@@ -89,6 +89,7 @@ import TopicEdit from './Edit.vue'
 import TableSearchDescriptions from '../TableSearchDescriptions.vue'
 import TableHelpers from '../../mixins/TableHelpers'
 import TableSearchHelpers from '../../mixins/TableSearchHelpers'
+import ToastHelpers from '../../mixins/ToastHelpers'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 
@@ -96,7 +97,7 @@ library.add(faPlus, faEdit, faTrash)
 
 export default {
     props: ['items', 'isBusy'],
-    mixins: [TableHelpers, TableSearchHelpers],
+    mixins: [TableHelpers, TableSearchHelpers, ToastHelpers],
     components: {
         TopicCreate,
         TopicEdit,
@@ -185,14 +186,11 @@ export default {
                 })
                 .then(value => {
                     if (value) {
-                        axios.delete(`/topics/${topic.id}`)
-                            .then(response => {
-                                this.$store.dispatch('topics/deleteTopic', response.data)
-                            })
-                            .catch(error => {
-                                console.error(error)
-                                this.displayHttpError(error)
-                            })
+                        this.$store.dispatch('topics/deleteTopic', topic)
+                        .catch(err => {
+                            console.error(err)
+                            this.displayHttpError(err)
+                        })
                     }
                 })
                 .catch(err => {

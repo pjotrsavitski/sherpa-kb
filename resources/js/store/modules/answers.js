@@ -55,6 +55,14 @@ const actions = {
     },
     updateAnswer({ commit }, answer) {
         commit('updateAnswer', answer)
+    },
+    deleteAnswer({ commit }, answer) {
+        return axios.delete(`/answers/${answer.id}`)
+            .then(response => {
+                commit('deleteAnswer', response.data)
+                // Notify questions store about answer removal
+                this.dispatch('questions/answerDeleted', response.data)
+            })
     }
 }
 
@@ -81,6 +89,15 @@ const mutations = {
     },
     insertAnswer(state, answer) {
         state.items.push(answer)
+    },
+    deleteAnswer(state, answer) {
+        const index = state.items.findIndex(item => {
+            return item.id === answer.id
+        })
+
+        if (index !== -1) {
+            state.items.splice(index, 1)
+        }
     }
 }
 

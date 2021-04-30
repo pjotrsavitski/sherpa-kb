@@ -25,7 +25,7 @@ class AnswerController extends Controller
 
     /**
      * Create new controller instance
-     * 
+     *
      * @return void
      */
     public function __construct(LanguageService $languageService)
@@ -109,7 +109,11 @@ class AnswerController extends Controller
         $answer->save();
         $answer->languages()->attach($descriptions);
 
-        return response()->json(new AnswerResource($answer), 200);
+        if ($request->has('setTranslated')) {
+            $answer->status->transitionTo(Translated::class);
+        }
+
+        return response()->json(new AnswerResource($answer->refresh()), 200);
     }
 
     /**
@@ -122,7 +126,7 @@ class AnswerController extends Controller
     public function update(Request $request, Answer $answer)
     {
         $this->authorize('update', $answer);
-         
+
         $states = Answer::getStatesFor('status')->map(function($state) {
             return $state::getMorphClass();
         });
@@ -185,5 +189,22 @@ class AnswerController extends Controller
         });
 
         return response()->json($data);
+    }
+
+    /**
+     * Removes answer from the system.
+     *
+     * @param Answer $answer
+     *
+     * @return JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function delete(Answer $answer)
+    {
+        $this->authorize('delete', $answer);
+
+        $answer->delete();
+
+        return response()->json(new AnswerResource($answer), 200);
     }
 }

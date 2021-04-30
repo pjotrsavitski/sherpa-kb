@@ -69,12 +69,28 @@
                         <b>Change status to propagated</b>
                     </b-form-checkbox>
                 </b-form-group>
+
+                <div class="text-right">
+                    <b-button
+                        variant="danger"
+                        @click="handleDelete()"
+                        :disabled="isBusy"
+                        v-b-tooltip
+                        title="Delete"
+                    >
+                        <font-awesome-icon :icon="['fas', 'trash']" />
+                    </b-button>
+                </div>
             </form>
         </b-modal>
 </template>
 
 <script>
     import ToastHelpers from '../../mixins/ToastHelpers'
+    import { library } from '@fortawesome/fontawesome-svg-core'
+    import { faTrash } from '@fortawesome/free-solid-svg-icons'
+
+    library.add(faTrash)
 
     export default {
         props: ['pendingQuestion'],
@@ -167,6 +183,40 @@
                     console.error(error)
                     this.displayHttpError(error)
                 })
+            },
+            handleDelete() {
+                this.$bvModal.msgBoxConfirm(`Are you sure you want to delete pending question with ID of ${this.pendingQuestion.id}?`,
+                    {
+                        title: 'Please confirm',
+                        size: 'sm',
+                        buttonSize: 'sm',
+                        okVariant: 'danger',
+                        okTitle: 'Confirm',
+                        cancelTitle: 'Cancel',
+                        footerClass: 'p-2',
+                        hideHeaderClose: false,
+                        centered: true
+                    })
+                    .then(value => {
+                        if (value) {
+                            this.isBusy = true
+                            this.$store.dispatch('pendingQuestions/deletePendingQuestion', this.pendingQuestion)
+                                .then(() => {
+                                    this.isBusy = false
+                                    this.$nextTick(() => {
+                                        this.$bvModal.hide(this.modalId)
+                                    })
+                                })
+                                .catch(err => {
+                                    this.isBusy = false
+                                    console.error(err)
+                                    this.displayHttpError(err)
+                                })
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Delete pending question confirmation dialog error', err)
+                    })
             }
         }
     }

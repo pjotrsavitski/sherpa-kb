@@ -49,6 +49,33 @@ const actions = {
     },
     insertQuestion({ commit }, question) {
         commit('insertQuestion', question)
+    },
+    deleteQuestion({ commit }, question) {
+        return axios.delete(`/questions/${question.id}`)
+            .then(response => {
+                commit('deleteQuestion', response.data)
+            })
+    },
+    answerDeleted({ state }, answer) {
+        state.items.forEach(question => {
+            if (question.answer && question.answer === answer.id) {
+                question.answer = null
+            }
+        })
+    },
+    topicDeleted({ state }, topic) {
+        state.items.forEach(question => {
+            if (question.topic && question.topic.id === topic.id) {
+                question.topic = null
+            }
+        })
+    },
+    topicUpdated({ state }, topic) {
+        state.items.forEach(question => {
+            if (question.topic && question.topic.id === topic.id) {
+                question.topic.description = topic.description
+            }
+        })
     }
 }
 
@@ -73,6 +100,15 @@ const mutations = {
     },
     insertQuestion(state, question) {
         state.items.push(question)
+    },
+    deleteQuestion(state, question) {
+        const index = state.items.findIndex(item => {
+            return item.id === question.id
+        })
+
+        if (index !== -1) {
+            state.items.splice(index, 1)
+        }
     }
 }
 

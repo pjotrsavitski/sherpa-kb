@@ -1,6 +1,7 @@
 <template>
     <div>
         <b-modal ref="modal" :hide-footer="true">{{ modal.content }}</b-modal>
+        <answer-create ref="createAnswerModal" :language="language" :set-translated="true"></answer-create>
 
         <b-input-group class="mb-2">
             <b-form-input
@@ -28,6 +29,16 @@
                     title="Scroll to selected item"
                 >
                     <font-awesome-icon :icon="['fas', 'eye']" />
+                </b-button>
+            </b-input-group-append>
+            <b-input-group-append>
+                <b-button
+                    v-b-modal="'answer-create'"
+                    variant="outline-info"
+                    v-b-tooltip.hover
+                    title="Add new answer"
+                >
+                    <font-awesome-icon :icon="['fas', 'plus']" />
                 </b-button>
             </b-input-group-append>
         </b-input-group>
@@ -80,13 +91,17 @@
 </template>
 
 <script>
+    import AnswerCreate from '../Answer/Create.vue'
     import { library } from '@fortawesome/fontawesome-svg-core'
-    import { faInfoCircle, faTimesCircle, faCheck, faEye } from '@fortawesome/free-solid-svg-icons'
+    import { faInfoCircle, faTimesCircle, faCheck, faEye, faPlus } from '@fortawesome/free-solid-svg-icons'
 
-    library.add(faInfoCircle, faTimesCircle, faCheck, faEye)
+    library.add(faInfoCircle, faTimesCircle, faCheck, faEye, faPlus)
 
     export default {
-        props: ['options', 'value', 'height', 'disabled'],
+        props: ['options', 'value', 'height', 'disabled', 'language'],
+        components: {
+            AnswerCreate
+        },
         mounted() {
             if (this.height) {
                 this.listStyle['max-height'] = this.height
@@ -96,9 +111,19 @@
                 this.scrollToSelected()
             })
             this.$root.$once('bv::modal::shown', this.handleModalShown)
+
+            this.$refs.createAnswerModal.$on('answer-created', answer => {
+                this.setValue(answer.id)
+                this.$nextTick(() => {
+                    setTimeout(() => {
+                        this.scrollToSelected()
+                    }, 1000);
+                })
+            })
         },
         unmounted() {
             this.$off('bv::modal::shown', this.handleModalShown)
+            this.$refs.createAnswerModal.$off('answer-created')
         },
         computed: {
             filteredOptions() {
@@ -179,3 +204,9 @@
         }
     }
 </script>
+
+<style scoped>
+.btn.btn-outline-info:hover {
+    color: #fff;
+}
+</style>

@@ -68,6 +68,7 @@
                     <form-answer
                         :options="answerOptions"
                         v-model="form.answer"
+                        :language="language"
                     ></form-answer>
                 </b-form-group>
             </form>

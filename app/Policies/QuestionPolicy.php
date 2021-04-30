@@ -5,6 +5,8 @@ namespace App\Policies;
 use App\Question;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use App\States\Question\InTranslation;
+use App\States\Question\Translated;
 
 class QuestionPolicy
 {
@@ -79,6 +81,12 @@ class QuestionPolicy
      */
     public function delete(User $user, Question $question)
     {
+        if ($user->isMasterExpert()) {
+            return true;
+        } else if ($user->isLanguageExpert() && ($question->status->is(Translated::class) || $question->status->is(InTranslation::class))) {
+            return true;
+        }
+
         return false;
     }
 

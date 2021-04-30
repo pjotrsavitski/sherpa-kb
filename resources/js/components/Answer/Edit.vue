@@ -65,6 +65,18 @@
                         <b>Change status to translated</b>
                     </b-form-checkbox>
                 </b-form-group>
+
+                <div class="text-right" v-if="canDelete()">
+                    <b-button
+                        variant="danger"
+                        @click="handleDelete()"
+                        :disabled="isBusy"
+                        v-b-tooltip
+                        title="Delete"
+                    >
+                        <font-awesome-icon :icon="['fas', 'trash']" />
+                    </b-button>
+                </div>
             </form>
         </b-modal>
 </template>
@@ -72,6 +84,10 @@
 <script>
     import { mapState } from 'vuex'
     import ToastHelpers from '../../mixins/ToastHelpers'
+    import { library } from '@fortawesome/fontawesome-svg-core'
+    import { faTrash } from '@fortawesome/free-solid-svg-icons'
+
+    library.add(faTrash)
 
     export default {
         props: ['language', 'answer'],
@@ -119,6 +135,9 @@
             },
             canSave() {
                 return this.canEdit() && (this.isEnglish ? this.form.state.answer : this.form.state.answer && this.form.state.translation)
+            },
+            canDelete() {
+                return this.canEdit()
             },
             canChangeStatus() {
                 // TODO Check if this check is correct (saving last missing language should allow status to be changed)
@@ -178,6 +197,40 @@
             },
             updateInputState(name, value) {
                 this.form.state[name] = value.length > 0
+            },
+            handleDelete() {
+                this.$bvModal.msgBoxConfirm(`Are you sure you want to delete answer with ID of ${this.answer.id}?`,
+                    {
+                        title: 'Please confirm',
+                        size: 'sm',
+                        buttonSize: 'sm',
+                        okVariant: 'danger',
+                        okTitle: 'Confirm',
+                        cancelTitle: 'Cancel',
+                        footerClass: 'p-2',
+                        hideHeaderClose: false,
+                        centered: true
+                    })
+                    .then(value => {
+                        if (value) {
+                            this.isBusy = true
+                            this.$store.dispatch('answers/deleteAnswer', this.answer)
+                                .then(() => {
+                                    this.isBusy = false
+                                    this.$nextTick(() => {
+                                        this.$bvModal.hide(this.modalId)
+                                    })
+                                })
+                                .catch(err => {
+                                    this.isBusy = false
+                                    console.error(err)
+                                    this.displayHttpError(err)
+                                })
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Delete answer confirmation dialog error', err)
+                    })
             }
         }
     }
