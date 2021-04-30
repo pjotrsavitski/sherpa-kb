@@ -58,5 +58,43 @@ const app = new Vue({
                     console.error(error)
                 })
         }, 15 * 60 * 1000)
+
+        Echo.private('App.Sync')
+            .listen('TopicCreated', e => {
+                this.$store.dispatch('topics/insertTopic', e)
+            })
+            .listen('TopicUpdated', e => {
+                this.$store.dispatch('topics/updateTopic', e)
+            })
+            .listen('TopicDeleted', e => {
+                this.$store.dispatch('topics/localDeleteTopic', e)
+            })
+            .listen('AnswerCreated', e => {
+                this.$store.dispatch('answers/insertAnswer', e)
+            })
+            .listen('AnswerUpdated', e => {
+                this.$store.dispatch('answers/updateAnswer', e)
+            })
+            .listen('AnswerDeleted', e => {
+                this.$store.dispatch('answers/localDeleteAnswer', e)
+            })
+            .listen('QuestionCreated', e => {
+                this.$store.dispatch('questions/insertQuestion', e)
+            })
+            .listen('QuestionUpdated', e => {
+                this.$store.dispatch('questions/updateQuestion', e)
+            })
+            .listen('QuestionDeleted', e => {
+                this.$store.dispatch('questions/localDeleteQuestion', e)
+            })
+            .listen('PendingQuestionCreated', e => {
+                this.$store.dispatch('pendingQuestions/insertPendingQuestion', e)
+            })
+            .listen('PendingQuestionUpdated', e => {
+                this.$store.dispatch('pendingQuestions/updatePendingQuestion', e)
+            })
+            .listen('PendingQuestionDeleted', e => {
+                this.$store.dispatch('pendingQuestions/localDeletePendingQuestion', e)
+            })
     }
 })

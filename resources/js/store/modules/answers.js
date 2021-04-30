@@ -59,10 +59,12 @@ const actions = {
     deleteAnswer({ commit }, answer) {
         return axios.delete(`/answers/${answer.id}`)
             .then(response => {
-                commit('deleteAnswer', response.data)
-                // Notify questions store about answer removal
-                this.dispatch('questions/answerDeleted', response.data)
+                this.dispatch('answers/localDeleteAnswer', response.data)
             })
+    },
+    localDeleteAnswer({ commit }, answer) {
+        commit('deleteAnswer', answer)
+        this.dispatch('questions/answerDeleted', answer)
     }
 }
 

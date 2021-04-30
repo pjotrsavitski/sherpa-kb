@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\QuestionCreated;
+use App\Events\QuestionDeleted;
+use App\Events\QuestionUpdated;
 use Illuminate\Http\Request;
 use App\Question;
 use App\Http\Resources\QuestionResource;
@@ -122,6 +125,8 @@ class QuestionController extends Controller
 
         $question->languages()->attach($descriptions);
 
+        broadcast(new QuestionCreated($question))->toOthers();
+
         return response()->json(new QuestionResource($question), 200);
     }
 
@@ -181,6 +186,8 @@ class QuestionController extends Controller
         $descriptions = $this->processDescriptions($validatedData['descriptions']);
 
         $question->languages()->syncWithoutDetaching($descriptions);
+
+        broadcast(new QuestionUpdated($question->refresh()))->toOthers();
 
         return response()->json(new QuestionResource($question->refresh()), 200);
     }
@@ -286,6 +293,8 @@ class QuestionController extends Controller
         $this->authorize('delete', $question);
 
         $question->delete();
+
+        broadcast(new QuestionDeleted($question))->toOthers();
 
         return response()->json(new QuestionResource($question), 200);
     }

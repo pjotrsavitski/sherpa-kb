@@ -88,7 +88,7 @@
                 >
                     <font-awesome-icon :icon="['fas', 'plus']" />
                 </b-button>
-                
+
                 <answers-table :items="answers" :language="language" :is-busy="isBusy"></answers-table>
             </b-tab>
         </b-tabs>
@@ -142,7 +142,7 @@
             this.$store.dispatch('questions/preloadAllQuestions')
             this.$store.dispatch('pendingQuestions/preloadAllPendingQuestions')
             this.$store.dispatch('answers/preloadAllAnswers')
-
+            this.$store.dispatch('topics/preloadAllTopics')
         }
     }
 </script>

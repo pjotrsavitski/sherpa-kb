@@ -57,8 +57,14 @@ const actions = {
     deletePendingQuestion({ commit }, question) {
         return axios.delete(`/pending_questions/${question.id}`)
             .then(response => {
-                commit('deletePendingQuestion', response.data)
+                this.dispatch('pendingQuestions/localDeletePendingQuestion', response.data)
             })
+    },
+    insertPendingQuestion({ commit }, question) {
+        commit('insertPendingQuestion', question)
+    },
+    localDeletePendingQuestion({ commit }, question) {
+        commit('deletePendingQuestion', question)
     }
 }
 
@@ -89,6 +95,9 @@ const mutations = {
         if (index !== -1) {
             state.items.splice(index, 1)
         }
+    },
+    insertPendingQuestion(state, question) {
+        state.items.push(question)
     }
 }
 
