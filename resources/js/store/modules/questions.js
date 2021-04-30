@@ -62,6 +62,20 @@ const actions = {
                 question.answer = null
             }
         })
+    },
+    topicDeleted({ state }, topic) {
+        state.items.forEach(question => {
+            if (question.topic && question.topic.id === topic.id) {
+                question.topic = null
+            }
+        })
+    },
+    topicUpdated({ state }, topic) {
+        state.items.forEach(question => {
+            if (question.topic && question.topic.id === topic.id) {
+                question.topic.description = topic.description
+            }
+        })
     }
 }
 

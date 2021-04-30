@@ -76,9 +76,10 @@
                         variant="danger"
                         @click="handleDelete()"
                         :disabled="isBusy"
-                        size="sm"
+                        v-b-tooltip
+                        title="Delete"
                     >
-                        Delete
+                        <font-awesome-icon :icon="['fas', 'trash']" />
                     </b-button>
                 </div>
             </form>
@@ -89,6 +90,10 @@
     import { mapState, mapGetters } from 'vuex'
     import ToastHelpers from '../../mixins/ToastHelpers'
     import FormAnswer from '../Input/FormAnswer'
+    import { library } from '@fortawesome/fontawesome-svg-core'
+    import { faTrash } from '@fortawesome/free-solid-svg-icons'
+
+    library.add(faTrash)
 
     export default {
         props: ['question'],

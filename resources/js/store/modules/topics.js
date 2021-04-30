@@ -32,6 +32,7 @@ const actions = {
     },
     updateTopic({ commit }, topic) {
         commit('updateTopic', topic)
+        this.dispatch('questions/topicUpdated', topic)
     },
     insertTopic({ commit }, topic) {
         commit('insertTopic', topic)
@@ -40,6 +41,7 @@ const actions = {
         return axios.delete(`/topics/${topic.id}`)
             .then(response => {
                 commit('deleteTopic', response.data)
+                this.dispatch('questions/topicDeleted', response.data)
             })
     }
 }
