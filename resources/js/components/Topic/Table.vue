@@ -5,7 +5,6 @@
 
         <h3>
             Categories
-            <b-spinner type="grow" label="Loading categories data" small variant="secondary" v-if="isLoadingData"></b-spinner>
         </h3>
 
         <table-search-descriptions></table-search-descriptions>
@@ -160,8 +159,7 @@ export default {
             currentPage: 1,
             sortBy: 'id',
             sortDesc: true,
-            topic: null,
-            isLoadingData: false
+            topic: null
         }
     },
     methods: {
@@ -197,23 +195,6 @@ export default {
                     console.error('Delete topic confirmation dialog error', err)
                 })
         }
-    },
-    created() {
-        this.isLoadingData = true;
-        this.$store.dispatch('topics/loadAllTopics')
-            .then(() => {
-                this.isLoadingData = false
-            })
-            .catch(error => {
-                this.isLoadingData = false
-                console.error(error)
-            })
     }
 }
 </script>
-
-<style scoped>
-h3 > .spinner-grow {
-    vertical-align: middle;
-}
-</style>

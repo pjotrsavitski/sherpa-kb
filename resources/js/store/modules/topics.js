@@ -40,9 +40,12 @@ const actions = {
     deleteTopic({ commit }, topic) {
         return axios.delete(`/topics/${topic.id}`)
             .then(response => {
-                commit('deleteTopic', response.data)
-                this.dispatch('questions/topicDeleted', response.data)
+                this.dispatch('topics/localDeleteTopic', response.data)
             })
+    },
+    localDeleteTopic({ commit }, topic) {
+        commit('deleteTopic', topic)
+        this.dispatch('questions/topicDeleted', topic)
     }
 }
 

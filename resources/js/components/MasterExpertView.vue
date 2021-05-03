@@ -167,6 +167,7 @@
             this.$store.dispatch('questions/preloadAllQuestions')
             this.$store.dispatch('pendingQuestions/preloadAllPendingQuestions')
             this.$store.dispatch('topics/preloadAllTopics')
+            this.$root.$emit('init-app-sync')
         }
     }
 </script>

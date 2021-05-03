@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TopicCreated;
+use App\Events\TopicDeleted;
+use App\Events\TopicUpdated;
 use App\Http\Resources\TopicResource;
 use App\Topic;
 use Illuminate\Http\JsonResponse;
@@ -58,6 +61,8 @@ class TopicController extends Controller
         $topic->description = $validatedData['description'];
         $topic->save();
 
+        broadcast(new TopicCreated($topic))->toOthers();
+
         return response()->json(new TopicResource($topic), 200);
     }
 
@@ -81,6 +86,8 @@ class TopicController extends Controller
         $topic->description = $validatedData['description'];
         $topic->save();
 
+        broadcast(new TopicUpdated($topic))->toOthers();
+
         return response()->json(new TopicResource($topic->refresh()), 200);
     }
 
@@ -97,6 +104,8 @@ class TopicController extends Controller
         $this->authorize('delete', $topic);
 
         $topic->delete();
+
+        broadcast(new TopicDeleted($topic))->toOthers();
 
         return response()->json(new TopicResource($topic), 200);
     }

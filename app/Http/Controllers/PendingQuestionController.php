@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PendingQuestionCreated;
+use App\Events\PendingQuestionDeleted;
+use App\Events\PendingQuestionUpdated;
 use App\States\PendingQuestion\Pending;
 use Illuminate\Http\Request;
 use App\PendingQuestion;
@@ -98,6 +101,8 @@ class PendingQuestionController extends Controller
             'description' => $validatedData['question'],
         ]);
 
+        broadcast(new PendingQuestionCreated($question->refresh()));
+
         return response()->json([
             'message' => 'OK',
         ]);
@@ -173,6 +178,8 @@ class PendingQuestionController extends Controller
             $pendingQuestion->save();
         }
 
+        broadcast(new PendingQuestionUpdated($pendingQuestion->refresh()))->toOthers();
+
         return response()->json(new PendingQuestionResource($pendingQuestion->refresh()), 200);
     }
 
@@ -189,6 +196,8 @@ class PendingQuestionController extends Controller
         $this->authorize('delete', $pendingQuestion);
 
         $pendingQuestion->delete();
+
+        broadcast(new PendingQuestionDeleted($pendingQuestion))->toOthers();
 
         return response()->json(new PendingQuestionResource($pendingQuestion), 200);
     }

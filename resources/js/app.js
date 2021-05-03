@@ -31,6 +31,7 @@ Vue.config.productionTip = false
 Vue.component('language-expert-view', require('./components/LanguageExpertView.vue').default)
 Vue.component('master-expert-view', require('./components/MasterExpertView.vue').default)
 Vue.component('users-table', require('./components/User/Table.vue').default)
+Vue.component('app-sync', require('./components/AppSync.vue').default)
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -41,6 +42,18 @@ Vue.component('users-table', require('./components/User/Table.vue').default)
 const app = new Vue({
     el: '#app',
     store,
+    data() {
+        return {
+            appSyncActive: false
+        }
+    },
+    created() {
+        this.$on('init-app-sync', () => {
+            if (!this.appSyncActive) {
+                this.initAppSync()
+            }
+        })
+    },
     mounted() {
         if (document.querySelector('meta[name="current-user"]')) {
             this.$store.dispatch('app/setUser', JSON.parse(document.querySelector('meta[name="current-user"]').content))
@@ -58,5 +71,70 @@ const app = new Vue({
                     console.error(error)
                 })
         }, 15 * 60 * 1000)
+    },
+    beforeDestroy() {
+        if (window.Echo) {
+            if (this.appSyncActive) {
+                Echo.leave('App.Sync')
+            }
+
+            Echo.disconnect()
+        }
+    },
+    methods: {
+        initAppSync() {
+            if (this.appSyncActive) {
+                return
+            } else if (!window.Echo) {
+                return
+            }
+
+            Echo.private('App.Sync')
+                .listen('TopicCreated', e => {
+                    this.$store.dispatch('topics/insertTopic', e)
+                })
+                .listen('TopicUpdated', e => {
+                    this.$store.dispatch('topics/updateTopic', e)
+                })
+                .listen('TopicDeleted', e => {
+                    this.$store.dispatch('topics/localDeleteTopic', e)
+                })
+                .listen('AnswerCreated', e => {
+                    this.$store.dispatch('answers/insertAnswer', e)
+                })
+                .listen('AnswerUpdated', e => {
+                    this.$store.dispatch('answers/updateAnswer', e)
+                })
+                .listen('AnswerDeleted', e => {
+                    this.$store.dispatch('answers/localDeleteAnswer', e)
+                })
+                .listen('QuestionCreated', e => {
+                    this.$store.dispatch('questions/insertQuestion', e)
+                })
+                .listen('QuestionUpdated', e => {
+                    this.$store.dispatch('questions/updateQuestion', e)
+                })
+                .listen('QuestionDeleted', e => {
+                    this.$store.dispatch('questions/localDeleteQuestion', e)
+                })
+                .listen('PendingQuestionCreated', e => {
+                    this.$store.dispatch('pendingQuestions/insertPendingQuestion', e)
+                })
+                .listen('PendingQuestionUpdated', e => {
+                    this.$store.dispatch('pendingQuestions/updatePendingQuestion', e)
+                })
+                .listen('PendingQuestionDeleted', e => {
+                    this.$store.dispatch('pendingQuestions/localDeletePendingQuestion', e)
+                })
+
+            this.appSyncActive = true
+
+            this.$bvToast.toast('Live-updates are active.', {
+                variant: 'info',
+                toaster: 'b-toaster-bottom-left',
+                noCloseButton: true,
+                autoHideDelay: 3000,
+            })
+        }
     }
 })

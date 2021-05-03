@@ -53,8 +53,11 @@ const actions = {
     deleteQuestion({ commit }, question) {
         return axios.delete(`/questions/${question.id}`)
             .then(response => {
-                commit('deleteQuestion', response.data)
+                this.dispatch('questions/localDeleteQuestion', response.data)
             })
+    },
+    localDeleteQuestion({ commit }, question) {
+        commit('deleteQuestion', question)
     },
     answerDeleted({ state }, answer) {
         state.items.forEach(question => {

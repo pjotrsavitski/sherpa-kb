@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AnswerCreated;
+use App\Events\AnswerDeleted;
+use App\Events\AnswerUpdated;
 use Illuminate\Http\Request;
 use App\Answer;
 use App\Language;
@@ -113,6 +116,8 @@ class AnswerController extends Controller
             $answer->status->transitionTo(Translated::class);
         }
 
+        broadcast(new AnswerCreated($answer->refresh()))->toOthers();
+
         return response()->json(new AnswerResource($answer->refresh()), 200);
     }
 
@@ -160,6 +165,8 @@ class AnswerController extends Controller
 
         $answer->languages()->syncWithoutDetaching($descriptions);
 
+        broadcast(new AnswerUpdated($answer->refresh()))->toOthers();
+
         return response()->json(new AnswerResource($answer->refresh()), 200);
     }
 
@@ -204,6 +211,8 @@ class AnswerController extends Controller
         $this->authorize('delete', $answer);
 
         $answer->delete();
+
+        broadcast(new AnswerDeleted($answer))->toOthers();
 
         return response()->json(new AnswerResource($answer), 200);
     }
