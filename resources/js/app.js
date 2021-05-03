@@ -31,6 +31,7 @@ Vue.config.productionTip = false
 Vue.component('language-expert-view', require('./components/LanguageExpertView.vue').default)
 Vue.component('master-expert-view', require('./components/MasterExpertView.vue').default)
 Vue.component('users-table', require('./components/User/Table.vue').default)
+Vue.component('app-sync', require('./components/AppSync.vue').default)
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
