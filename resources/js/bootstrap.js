@@ -36,9 +36,11 @@ import Echo from 'laravel-echo';
 
 window.Pusher = require('pusher-js');
 
-window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key: document.querySelector('meta[name="pusher-app-key"]').content,
-    cluster: document.querySelector('meta[name="pusher-app-cluster"]').content,
-    forceTLS: true
-});
+if (document.querySelector('meta[name="pusher-app-key"]') && document.querySelector('meta[name="pusher-app-cluster"]')) {
+    window.Echo = new Echo({
+        broadcaster: 'pusher',
+        key: document.querySelector('meta[name="pusher-app-key"]').content,
+        cluster: document.querySelector('meta[name="pusher-app-cluster"]').content,
+        forceTLS: true
+    });
+}

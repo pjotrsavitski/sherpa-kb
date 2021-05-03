@@ -73,15 +73,19 @@ const app = new Vue({
         }, 15 * 60 * 1000)
     },
     beforeDestroy() {
-        if (this.appSyncActive) {
-            Echo.leave('App.Sync')
-        }
+        if (window.Echo) {
+            if (this.appSyncActive) {
+                Echo.leave('App.Sync')
+            }
 
-        Echo.disconnect()
+            Echo.disconnect()
+        }
     },
     methods: {
         initAppSync() {
             if (this.appSyncActive) {
+                return
+            } else if (!window.Echo) {
                 return
             }
 
