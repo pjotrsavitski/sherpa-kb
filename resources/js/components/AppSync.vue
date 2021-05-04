@@ -18,17 +18,45 @@
                 v-if="isBusy"
             ></b-spinner>
         </b-button>
-        <b-button
-            title="Live-updates are enabled"
-            v-b-tooltip
-            variant="light"
+        <b-button-group
             size="sm"
             v-if="isActive"
-            :class="stateClass"
         >
-            <font-awesome-icon :icon="['fas', 'globe']" />
-            <span class="text-capitalize">{{ connectionState }}</span>
-        </b-button>
+            <b-button
+                title="Live-updates are enabled"
+                v-b-tooltip
+                variant="light"
+                :class="stateClass"
+            >
+                <font-awesome-icon :icon="['fas', 'globe']" />
+            </b-button>
+            <b-button
+                title="Current state of live-updates service connection"
+                v-b-tooltip
+                variant="light"
+                size="sm"
+                :class="stateClass"
+            >
+                <span class="text-capitalize">{{ connectionState }}</span>
+            </b-button>
+            <b-button
+                v-b-tooltip
+                title="Reload all application data"
+                variant="light"
+                @click="onReload()"
+                v-if="showReload"
+                :disabled="isBusy"
+            >
+                <font-awesome-icon :icon="['fas', 'sync']" v-if="!isBusy"/>
+                <b-spinner
+                    label="Loading"
+                    type="grow"
+                    variant="secondary"
+                    :small="true"
+                    v-if="isBusy"
+                ></b-spinner>
+            </b-button>
+        </b-button-group>
     </div>
 </template>
 
@@ -85,6 +113,9 @@ export default {
             }
 
             return className
+        },
+        showReload() {
+            return (this.isActive && (this.connectionState === 'unavailable' || this.connectionState === 'failed' || this.connectionState === 'disconnected')) ? true : false;
         }
     },
     methods: {
