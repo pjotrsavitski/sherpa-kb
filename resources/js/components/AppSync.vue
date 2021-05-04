@@ -19,13 +19,15 @@
             ></b-spinner>
         </b-button>
         <b-button
-            title="Live-updates are active"
+            title="Live-updates are enabled"
             v-b-tooltip
             variant="light"
             size="sm"
             v-if="isActive"
+            :class="stateClass"
         >
-            <font-awesome-icon :icon="['fas', 'globe']" class="text-success" />
+            <font-awesome-icon :icon="['fas', 'globe']" />
+            <span class="text-capitalize">{{ connectionState }}</span>
         </b-button>
     </div>
 </template>
@@ -38,22 +40,66 @@ library.add(faSync, faGlobe)
 
 export default {
     name: "AppSync",
-    props: ['isActive'],
+    props: ['isActive', 'connectionState'],
     data() {
         return {
-            isBusy: false
+            isBusy: false,
+            loadDataWhenConnected: false
+        }
+    },
+    watch: {
+        connectionState(newState, oldState) {
+            if (newState === 'connected' && this.loadDataWhenConnected) {
+                this.loadData()
+                this.loadDataWhenConnected = false
+            }
+
+            if (newState === 'unavailable' || newState === 'failed' || (newState === 'connecting' && oldState === 'connected')) {
+                this.loadDataWhenConnected = true
+            }
+        }
+    },
+    computed: {
+        stateClass() {
+            let className
+
+            switch(this.connectionState) {
+                case 'initialized':
+                    className = 'text-info'
+                    break;
+                case 'connecting':
+                    className = 'text-secondary'
+                    break;
+                case 'connected':
+                    className = 'text-success'
+                    break;
+                case 'unavailable':
+                case 'failed':
+                    className = 'text-danger'
+                    break;
+                case 'disconnected':
+                    className = 'text-muted'
+                    break;
+                default:
+                    className = 'text-secondary'
+            }
+
+            return className
         }
     },
     methods: {
-        onReload() {
-            this.isBusy = true
-
-            Promise.allSettled([
+        loadData() {
+            return Promise.allSettled([
                 this.$store.dispatch('answers/loadAllAnswers'),
                 this.$store.dispatch('questions/loadAllQuestions'),
                 this.$store.dispatch('pendingQuestions/loadAllPendingQuestions'),
                 this.$store.dispatch('topics/loadAllTopics')
             ])
+        },
+        onReload() {
+            this.isBusy = true
+
+            this.loadData()
             .then(() => {
                 this.isBusy = false
             })
