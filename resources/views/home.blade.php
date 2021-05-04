@@ -6,7 +6,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <app-sync :is-active="appSyncActive"></app-sync>
+                    <app-sync :is-active="appSyncActive" :connection-state="connectionState"></app-sync>
                     <h1>Hello, {{ Auth::user()->name }}</h1>
 
                     @if (Auth::user()->isMasterExpert() || Auth::user()->isAdministrator())

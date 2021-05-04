@@ -44,7 +44,8 @@ const app = new Vue({
     store,
     data() {
         return {
-            appSyncActive: false
+            appSyncActive: false,
+            connectionState: 'initialized'
         }
     },
     created() {
@@ -129,11 +130,31 @@ const app = new Vue({
 
             this.appSyncActive = true
 
-            this.$bvToast.toast('Live-updates are active.', {
-                variant: 'info',
-                toaster: 'b-toaster-bottom-left',
-                noCloseButton: true,
-                autoHideDelay: 3000,
+            const showErrorToast = message => {
+                this.$bvToast.toast(message, {
+                    title: 'Live-updates service error',
+                    variant: 'danger',
+                    toaster: 'b-toaster-bottom-left',
+                    noCloseButton: true,
+                    autoHideDelay: 3000,
+                })
+            }
+
+            Echo.connector.pusher.connection.bind('error', err => {
+                console.error('Echo connection error', err)
+
+                if (err.type === 'PusherError') {
+                    if (err.data && err.data.code && err.data.message) {
+                        showErrorToast(err.data.message)
+                    }
+                } else if (err.type === 'WebSocketError') {
+                    if (err.error && err.error.type === 'PusherError' && err.error.data && err.error.data.code && err.error.data.message) {
+                        showErrorToast(err.error.data.message)
+                    }
+                }
+            })
+            Echo.connector.pusher.connection.bind('state_change', states => {
+                this.connectionState = states.current
             })
         }
     }
