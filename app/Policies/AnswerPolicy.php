@@ -83,7 +83,7 @@ class AnswerPolicy
     {
         if ($user->isMasterExpert()) {
             return true;
-        } else if ($user->isLanguageExpert() && ($question->status->is(Translated::class) || $question->status->is(InTranslation::class))) {
+        } else if ($user->isLanguageExpert() && ($answer->status->is(Translated::class) || $answer->status->is(InTranslation::class))) {
             return true;
         }
 
