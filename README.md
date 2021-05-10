@@ -39,7 +39,7 @@ php artisan db:seed
 
 This should get the packages installed, generate new secret key and update the .env file, run all the database migrations and create all the required tables, fill the database with some of the data presets (categories, roles and some other data).
 
-It mght also be a good idea to [cache configuration](https://laravel.com/docs/8.x/configuration#configuration-caching) to improve performance. **Please note that caches would need to be reset after updates!**
+It might also be a good idea to [cache configuration](https://laravel.com/docs/8.x/configuration#configuration-caching) to improve performance. **Please note that caches would need to be reset after updates!**
 
 Once that is done, you would need to create an account and assign it an administrator role. After that all the user management could be done through the user management UI. That would include creating new user account and assigning roles. This command should get the job done (please replace the arguments with correct values):
 
@@ -48,6 +48,12 @@ php artisan auth:create-admin {name} {email} {password}
 ```
 
 Log in to the application and create any additional accounts that are needed. One additional step would be setting up a scheduler according to the [documentation](https://laravel.com/docs/8.x/scheduling#starting-the-scheduler). Running it every minute might not be needed as the only job that is currently present is the daily sending of email to Language Experts.
+
+### Configuring live-updates
+
+Live-updates are achieved with use of [Laravel Echo](https://laravel.com/docs/8.x/broadcasting#client-side-installation) using [Pusher](https://pusher.com/) as a service provider. Any [Pusher-js](https://github.com/pusher/pusher-js) compatible implementation should be suitable as well.
+
+The easiest way would be to just create a [Pusher Channels](https://pusher.com/channels/pricing) account and use a suitable plan. After that there would also be a need to change the `.env` file and provide all the required configuration.
 
 ## Development
 
