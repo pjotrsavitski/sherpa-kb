@@ -67,6 +67,14 @@ const app = new Vue({
             axios.post('/refresh_csrf_token')
                 .then(response => {
                     document.querySelector('meta[name="csrf-token"]').content = response.data.csrfToken
+
+                    const inputs = document.querySelectorAll('input[type="hidden"][name="_token"]')
+
+                    if (inputs && inputs.length > 0) {
+                        inputs.forEach(input => {
+                            input.value = response.data.csrfToken
+                        })
+                    }
                 })
                 .catch(error => {
                     console.error(error)
