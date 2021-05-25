@@ -29,8 +29,17 @@
                             <b-button
                                 variant="success"
                                 @click="onOpenQuestionModal(question)"
+                                :disabled="!canEdit(question)"
                             >
                                 <font-awesome-icon :icon="['fas', 'edit']" />
+                            </b-button>
+                            <b-button
+                                variant="secondary"
+                                v-b-tooltip
+                                title="Review action is not available because the question is still in translation"
+                                v-if="!canEdit(question)"
+                            >
+                                <font-awesome-icon :icon="['fas', 'info-circle']" />
                             </b-button>
                         </b-button-group>
                     </div>
@@ -59,9 +68,9 @@
 import QuestionEdit from '../Question/Edit.vue'
 import QuestionReview from '../Question/Review.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faInfo} from '@fortawesome/free-solid-svg-icons'
 
-library.add(faEdit)
+library.add(faEdit, faInfo)
 
 export default {
     props: ['language', 'answer'],
@@ -94,6 +103,9 @@ export default {
             this.$nextTick(() => {
                 this.$bvModal.show(this.language ? 'question-edit' : 'question-review')
             })
+        },
+        canEdit(question) {
+            return this.language ? true : question.status.value !== 'in_translation'
         }
     }
 }
