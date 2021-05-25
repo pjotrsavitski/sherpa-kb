@@ -10,6 +10,9 @@ const getters = {
     },
     forReview: state => {
         return state.items.filter(item => item.status.value !== 'in_translation')
+    },
+    relatedToAnswer: state => answer => {
+        return state.items.filter(item => item.answer === answer.id)
     }
 }
 

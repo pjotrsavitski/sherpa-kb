@@ -2,6 +2,7 @@
     <div>
         <answer-edit :answer="answer" :language="language" v-if="language && answer"></answer-edit>
         <answer-review :answer="answer" v-if="!language && answer"></answer-review>
+        <answer-questions :answer="answer" :language="language" v-if="answer"></answer-questions>
 
         <h3>Answers</h3>
 
@@ -56,6 +57,16 @@
                 </b-button>
             </template>
 
+            <template v-slot:cell(questions)="data">
+                <b-button
+                    pill
+                    variant="outline-secondary"
+                    @click="onOpenQuestionsModal(data.item)"
+                >
+                    <font-awesome-icon :icon="['fas', 'list']" />
+                </b-button>
+            </template>
+
             <template v-slot:cell(date)="data">
                 {{ formatDate(data.value) }}
             </template>
@@ -79,9 +90,14 @@
     import { mapState } from 'vuex'
     import AnswerEdit from './Edit.vue'
     import AnswerReview from './Review.vue'
+    import AnswerQuestions from './Questions.vue'
     import TableSearchDescriptions from '../TableSearchDescriptions.vue'
     import TableHelpers from '../../mixins/TableHelpers'
     import TableSearchHelpers from '../../mixins/TableSearchHelpers'
+    import { library } from '@fortawesome/fontawesome-svg-core'
+    import { faList } from '@fortawesome/free-solid-svg-icons'
+
+    library.add(faList)
 
     export default {
         props: ['items', 'language', 'isBusy'],
@@ -89,6 +105,7 @@
         components: {
             AnswerEdit,
             AnswerReview,
+            AnswerQuestions,
             TableSearchDescriptions
         },
         computed: {
@@ -120,6 +137,11 @@
                     },
                     {
                         key: 'languages',
+                        sortable: false,
+                        tdClass: ['align-middle', 'text-center']
+                    },
+                    {
+                        key: 'questions',
                         sortable: false,
                         tdClass: ['align-middle', 'text-center']
                     },
@@ -184,6 +206,12 @@
                 this.answer = answer
                 this.$nextTick(() => {
                     this.$bvModal.show(this.modalId)
+                })
+            },
+            onOpenQuestionsModal(answer) {
+                this.answer = answer
+                this.$nextTick(() => {
+                    this.$bvModal.show('answer-questions')
                 })
             }
         },
