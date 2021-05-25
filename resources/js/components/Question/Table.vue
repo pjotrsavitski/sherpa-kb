@@ -59,7 +59,7 @@
                         <font-awesome-icon :icon="['fas', 'info-circle']" />
                     </b-button>
                     <b-button
-                        variant="outline-secondary"
+                        :variant="answerLanguagesButtonVariant(data.item, language)"
                         v-b-popover.hover.click.blur.top="answerLanguagesPopoverData(data.item.answer)"
                     >
                         {{ answerDescriptionsCount(data.item.answer) }} / {{ totalLanguages }}
@@ -236,6 +236,11 @@
                     content: answer ? this.descriptionInLanguageOrEnglish(answer.descriptions, language) : '',
                     customClass: 'popover-preserve-new-lines'
                 }
+            },
+            answerLanguagesButtonVariant(item) {
+                const answer = this.answers.find(answer => answer.id === item.answer)
+
+                return this.languagesButtonVariant(answer, this.language)
             },
             onOpenModal(question) {
                 this.question = question
