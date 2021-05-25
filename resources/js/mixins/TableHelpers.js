@@ -23,8 +23,20 @@ export default {
                 content: languages.join(', ')
             }
         },
-        languagesButtonVariant(item) {
-            return Object.keys(item.descriptions).length >= this.totalLanguages ? 'outline-success' : 'outline-secondary'
+        languagesButtonVariant(item, language) {
+            const descriptionsCount = Object.keys(item.descriptions).length
+
+            if (descriptionsCount >= this.totalLanguages) {
+                return 'outline-success'
+            }
+
+            if (language) {
+                if (!(item.descriptions.hasOwnProperty(language) && item.descriptions[this.language].trim())) {
+                    return 'outline-danger'
+                }
+            }
+
+            return 'outline-secondary'
         },
         formatDate(dateString) {
             const date = new Date(dateString)

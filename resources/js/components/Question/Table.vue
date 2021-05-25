@@ -30,7 +30,7 @@
             <template v-slot:cell(question)="data" v-if="language">
                 <b-button
                     variant="link"
-                    :class="{ 'text-secondary': !hasDescription(data.item) }"
+                    :class="{ 'text-danger': !hasDescription(data.item) }"
                     @click="onOpenModal(data.item)"
                 >
                     {{ descriptionOrPlaceholderText(data.item) }}
@@ -76,7 +76,7 @@
             <template v-slot:cell(languages)="data">
                 <b-button
                     pill
-                    :variant="languagesButtonVariant(data.item)"
+                    :variant="languagesButtonVariant(data.item, language)"
                     v-b-popover.hover.click.blur.top="languagesPopoverData(data.item)"
                 >
                     {{ descriptionsCount(data.item) }} / {{ totalLanguages }}

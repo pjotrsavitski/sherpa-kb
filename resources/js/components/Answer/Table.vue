@@ -2,11 +2,11 @@
     <div>
         <answer-edit :answer="answer" :language="language" v-if="language && answer"></answer-edit>
         <answer-review :answer="answer" v-if="!language && answer"></answer-review>
-        
+
         <h3>Answers</h3>
 
         <table-search-descriptions></table-search-descriptions>
-        
+
         <b-table
             striped
             hover
@@ -28,7 +28,7 @@
             <template v-slot:cell(answer)="data" v-if="language">
                 <b-button
                     variant="link"
-                    :class="{ 'text-secondary': !hasDescription(data.item) }"
+                    :class="{ 'text-danger': !hasDescription(data.item) }"
                     v-b-popover.hover.top="popoverData(data.item, language)"
                     @click="onOpenModal(data.item)"
                 >
@@ -49,7 +49,7 @@
             <template v-slot:cell(languages)="data">
                 <b-button
                     pill
-                    :variant="languagesButtonVariant(data.item)"
+                    :variant="languagesButtonVariant(data.item, language)"
                     v-b-popover.hover.click.blur.top="languagesPopoverData(data.item)"
                 >
                     {{ descriptionsCount(data.item) }} / {{ totalLanguages }}
