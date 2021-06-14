@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\QuestionCreated;
 use Spatie\ModelStates\Events\StateChanged;
 use App\PendingQuestion;
 use App\Question;
@@ -36,6 +37,8 @@ class CreateQuestionFromCompletedPendingQuestion
                     'description' => $item->pivot->description,
                 ];
             }));
+
+            broadcast(new QuestionCreated($question))->toOthers();
         }
     }
 }
